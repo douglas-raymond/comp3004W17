@@ -1,2 +1,2 @@
 # comp3004W17
-# Team 70
+Team 70
