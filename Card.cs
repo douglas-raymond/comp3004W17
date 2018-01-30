@@ -7,10 +7,12 @@ public abstract class Card {
 	protected string name;
 	protected string type;
 	protected Card(){	}
+	protected Sprite sprite;
 	
-	public Card(string _name)
+	public Card(string _name, Sprite _sprite)
 	{
 		name = _name;
+		sprite = _sprite;
 	}
 	
 	public string getName()
@@ -21,6 +23,9 @@ public abstract class Card {
 	{
 		return type;
 	}
-	
+	public Sprite getSprite()
+	{
+		return sprite;
+	}
 
 }

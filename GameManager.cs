@@ -8,116 +8,61 @@ public class GameManager : MonoBehaviour {
 	//Initialize the two decks
 	AdvDeck advDeck = new AdvDeck();
 	StoryDeck storyDeck = new StoryDeck();
-	int playerNum;
+	UI ui;
+	
+	int playerCount = 3;
+	
 	Player[] players;
-	
-	/* Work in progress
-	
-	Player player0 = new Player(new Card[12], 0, 0);
-	Player player1 = new Player(new Card[12], 0, 0);
-	Player player2 = new Player(new Card[12], 0, 0);
-	
-	Player[] players = new Player[3];
-	
-	enum GameState {DRAWINGSTORYCARD, LOOKINGFORSPONSOR, BUILDINGQUEST, LOOKINGFORQUESTPLAYERS, PLAYINGQUEST, LOOKINGFORTOURNEYPLAYERS, PLAYINGTOURNEY};
-	enum PlayerState {WAITINGFORPLAYERCARDS, WAITINGFORCOMPUTERACTIONS};
-	enum MenuState {WRITINGMENU, NOTWRITINGMENU};
-	
-	GameState gameState;
-	PlayerState playerState;
-	MenuState menuState;
-	
-	int currPlayer;
-	Card tempCard;
-	ActiveQuest currQuest;
-	*/
+	//Game states. There will eventually be many possible states, but for right now these two exist.
+	enum state {WAITINGFORINPUT, GOTINPUT};
+	state gameState = state.WAITINGFORINPUT;
+
 	// Use this for initialization
 	void Start () {
-		
-		/* TESTING CODE IGNORE
-		players[0] = player0;
-		players[1] = player1;
-		players[2] = player2;
-		
-		
+		ui = new UI(this);
+		//Create all the players and add it to the players array
+		players = new Player[playerCount];
+		for(int i = 0; i < playerCount; i++){
+			players[i] = new Player(new Card[12], 0, 0);
+		}
+			
+		//Init the decks
 		advDeck.initDeck();
 		storyDeck.initDeck();
 		
-		dealHands(2);
+		//Deal hands to all the players
+		dealHands(playerCount-1);
 		
-		gameState = GameState.DRAWINGSTORYCARD;
-		playerState = PlayerState.WAITINGFORCOMPUTERACTIONS;
-		menuState = MenuState.WRITINGMENU;
-		
-		currPlayer = 0;
-		*/
+		//Asks player oen for a card selection. THis is for testing purposes
+		ui.askForMultipleCardSelection(players[0], 3);
 	}
 	
 	// Update is called once per frame
-	void Update () 
-	{
-		/* TESTING CODE IGNORE
-		if(gameState == GameState.DRAWINGSTORYCARD) {
-			tempCard = storyDeck.drawCard();
-			
-			Debug.Log(tempCard.getName());
-			
-			if(tempCard.getType().Equals("quest"))
-			{
-				gameState = GameState.LOOKINGFORSPONSOR;
-				currPlayer = 0;
-				playerState = PlayerState.WAITINGFORPLAYERCARDS;
-			}
-				
-			if(tempCard.getType().Equals("tourney"))
-			{
-				gameState = GameState.LOOKINGFORTOURNEYPLAYERS;
-				playerState = PlayerState.WAITINGFORPLAYERCARDS;
-			}
-			
-			//storyDeck.returnCard(tempCard);
-		}
-		if(gameState == GameState.LOOKINGFORSPONSOR) {
-			if (Input.GetKeyDown(KeyCode.Y))
-            {
-				Debug.Log("Sponsored by player " + currPlayer);
-              
-				gameState = GameState.BUILDINGQUEST;
-				currQuest = new ActiveQuest((QuestCard)tempCard, currPlayer);
-				tempCard = null;
-            }
-			else if(Input.GetKeyDown(KeyCode.N))
-            {
-                if(currPlayer == 2)
-				{
-					storyDeck.returnCard(tempCard);
-					tempCard = null;
-					Debug.Log("No sponsor, returning.");
-				}
-				else
-				{
-					currPlayer++;
-				}	
-            }		
-		}
-		if(gameState == GameState.BUILDINGQUEST) {
-			Foe[] temp = new Foe[currQuest.getStageNum()];
-			for(int i = 0; i < )
-		}
+	void Update () {
+
+	}
 	
-	*/
+	//Gets a selected card and does something with it
+	public void gotSingleCardSelection(Card card){
+		gameState = state.GOTINPUT;
+	}
+	
+	public void gotMultipleCardSelection(Card[] card, Player player){
+		gameState = state.GOTINPUT;
+		for(int i = 0; i < card.Length; i++)
+		{
+			player.discardCard(card[i]);
+			Debug.Log(card[i]);
+		}
 	}
 	
 	//Pass in a player count, it will give each player a hand of 12 adventure cards
 	private void dealHands(int playerCount){
-		for(int i = 0; i < playerCount+1; i++)
-		{
+		for(int i = 0; i < playerCount+1; i++){
 			Card[] newHand = new Card[12];
-			for(int j = 0; j < 11; j++)
-			{
+			for(int j = 0; j < 11; j++){
 				newHand[j] = advDeck.drawCard();
 			}
-			
 			players[i].setHand(newHand);
 		}
 		return;
