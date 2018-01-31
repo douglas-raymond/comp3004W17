@@ -7,11 +7,13 @@ public class Player {
 	public Card[] hand;
 	protected int shields;
 	public int rank;
+	private string name;
 
-	public Player(Card[] _hand, int _shields, int _rank){
+	public Player(Card[] _hand, int _shields, int _rank, string _name){
 		hand = _hand;
 		shields = _shields;
 		rank = _rank;
+		name = _name;
 	}
 	public void setHand(Card[] newHand){
 		hand = newHand;
@@ -20,6 +22,9 @@ public class Player {
 	public Card[] getHand(){
 		return hand;
 	}	
+	public string getName(){
+		return name;
+	}
 	//Deletes a card from a hand.
 	public void discardCard(Card card){
 		int n = hand.Length;

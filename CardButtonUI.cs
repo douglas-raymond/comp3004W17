@@ -22,7 +22,7 @@ public class CardButtonUI : MonoBehaviour {
 		card = _card;
 		GetComponent<SpriteRenderer>().sprite = card.getSprite();
 	}
-		public  void setUI(UI _ui){
+	public  void setUI(UI _ui){
 		ui = _ui;
 	}
 	void OnMouseDown(){
