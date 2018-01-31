@@ -10,10 +10,8 @@ public class CardButtonUI : MonoBehaviour {
 	UI ui;
 	Card card;
 	
-	
+	bool currentlySelected;
 	void Start () {
-		//UI = GameObject.FindGameObjectWithTag("UI");
-		
 	}
 	
 	// Update is called once per frame
@@ -22,11 +20,16 @@ public class CardButtonUI : MonoBehaviour {
 	}
 	public  void setCard(Card _card){
 		card = _card;
+		GetComponent<SpriteRenderer>().sprite = card.getSprite();
 	}
-		public  void setUI(UI _ui){
+	public  void setUI(UI _ui){
 		ui = _ui;
 	}
 	void OnMouseDown(){
-		ui.cardClicked(card);
+		if(currentlySelected == false)
+		{
+			ui.getCardSelection(card);
+			currentlySelected = true;
+		}
 	}
 }

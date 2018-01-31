@@ -10,42 +10,43 @@ public class AdvDeck : Deck  {
 
 		Card[] tempCardArr = new Card[117];
 		
-		Weapon excalibur = new Weapon("excalibur", 30);
-		Weapon lance = new Weapon("lance", 20);
-		Weapon battleax = new Weapon("battleax", 15);
-		Weapon sword = new Weapon("sword", 10);
-		Weapon horse = new Weapon("horse", 10);
-		Weapon dagger = new Weapon("dagger", 5);
+		Weapon excalibur = new Weapon("excalibur", 30, getCardImage("excalibur"));
+		Weapon lance = new Weapon("lance", 20, getCardImage("lance"));
+		Weapon battleax = new Weapon("battleax", 15, getCardImage("battleax"));
+		Weapon sword = new Weapon("sword", 10, getCardImage("sword"));
+		Weapon horse = new Weapon("horse", 10, getCardImage("horse"));
+		Weapon dagger = new Weapon("dagger", 5, getCardImage("dagger"));
 		
 		//Foes
-		Foe dragon = new Foe("dragon", 50, 70);
-		Foe giant = new Foe("giant", 40, 0);
-		Foe mordred = new Foe("mordred", 30, 0);
-		Foe greenknight = new Foe("greenknight", 25, 40);
-		Foe blackknight = new Foe("blackknight", 25, 35);
-		Foe evilknight = new Foe("evilknight", 20, 30);
-		Foe saxonknight = new Foe("saxonknight", 15, 25);
-		Foe robberknight = new Foe("robberknight", 15, 0);
-		Foe saxons = new Foe("saxons", 10, 20);
-		Foe boar = new Foe("boar", 5, 15);
-		Foe thieves = new Foe("thieves", 5, 0);	
+		Foe dragon = new Foe("dragon", 50, 70, getCardImage("dragon"));
+		Foe giant = new Foe("giant", 40, 0, getCardImage("giant"));
+		Foe mordred = new Foe("mordred", 30, 0, getCardImage("mordred"));
+		Foe greenknight = new Foe("greenknight", 25, 40, getCardImage("greenknight"));
+		Foe blackknight = new Foe("blackknight", 25, 35, getCardImage("blackknight"));
+		Foe evilknight = new Foe("evilknight", 20, 30, getCardImage("evilknight"));
+		Foe saxonknight = new Foe("saxonknight", 15, 25, getCardImage("saxonknight"));
+		Foe robberknight = new Foe("robberknight", 15, 0, getCardImage("robberknight"));
+		Foe saxons = new Foe("saxons", 10, 20, getCardImage("saxons"));
+		Foe boar = new Foe("boar", 5, 15, getCardImage("boar"));
+		Foe thieves = new Foe("thieves", 5, 0, getCardImage("thieves"));	
 		
 		//Tests
-		Test tovalor = new Test("tovalor", 0, 0);
-		Test toquestingbeast = new Test("toquestingbeast", 0, 4);
-		Test totemptation = new Test("totemptation", 0, 0);
-		Test tomorganlefey = new Test("tomorganlefey", 0, 3);
+		Test tovalor = new Test("tovalor", 0, 0, getCardImage("tovalor"));
+		Test toquestingbeast = new Test("toquestingbeast", 0, 4, getCardImage("toquestingbeast"));
+		Test totemptation = new Test("totemptation", 0, 0, getCardImage("totemptation"));
+		Test tomorganlefey = new Test("tomorganlefey", 0, 3, getCardImage("tomorganlefey"));
 
 		//Allies
-		Ally galahad = new Ally("galahad", 15, 0, 0);
-		Ally arthur = new Ally("arthur", 10, 0, 2);
-		Ally pellinore = new Ally("pellinore", 10, 0, 4);
-		Ally guinevere = new Ally("guinevere", 0, 0, 3);
-		Ally iseult = new Ally("iseult", 0, 0, 2);
-		Ally gawain = new Ally("gawain", 10, 0, 0);
-		Ally lancelot = new Ally("lancelot", 15, 0, 0);
-		Ally percival = new Ally("percival", 5, 0, 0);
-		Ally tristan = new Ally("tristan", 10, 0, 0);
+		
+		Ally galahad = new Ally("galahad", 15, 0, 0, getCardImage("galahad"));
+		Ally arthur = new Ally("arthur", 10, 0, 2, getCardImage("arthur"));
+		Ally pellinore = new Ally("pellinore", 10, 0, 4, getCardImage("pellinore"));
+		Ally guinevere = new Ally("guinevere", 0, 0, 3, getCardImage("guinevere"));
+		Ally iseult = new Ally("iseult", 0, 0, 2, getCardImage("iseult"));
+		Ally gawain = new Ally("gawain", 10, 0, 0, getCardImage("gawain"));
+		Ally lancelot = new Ally("lancelot", 15, 0, 0, getCardImage("lancelot"));
+		Ally percival = new Ally("percival", 5, 0, 0, getCardImage("percival"));
+		Ally tristan = new Ally("tristan", 10, 0, 0, getCardImage("tristan"));
 		
 		for(int i = 0; i < 2; i ++) { tempCardArr[i] = excalibur; }
 		for(int i = 2; i < 8; i ++) { tempCardArr[i] = lance; }

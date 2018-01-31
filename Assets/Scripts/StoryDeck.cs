@@ -12,22 +12,22 @@ public class StoryDeck : Deck  {
 		//Story deck
 		//Quests 
 	
-		QuestCard holygrail = new QuestCard("holygrail", "quest", 5, new Foe[7]);
-		QuestCard enchantedforest = new QuestCard("enchantedforest", "quest", 3, new Foe[1]);
-		QuestCard arthursenemies = new QuestCard("arthursenemies", "quest", 3, new Foe[0]);
-		QuestCard saxonraiders = new QuestCard("saxonraiders", "quest", 2, new Foe[2]);
-		QuestCard boarhunt = new QuestCard("boarhunt", "quest", 2, new Foe[1]);
-		QuestCard questingbeast = new QuestCard("boarhunt", "quest", 4, new Foe[0]);
-		QuestCard queenshonor = new QuestCard("queenshonor", "quest", 4, new Foe[8] );
-		QuestCard slaydragon = new QuestCard("slaydragon", "quest", 3, new Foe[1] );
-		QuestCard rescuemaiden = new QuestCard("rescuemaiden", "quest", 3, new Foe[1]);
-		QuestCard greenknighttest = new QuestCard("greenknighttest", "quest", 4, new Foe[1] );
+		QuestCard holygrail = new QuestCard("holygrail", "quest", 5, new Foe[7], getCardImage("holygrail"));
+		QuestCard enchantedforest = new QuestCard("enchantedforest", "quest", 3, new Foe[1], getCardImage("enchantedforest"));
+		QuestCard arthursenemies = new QuestCard("arthursenemies", "quest", 3, new Foe[0], getCardImage("arthursenemies"));
+		QuestCard saxonraiders = new QuestCard("saxonraiders", "quest", 2, new Foe[2], getCardImage("saxonraiders"));
+		QuestCard boarhunt = new QuestCard("boarhunt", "quest", 2, new Foe[1], getCardImage("boarhunt"));
+		QuestCard questingbeast = new QuestCard("questingbeast", "quest", 4, new Foe[0], getCardImage("questingbeast"));
+		QuestCard queenshonor = new QuestCard("queenshonor", "quest", 4, new Foe[8], getCardImage("queenshonor"));
+		QuestCard slaydragon = new QuestCard("slaydragon", "quest", 3, new Foe[1], getCardImage("slaydragon"));
+		QuestCard rescuemaiden = new QuestCard("rescuemaiden", "quest", 3, new Foe[1], getCardImage("rescuemaiden"));
+		QuestCard greenknighttest = new QuestCard("greenknighttest", "quest", 4, new Foe[1], getCardImage("greenknighttest"));
 		
 		//Tourneys
-		TourneyCard camelot = new TourneyCard("camelot", "tourney", 3);
-		TourneyCard orkney = new TourneyCard("orkney", "tourney", 2);
-		TourneyCard tintagel = new TourneyCard("tintagel", "tourney", 1);
-		TourneyCard york = new TourneyCard("york", "tourney", 0);
+		TourneyCard camelot = new TourneyCard("camelot", "tourney", 3, getCardImage("camelot"));
+		TourneyCard orkney = new TourneyCard("orkney", "tourney", 2, getCardImage("orkney"));
+		TourneyCard tintagel = new TourneyCard("tintagel", "tourney", 1, getCardImage("tintagel"));
+		TourneyCard york = new TourneyCard("york", "tourney", 0, getCardImage("york"));
 		
 		for(int i = 0; i < 1; i ++) { tempCardArr[i] = holygrail; }
 		for(int i = 1; i < 2; i ++) { tempCardArr[i] = greenknighttest; }
