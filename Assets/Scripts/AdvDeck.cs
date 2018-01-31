@@ -8,7 +8,7 @@ public class AdvDeck : Deck  {
 	//Creates a stack of all adventure cards
 	public void initDeck(){
 
-		Card[] tempCardArr = new Card[117];
+		Card[] tempCardArr = new Card[125];
 		
 		Weapon excalibur = new Weapon("excalibur", 30);
 		Weapon lance = new Weapon("lance", 20);
@@ -46,6 +46,9 @@ public class AdvDeck : Deck  {
 		Ally lancelot = new Ally("lancelot", 15, 0, 0);
 		Ally percival = new Ally("percival", 5, 0, 0);
 		Ally tristan = new Ally("tristan", 10, 0, 0);
+
+		//Amour amour amour amour amour
+		Amour amour = new Amour ("amour", 10, 2);
 		
 		for(int i = 0; i < 2; i ++) { tempCardArr[i] = excalibur; }
 		for(int i = 2; i < 8; i ++) { tempCardArr[i] = lance; }
@@ -81,8 +84,12 @@ public class AdvDeck : Deck  {
 		for(int i = 114; i < 115; i ++) { tempCardArr[i] = lancelot; }
 		for(int i = 115; i < 116; i ++) { tempCardArr[i] = percival; }
 		for(int i = 116; i < 117; i ++) { tempCardArr[i] = tristan; }		
+
+		for (int i = 117; i < 125; i++) {
+			tempCardArr [i] = amour;
+		}
 		
-		for(int i = 0; i< 116; i++)
+		for(int i = 0; i< 125; i++)
 		{
 			deck.Push(tempCardArr[i]);
 		}
