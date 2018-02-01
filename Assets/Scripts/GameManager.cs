@@ -81,6 +81,30 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 	
+	public void getPlayers(){	
+		activePlayerSub ++;
+		activePlayerSub = activePlayerSub % (playerCount-1);
+		Debug.Log(activePlayerSub);
+		if(players[activePlayerSub] == activeQuest.getSponsor())
+		{
+			activePlayerSub ++;
+		}
+		
+		ui.askJoinOrDecline(players[activePlayerSub]);
+	}
+	public void gotPlayer(Player newPlayer){
+		activeQuest.addPlayer(newPlayer);
+		if(activePlayerSub == activePlayerMeta)
+		{
+			Debug.Log("Done getting players");
+			return;
+		}
+		else
+		{
+			getPlayers();
+		}
+	}
+	
 	public void startQuestSetup(){
 		activeQuest.setSponsor(players[activePlayerSub]);
 		ui.askForMultipleCardSelection(players[activePlayerSub], activeQuest.getStageNum());
@@ -90,11 +114,13 @@ public class GameManager : MonoBehaviour {
 		Debug.Log("endQuestSetup");
 		activeQuest.setStages(stages);
 		gameState = state.GOTINPUT;
-		for(int i = 0; i < stages.Length; i++)
-		{
+		for(int i = 0; i < stages.Length; i++){
 			activeQuest.getSponsor().discardCard(stages[i]);
 			Debug.Log(stages[i]);
 		}
+		
+		activePlayerSub = activePlayerMeta;
+		getPlayers();
 	}
 	
 	

@@ -14,7 +14,7 @@ public class UI : MonoBehaviour {
 	//public Card inputCard;
 	GameManager gm;
 	
-	enum state {STANDBY, ASKINGFORSTAGES, ASKINGFORSINGLECARD, ASKINGFORSPONSORS};
+	enum state {STANDBY, ASKINGFORSTAGES, ASKINGFORSINGLECARD, ASKINGFORSPONSORS, ASKINGFORPLAYERS};
 	
 	state gameState = state.STANDBY;
 	
@@ -123,6 +123,21 @@ public class UI : MonoBehaviour {
 		currButtons[1] = createButtonMessage(Screen.width - Screen.width/3, Screen.height/2, "No");
 	}
 	
+	public void askJoinOrDecline(Player player) {
+		clearScreen();
+		gameState = state.ASKINGFORPLAYERS;
+		activePlayer = player;
+		
+		changeHeaderMessage(activePlayer.getName() + "'s turn", headerCurrPlayer);	
+		changeHeaderMessage("Do you want to join this quest?", header);
+		
+		//Display yes or no buttons
+		GameObject [] currButtons = new GameObject[2];
+		currButtons[0] = createButtonMessage(Screen.width/3, Screen.height/2, "Join");
+		currButtons[1] = createButtonMessage(Screen.width - Screen.width/3, Screen.height/2, "Decline");
+	
+	}
+	
 	public void gotButtonClick(string input) {
 		//This method is called when a button is clicked
 		if(gameState == state.ASKINGFORSPONSORS) { //If the game is current looking for sponsors
@@ -133,7 +148,17 @@ public class UI : MonoBehaviour {
 			}
 			
 			else {
-				gm.getSponsor(); //Other wise have GameManager call getSonsor for the next player.
+				gm.getSponsor(); //Other wise have GameManager call getSponsor for the next player.
+			}
+		}
+		else if(gameState == state.ASKINGFORPLAYERS){
+			if(input.Equals("Join")) { //If the current player wants to be sponsor 
+				clearScreen();
+				gm.gotPlayer(activePlayer); //Tell GameManager to set the current player as sponsor
+			}
+			
+			else {
+				gm.getPlayers(); //Other wise have GameManager call getSponsor for the next player.
 			}
 		}
 	}
@@ -143,6 +168,9 @@ public class UI : MonoBehaviour {
 		for(int i = 0; i < currButtons.Length; i ++) {
 			Destroy(currButtons[i]);
 		}
+		Debug.Log(currButtons.Length);
+		GameObject [] temp = new GameObject[1];
+		currButtons = temp;
 	}
 	
 	private GameObject createButtonMessage(int x, int y, string newText = "Button") {

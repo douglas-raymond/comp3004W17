@@ -15,6 +15,7 @@ public class ActiveQuest{
 	{
 		quest = _quest;
 		stages = _quest.getStages();
+		playerNum = 0;
 
 	}
 	
@@ -26,10 +27,17 @@ public class ActiveQuest{
 		return;
 	}
 	
-	public void setPlayers(Player[] newPlayers){
-		players = newPlayers;
-		playerNum = players.Length;
-		return;
+	public void addPlayer(Player newPlayer){
+		int n = playerNum;
+
+		Player[] temp = new Player[playerNum+1];
+		for(int i = 0; i < playerNum; i++)
+		{
+			temp[i] = players[i];
+		}
+		temp[playerNum] = newPlayer;
+		
+		players = temp;
 	}
 	
 	public int getStageNum()
