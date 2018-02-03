@@ -5,36 +5,48 @@ using UnityEngine;
 public class ActiveQuest{
 
 	QuestCard quest;
-	Foe [] foes;
+	Card [] foes;
 	Player [] players;
 	int playerNum;
 	int stages;
-	int sponsor;
+	Player sponsor;
 	
-	public ActiveQuest(QuestCard _quest, int _sponsor)
+	public ActiveQuest(QuestCard _quest)
 	{
 		quest = _quest;
 		stages = _quest.getStages();
-		sponsor = _sponsor;
+		playerNum = 0;
+
 	}
 	
-	public void setStages(Foe[] newFoes)
-	{
+	public void setSponsor(Player player){
+		sponsor = player;
+	}
+	public void setStages(Card[] newFoes){
 		foes = newFoes;
 		return;
-		
 	}
-	public void setPlayers(Player[] newPlayers)
-	{
-		players = newPlayers;
-		playerNum = players.Length;
-		return;
+	
+	public void addPlayer(Player newPlayer){
+		int n = playerNum;
+
+		Player[] temp = new Player[playerNum+1];
+		for(int i = 0; i < playerNum; i++)
+		{
+			temp[i] = players[i];
+		}
+		temp[playerNum] = newPlayer;
+		
+		players = temp;
 	}
 	
 	public int getStageNum()
 	{
 		return stages;
 	}
-	
+	public Player getSponsor()
+	{
+		return sponsor;
+	}
 	
 }

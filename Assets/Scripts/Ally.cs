@@ -7,11 +7,13 @@ public class Ally : AdvCard {
 	protected int altBP;
 	protected int freeBids;
 	
-	public Ally(string _name, int _BP, int _altBP, int _freeBids)
+	public Ally(string _name, int _BP, int _altBP, int _freeBids, Sprite _sprite)
 	{
 		name = _name;
 		BP = _BP;
 		altBP = _altBP;
 		freeBids = _freeBids;
+		sprite = _sprite;
+		
 	}
 }
