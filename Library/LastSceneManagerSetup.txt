@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/COMP3004.unity
+- path: Assets/inGame.unity
   isLoaded: 1
   isActive: 1

@@ -56,6 +56,7 @@
      <Compile Include="Assets\Scripts\AdvDeck.cs" />
      <Compile Include="Assets\Scripts\Ally.cs" />
      <Compile Include="Assets\Scripts\Amour.cs" />
+     <Compile Include="Assets\Scripts\ButtonUI.cs" />
      <Compile Include="Assets\Scripts\Card.cs" />
      <Compile Include="Assets\Scripts\CardButtonUI.cs" />
      <Compile Include="Assets\Scripts\Deck.cs" />
@@ -63,6 +64,8 @@
      <Compile Include="Assets\Scripts\EventCard.cs" />
      <Compile Include="Assets\Scripts\Foe.cs" />
      <Compile Include="Assets\Scripts\GameManager.cs" />
+     <Compile Include="Assets\Scripts\HeaderUI.cs" />
+     <Compile Include="Assets\Scripts\MainMenuUI.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
      <Compile Include="Assets\Scripts\QuestCard.cs" />
      <Compile Include="Assets\Scripts\StoryCard.cs" />
