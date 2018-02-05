@@ -84,6 +84,22 @@ public abstract class Deck  {
 		if(cardTitle.Equals("lancelot")){ return Resources.Load<Sprite>("Cards/A Sir Lancelot");}
 		if(cardTitle.Equals("percival")){ return Resources.Load<Sprite>("Cards/A Sir Percival");}
 		if(cardTitle.Equals("tristan")){ return Resources.Load<Sprite>("Cards/A Sir Tristan");}
+		
+		if(cardTitle.Equals("holygrail")){ return Resources.Load<Sprite>("Cards/Q Search For The Holy Grail");}
+		if(cardTitle.Equals("enchantedforest")){ return Resources.Load<Sprite>("Cards/Q Journey Through The Enchanted Forest");}
+		if(cardTitle.Equals("arthursenemies")){ return Resources.Load<Sprite>("Cards/Q Vanquish King Arthur's Enemies");}
+		if(cardTitle.Equals("saxonraiders")){ return Resources.Load<Sprite>("Cards/Q Repel The Saxon Raiders");}
+		if(cardTitle.Equals("boarhunt")){ return Resources.Load<Sprite>("Cards/Q Boar Hunt");}
+		if(cardTitle.Equals("questingbeast")){ return Resources.Load<Sprite>("Cards/Q Search For The Questing Beast");}
+		if(cardTitle.Equals("queenshonor")){ return Resources.Load<Sprite>("Cards/Q Defend The Queen's Honor");}
+		if(cardTitle.Equals("slaydragon")){ return Resources.Load<Sprite>("Cards/Q Slay The Dragon");}
+		if(cardTitle.Equals("rescuemaiden")){ return Resources.Load<Sprite>("Cards/Q Rescue The Fair Maiden");}
+		if(cardTitle.Equals("greenknighttest")){ return Resources.Load<Sprite>("Cards/Q Test Of The Green Knight");}
+		if(cardTitle.Equals("camelot")){ return Resources.Load<Sprite>("Cards/To Camelot");}
+		if(cardTitle.Equals("orkney")){ return Resources.Load<Sprite>("Cards/To Orkney");}
+		if(cardTitle.Equals("tintagel")){ return Resources.Load<Sprite>("Cards/To Tintagel");}
+		if(cardTitle.Equals("york")){ return Resources.Load<Sprite>("Cards/To York");}
+		
 		else return null;
 	}
 }

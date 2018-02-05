@@ -13,4 +13,6 @@ public class Foe : AdvCard {
 		altBP = _altBP;
 		sprite = _sprite;
 	}
+	
+	
 }
