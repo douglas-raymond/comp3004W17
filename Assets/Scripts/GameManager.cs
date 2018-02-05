@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour {
 	ActiveQuest activeQuest;
 	// Use this for initialization
 	void Start () {
+		Debug.Log("fssfsdfs");
 		ui = new UI(this);
 		//Create all the players and add it to the players array
 		players = new Player[playerCount];
@@ -45,6 +46,7 @@ public class GameManager : MonoBehaviour {
 	}
 	private void drawQuestCard(){
 		Card drawnCard = storyDeck.drawCard();
+		
 		if(drawnCard.getType().Equals("quest")) {
 			activePlayerSub = activePlayerMeta;
 			activeQuest = new ActiveQuest((QuestCard)drawnCard);
