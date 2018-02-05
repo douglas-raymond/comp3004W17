@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -73,18 +73,19 @@ public class AdvDeck : Deck  {
 		for(int i = 103; i < 105; i ++) { tempCardArr[i] = totemptation; }
 		for(int i = 105; i < 107; i ++) { tempCardArr[i] = tomorganlefey; }
 		
-		for(int i = 108; i < 109; i ++) { tempCardArr[i] = galahad; }
-		for(int i = 109; i < 110; i ++) { tempCardArr[i] = arthur; }
-		for(int i = 110; i < 111; i ++) { tempCardArr[i] = pellinore; }
-		for(int i = 111; i < 112; i ++) { tempCardArr[i] = guinevere; }
-		for(int i = 112; i < 113; i ++) { tempCardArr[i] = iseult; }
-		for(int i = 113; i < 114; i ++) { tempCardArr[i] = gawain; }
-		for(int i = 114; i < 115; i ++) { tempCardArr[i] = lancelot; }
-		for(int i = 115; i < 116; i ++) { tempCardArr[i] = percival; }
-		for(int i = 116; i < 117; i ++) { tempCardArr[i] = tristan; }		
+		for(int i = 107; i < 108; i ++) { tempCardArr[i] = galahad; }
+		for(int i = 108; i < 109; i ++) { tempCardArr[i] = arthur; }
+		for(int i = 109; i < 110; i ++) { tempCardArr[i] = pellinore; }
+		for(int i = 110; i < 111; i ++) { tempCardArr[i] = guinevere; }
+		for(int i = 111; i < 112; i ++) { tempCardArr[i] = iseult; }
+		for(int i = 112; i < 113; i ++) { tempCardArr[i] = gawain; }
+		for(int i = 113; i < 114; i ++) { tempCardArr[i] = lancelot; }
+		for(int i = 114; i < 115; i ++) { tempCardArr[i] = percival; }
+		for(int i = 115; i < 116; i ++) { tempCardArr[i] = tristan; }		
 		
 		for(int i = 0; i< 116; i++)
 		{
+			
 			deck.Push(tempCardArr[i]);
 		}
 		
@@ -93,4 +94,3 @@ public class AdvDeck : Deck  {
 		return;
 	}
 }
-

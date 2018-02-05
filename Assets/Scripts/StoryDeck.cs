@@ -47,10 +47,7 @@ public class StoryDeck : Deck  {
 		
 		
 		
-		for(int i = 0; i< 16; i++)
-		{
-			deck.Push(tempCardArr[i]);
-		}
+		for(int i = 0; i< 16; i++) { deck.Push(tempCardArr[i]); }
 		
 		shuffle();
 		

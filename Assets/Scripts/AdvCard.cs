@@ -13,4 +13,6 @@ public class AdvCard : Card {
 		name = _name;
 		BP = _BP;
 	}
+	
+	public override int getBP(){return BP;}
 }
