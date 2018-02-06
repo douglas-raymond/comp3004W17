@@ -34,7 +34,7 @@ public class CardButtonUI : MonoBehaviour {
 	void OnMouseDown(){
 		if(currentlySelected == false)
 		{
-			ui.getCardSelection(card);
+			ui.gotCardSelection(card);
 			currentlySelected = true;
 		}
 	}
