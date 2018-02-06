@@ -50,7 +50,7 @@ public class UI : MonoBehaviour {
 		
 		instructionHeader  = createHeaderMessage(panelPosX, panelPosY + panelHeight/4, "Current action required");	
 		headerCurrPlayer  = createHeaderMessage(panelPosX, panelPosY + panelHeight/5, "Current player's turn");	
-		messageHeader  = createHeaderMessage(panelPosX, panelPosY - panelHeight/2, "Current message");	
+		messageHeader  = createHeaderMessage(panelPosX, panelPosY - panelHeight/2, " ");	
 	}
 	
 	void Start () { }
@@ -118,10 +118,19 @@ public class UI : MonoBehaviour {
 				gm.gotPlayer(null); //Other wise have GameManager call getSponsor for the next player.
 			}
 		}
-		else if(gameState == state.ASKINGFORCARDSINQUEST)
-		{
+		else if(gameState == state.ASKINGFORCARDSINQUEST){
+			if(input.Equals("FIGHT")) {
+				gm.questAttack(cleanUpArray(multipleCardInput));
+			}
+			else if(input.Equals("Give up")) {
+				gm.forfeitQuest();
+			}
+		}
+		else if(gameState == state.ASKINGFORSTAGES) {
 			clearButtons();
-			gm.questAttack(cleanUpArray(multipleCardInput));
+			clearDeckOnScreen();
+			gm.endQuest("Quest forfeited");
+			displayAlert("Quest forfeited");
 		}
 	}
 
@@ -152,16 +161,28 @@ public class UI : MonoBehaviour {
 	}
 	
 	public void askForStageSelection(Player player, int n){
+		Debug.Log("askForStageSelection");
 		activePlayer = player;
 		Card [] foesOnly = getOnlyTypeFromDeck(player.getHand(), true, false, false);
 		cardsToShow = showHand(foesOnly); //Display the cards
 		gameState = state.ASKINGFORSTAGES;
 		multipleCardInput = new Card[n]; //Get multipleCardInput ready to hold the new card choices
+		Debug.Log("created new multipleCardInput: " + multipleCardInput.Length );
 		changeHeaderMessage("Select card 1 out of " + multipleCardInput.Length, instructionHeader);
+		createButtonMessage(panelPosX - panelWidth/5, panelPosY + panelHeight/5, "Forfeit");
 		return;
 	}
-	
+	public void drawingQuestCard()
+	{
+		clearDeckOnScreen();
+		clearButtons();
+		changeHeaderMessage("Drawing new card", instructionHeader);
+		changeHeaderMessage(" ", messageHeader);
+		changeHeaderMessage(" ", headerCurrPlayer);
+		
+	}
 	private void gotStageSelection(Card selected){
+		Debug.Log("gotStageSelection: " + multipleCardInput.Length );
 		for(int i = 0; i < multipleCardInput.Length; i++) {  //Find the next empty spot in multipleCardInput
 			if(multipleCardInput[i] == null) { 
 				multipleCardInput[i] = selected; //Add the new selected card to multipleCardInput
@@ -171,7 +192,7 @@ public class UI : MonoBehaviour {
 					gameState = state.STANDBY;
 					clearDeckOnScreen();
 					gm.endQuestSetup(multipleCardInput); //Send cards back to GameManager
-					multipleCardInput = null;
+					
 					return;
 				}
 				changeHeaderMessage("Select card " + (i+2) + " out of " + multipleCardInput.Length, instructionHeader);
@@ -268,24 +289,35 @@ public class UI : MonoBehaviour {
 		cardCenter.GetComponent<CardButtonUI>().init(cardToShow, this, new Vector2(panelPosX - panelWidth/20, panelPosY + panelHeight/4));
 	}
 
-	public void showStage(Card currStage){
+	public void showStage(ActiveQuest activeQuest){
 		clearDeckOnScreen();
 		clearButtons();
+		if(activeQuest.getQuest() == null)
+		{
+			gameState = state.STANDBY;
+			clearDeckOnScreen();
+		}
+			
 		if(playerBP == null) { playerBP = createHeaderMessage(panelWidth/4, panelHeight/2, " ");}
 		if(enemyBP == null) { enemyBP = createHeaderMessage(panelWidth - panelWidth/4, panelHeight/2, " ");}
 		
-		
-		showCard(currStage);
+		showCard(activeQuest.getCurrentStage());
+		activePlayer = activeQuest.getCurrentPlayer();
 		changeHeaderMessage("Player BP: " + activePlayer.getBP(), playerBP);
-		changeHeaderMessage("Enemy BP: " + currStage.getBP(), enemyBP);
+		changeHeaderMessage("Enemy BP: " + activeQuest.getCurrentStage().getBP(), enemyBP);
 		changeHeaderMessage(activePlayer.getName() + "'s turn", headerCurrPlayer);	
 		changeHeaderMessage("Select the cards you wish to play to defeat this foe.", instructionHeader);	
 		createButtonMessage(panelPosX, panelPosY - panelHeight/10, "FIGHT");
+		createButtonMessage(panelPosX - panelWidth/5, panelPosY + panelHeight/5, "Give up");
 		gameState = state.ASKINGFORCARDSINQUEST;
 
 	}
 	
 	//Other utilities
+	public void displayAlert(string input)
+	{
+		changeHeaderMessage(input, messageHeader);
+	}
 	private Card[] cleanUpArray(Card [] oldArr){
 		int newN = 0;
 		for(int i = 0; i< oldArr.Length; i++)

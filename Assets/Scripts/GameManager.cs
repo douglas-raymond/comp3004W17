@@ -24,7 +24,6 @@ public class GameManager : MonoBehaviour {
 	ActiveQuest activeQuest;
 	// Use this for initialization
 	void Start () {
-		Debug.Log("fssfsdfs");
 		ui = new UI(this);
 		//Create all the players and add it to the players array
 		players = new Player[playerCount];
@@ -74,24 +73,44 @@ public class GameManager : MonoBehaviour {
 	}
 	public void startQuestSetup(){
 		activeQuest.setSponsor(players[activePlayerSub]);
-		ui.askForStageSelection(players[activePlayerSub], activeQuest.getStageNum());
+		ui.askForStageSelection(activeQuest.getSponsor(), activeQuest.getStageNum());
 	}	
 	public void endQuestSetup(Card[] stages){
 		Debug.Log("endQuestSetup");
 		activeQuest.setStages(stages);
 		gameState = state.GOTINPUT;
-		for(int i = 0; i < stages.Length; i++){
-			activeQuest.getSponsor().discardCard(new Card[] {stages[i]});
+		bool validQuest = true;
+		for(int i = 0; i < stages.Length; i++)
+		{
+			int prevBP;
+			if(i == 0) { prevBP = -1; }
+			else {prevBP = stages[i-1].getBP();}
+			if(stages[i].getBP() < prevBP)
+			{
+				validQuest = false;
+			}	
 		}
 		
-		activePlayerSub = activePlayerMeta;
-		getPlayers();
+		if(validQuest)
+		{
+			Debug.Log("Valid quest");
+			for(int i = 0; i < stages.Length; i++){
+				activeQuest.getSponsor().discardCard(new Card[] {stages[i]});
+			}
+			activePlayerSub = activePlayerMeta;
+			getPlayers();
+		}
+		else
+		{
+			Debug.Log("Invalid quest");
+			ui.displayAlert("Invalid selection. Stage's BP must be in increasing order.");
+			ui.askForStageSelection(activeQuest.getSponsor(), activeQuest.getStageNum());
+		}
 	}
 	public void getPlayers(){	
 		activePlayerSub ++;
 		activePlayerSub = activePlayerSub % (playerCount-1);
-		if(players[activePlayerSub] == activeQuest.getSponsor())
-		{
+		if(players[activePlayerSub] == activeQuest.getSponsor()) {
 			activePlayerSub ++;
 			activePlayerSub = activePlayerSub % (playerCount-1);
 		}
@@ -114,9 +133,6 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 	/*Gets a selected card and does something with it
-	public void gotSingleCardSelection(Card card){
-		gameState = state.GOTINPUT;
-	}
 	*/
 	//Pass in a player count, it will give each player a hand of 12 adventure cards
 	private void dealHands(int playerCount){
@@ -132,22 +148,28 @@ public class GameManager : MonoBehaviour {
 	public void startStage() {
 		if(activeQuest.getQuest() == null)
 		{
-			Debug.Log("Quest over");
-			activeQuest = null;
-			drawQuestCard();
-			return;
+			endQuest("Quest over");
 		}
-		if(activeQuest.getPlayerNum() == 0)
+		else if(activeQuest.getPlayerNum() == 0)
 		{
-			activeQuest = null;
-			drawQuestCard();
+			endQuest("All players dead");
 		}
-		ui.showStage(activeQuest.getCurrentStage());
-		ui.askForBattleCardSelection(activeQuest.getCurrentPlayer());
+		else{
+			ui.showStage(activeQuest);
+			ui.askForBattleCardSelection(activeQuest.getCurrentPlayer());
+		}
 		return;
 	}
+	public void endQuest(string text = "Quest over")
+	{
+			Debug.Log(text);
+			activeQuest = null;
+			ui.endQuest();
+			ui.drawingQuestCard();
+			drawQuestCard();
+	}
 	public void questAttack(Card [] selection) {
-		Debug.Log("Quest Attack");
+		//Debug.Log("Quest Attack");
 		int extraBP = 0;
 		if(selection.Length > 0)
 		{
@@ -155,6 +177,7 @@ public class GameManager : MonoBehaviour {
 			{
 				extraBP = extraBP + selection[i].getBP();
 			}
+
 		}
 		if(activeQuest.getCurrentStage().getBP() <= activeQuest.getCurrentPlayer().getBP() + extraBP)
 		{
@@ -165,7 +188,16 @@ public class GameManager : MonoBehaviour {
 			activeQuest.nextPlayer();
 			startStage();			
 		}
-		
+		else
+		{
+			ui.displayAlert("Too weak to defeat foe!");
+			ui.askForBattleCardSelection(activeQuest.getCurrentPlayer());
+		}
 	}
-
+	
+	public void forfeitQuest() {
+		//Debug.Log("Quest Attack");
+		activeQuest.deletePlayer(activeQuest.getCurrentPlayer());
+		startStage();
+	}
 }
