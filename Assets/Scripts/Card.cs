@@ -8,6 +8,7 @@ public abstract class Card {
 	protected string type;
 	protected Card(){	}
 	protected Sprite sprite;
+	Logger log = new Logger("Card", "c:/comp3004");
 	
 	public Card(string _name, Sprite _sprite)
 	{

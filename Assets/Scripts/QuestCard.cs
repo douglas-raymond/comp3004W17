@@ -6,6 +6,7 @@ public class QuestCard : StoryCard {
 
 	protected int stages;
 	protected Foe[] special;
+	Logger log = new Logger("QuestCard", "c:/comp3004");
 	
 	public QuestCard(string _name, string _type, int _stages, Foe[] _special, Sprite _sprite)
 	{
@@ -14,6 +15,7 @@ public class QuestCard : StoryCard {
 		stages = _stages;
 		special = _special;
 		sprite = _sprite;
+		log.log ("creating card " + name);
 	}
 	
 	public int getStages(){

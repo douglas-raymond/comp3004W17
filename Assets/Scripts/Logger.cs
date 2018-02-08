@@ -29,7 +29,7 @@ public class Logger{
 	
 	public void log(string msg)
 	{
-		StreamWriter file = new StreamWriter(path);
+		StreamWriter file = new StreamWriter(path, true);
 		file.WriteLine("["+source+"]: "+msg);
 		file.Close ();
 	}
