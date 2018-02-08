@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using GameState;
 public class GameManager : MonoBehaviour {
-	
+	//Initialize logging functionality
+	Logger log = new Logger("GameManager", "c:/comp3004");
 	
 	//Initialize the two decks
 	AdvDeck advDeck = new AdvDeck();
 	StoryDeck storyDeck = new StoryDeck();
 	UI ui;
+
 	
 	int playerCount = 3;
 	
@@ -24,23 +26,29 @@ public class GameManager : MonoBehaviour {
 	ActiveQuest activeQuest;
 	// Use this for initialization
 	void Start () {
+		log.Init ();
 		ui = new UI(this);
+		log.log ("created UI");
 		//Create all the players and add it to the players array
 		players = new Player[playerCount];
+		log.log ("created player array");
 		
 		for(int i = 0; i < playerCount; i++){
 			players[i] = new Player(new Card[12], 0, 0, "Player " + (i+1));
 		}
+		log.log ("dealt cards");
 			
 		//Init the decks
 		advDeck.initDeck();
 		storyDeck.initDeck();
+		log.log ("decks initialized");
 
 		gameStart();
 	}
 	private void gameStart(){
 		activePlayerMeta++;
 		dealHands(playerCount);
+		log.log ("Dealing hands, drawing first quest");
 		drawQuestCard();
 	}
 	private void drawQuestCard(){
@@ -61,11 +69,13 @@ public class GameManager : MonoBehaviour {
 		activePlayerSub = (activePlayerSub+1) % playerCount;
 		if(activePlayerSub != activePlayerMeta)
 		{
+			log.log ("Getting sponsor");
 			Debug.Log("Getting sponsor...");
 			ui.askYesOrNo(players[activePlayerSub], "Do you want to sponsor this quest?", GameState.state.ASKINGFORSPONSORS);
 		}
 		else
 		{
+			log.log ("Sponsor not found");
 			Debug.Log("Sponsor not found.");
 			activeQuest = null;
 			drawQuestCard();

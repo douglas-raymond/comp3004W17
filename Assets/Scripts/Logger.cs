@@ -1,0 +1,36 @@
+using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.IO;
+using UnityEngine;
+
+public class Logger{
+
+	string path;
+	string source;
+
+	public Logger(string _source, string _path)
+	{
+		source = _source;
+		path = _path+"/log.txt";
+	}
+
+	public void Init(){
+		try
+		{
+			FileStream fs = new FileStream(path, FileMode.Create);
+			fs.Close();
+		}
+		catch(Exception ex){
+			Console.WriteLine(ex.ToString());
+		}
+
+	}
+	
+	public void log(string msg)
+	{
+		StreamWriter file = new StreamWriter(path);
+		file.WriteLine("["+source+"]: "+msg);
+		file.Close ();
+	}
+}
