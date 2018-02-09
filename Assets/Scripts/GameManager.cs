@@ -7,8 +7,10 @@ public class GameManager : MonoBehaviour {
 	Logger log = new Logger("GameManager", "c:/comp3004");
 	
 	//Initialize the two decks
-	AdvDeck advDeck = new AdvDeck();
-	StoryDeck storyDeck = new StoryDeck();
+	DiscardDeck advDiscard = new DiscardDeck();
+	DiscardDeck storyDiscard = new DiscardDeck();
+	AdvDeck advDeck;
+	StoryDeck storyDeck;
 	UI ui;
 
 	
@@ -26,6 +28,8 @@ public class GameManager : MonoBehaviour {
 	ActiveQuest activeQuest;
 	// Use this for initialization
 	void Start () {
+		advDeck = new AdvDeck(advDiscard);
+		storyDeck = new StoryDeck(storyDiscard);
 		log.Init ();
 		ui = new UI(this);
 		log.log ("created UI");
@@ -53,14 +57,28 @@ public class GameManager : MonoBehaviour {
 	}
 	private void drawQuestCard(){
 		Card drawnCard = storyDeck.drawCard();
-		
-		if(drawnCard.getType().Equals("quest")) {
+		evaluateStory (drawnCard);
+	}
+
+	//Track splitter that evaluates based on card type.
+	public void evaluateStory(Card storyCard){
+		switch (storyCard.getType ()) {
+		case "quest":
 			activePlayerSub = activePlayerMeta;
-			activeQuest = new ActiveQuest((QuestCard)drawnCard);
+			activeQuest = new ActiveQuest((QuestCard)storyCard);
 			getSponsor();
-		}
-		else {
-			drawQuestCard();
+			break;
+			/*block these out until we can get the tourneys and events sorted
+		case "tourney":
+			createTourney (storyCard);
+			break;
+		case "event":
+			//Event handling. Pretty much done because events are handled in the cards themselves.
+			storyCard.runEvent (players, activePlayer);
+			break; */
+		default:
+			drawQuestCard ();
+			break;
 		}
 	}
 	public void getSponsor(){	
