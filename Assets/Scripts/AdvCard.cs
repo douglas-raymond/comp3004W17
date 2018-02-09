@@ -6,7 +6,7 @@ public class AdvCard : Card {
 
 	// Use this for initialization
 	protected int BP;
-	Logger log = new Logger("AdvCard", "c:/comp3004");
+	Logger log = new Logger("AdvCard");
 
 	protected AdvCard() {}
 	public AdvCard(string _name, int _BP)

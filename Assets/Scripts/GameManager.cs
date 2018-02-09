@@ -4,7 +4,7 @@ using UnityEngine;
 using GameState;
 public class GameManager : MonoBehaviour {
 	//Initialize logging functionality
-	Logger log = new Logger("GameManager", "c:/comp3004");
+	Logger log = new Logger("GameManager");
 	
 	//Initialize the two decks
 	DiscardDeck advDiscard = new DiscardDeck();

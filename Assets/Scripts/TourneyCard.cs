@@ -5,7 +5,7 @@ using UnityEngine;
 public class TourneyCard : StoryCard {
 
 	protected int shields;
-	Logger log = new Logger("TourneyCard", "c:/comp3004");
+	Logger log = new Logger("TourneyCard");
 	
 	public TourneyCard(string _name, string _type, int _shields, Sprite _sprite)
 	{

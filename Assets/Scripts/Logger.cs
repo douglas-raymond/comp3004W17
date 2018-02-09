@@ -9,10 +9,10 @@ public class Logger{
 	string path;
 	string source;
 
-	public Logger(string _source, string _path)
+	public Logger(string _source)
 	{
 		source = _source;
-		path = _path+"/log.txt";
+		path = "./log.txt";
 	}
 
 	public void Init(){

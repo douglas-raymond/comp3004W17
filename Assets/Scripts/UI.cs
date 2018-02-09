@@ -15,7 +15,7 @@ public class UI : MonoBehaviour {
 	GameObject[] cardsToShow;
 	//public Card inputCard;
 	GameManager gm;
-	Logger log = new Logger("UI", "c:/comp3004");
+	Logger log = new Logger("UI");
 	
 
 	state gameState = state.STANDBY;
@@ -150,7 +150,7 @@ public class UI : MonoBehaviour {
 	public void askForBattleCardSelection(Player player){
 		
 		activePlayer = player;
-		cardsToShow = showHand(getOnlyTypeFromDeck(player.getHand(), false, true, true)); //Display the cards
+		cardsToShow = showHand(getOnlyTypeFromDeck(player.getHand(), false, true, true, true)); //Display the cards
 		gameState = state.ASKINGFORCARDSINQUEST;
 		multipleCardInput = new Card[player.getHand().Length]; //Get multipleCardInput ready to hold the new card choices
 		changeHeaderMessage("Select cards to play, then press FIGHT", instructionHeader);
@@ -176,7 +176,7 @@ public class UI : MonoBehaviour {
 	public void askForStageSelection(Player player, int n){
 		Debug.Log("askForStageSelection");
 		activePlayer = player;
-		Card [] foesOnly = getOnlyTypeFromDeck(player.getHand(), true, false, false);
+		Card [] foesOnly = getOnlyTypeFromDeck(player.getHand(), true, false, false, false);
 		cardsToShow = showHand(foesOnly); //Display the cards
 		gameState = state.ASKINGFORSTAGES;
 		multipleCardInput = new Card[n]; //Get multipleCardInput ready to hold the new card choices
@@ -350,24 +350,22 @@ public class UI : MonoBehaviour {
 		
 	}
 	
-	private Card[] getOnlyTypeFromDeck(Card[] deck, bool getFoes, bool getWeap, bool getAlly){
+	private Card[] getOnlyTypeFromDeck(Card[] deck, bool getFoes, bool getWeap, bool getAlly, bool getAmour){
 		Card[] tempHand = new Card[deck.Length];
 		int counter = 0;
 		for(int i = 0; i < deck.Length; i++ )
 		{
-			if(Object.ReferenceEquals(deck[i].GetType(), typeof(Foe)) && getFoes)
-			{
-				tempHand[counter] = deck[i];
+			if (Object.ReferenceEquals (deck [i].GetType (), typeof(Foe)) && getFoes) {
+				tempHand [counter] = deck [i];
 				counter++;
-			}
-			else if(Object.ReferenceEquals(deck[i].GetType(), typeof(Weapon)) && getWeap)
-			{
-				tempHand[counter] = deck[i];
+			} else if (Object.ReferenceEquals (deck [i].GetType (), typeof(Weapon)) && getWeap) {
+				tempHand [counter] = deck [i];
 				counter++;
-			}
-			else if(Object.ReferenceEquals(deck[i].GetType(), typeof(Ally)) && getAlly)
-			{
-				tempHand[counter] = deck[i];
+			} else if (Object.ReferenceEquals (deck [i].GetType (), typeof(Ally)) && getAlly) {
+				tempHand [counter] = deck [i];
+				counter++;
+			} else if (Object.ReferenceEquals (deck [i].GetType (), typeof(Amour)) && getAmour) {
+				tempHand [counter] = deck [i];
 				counter++;
 			}
 		}
