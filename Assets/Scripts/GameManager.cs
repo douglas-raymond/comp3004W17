@@ -73,40 +73,91 @@ public class GameManager : MonoBehaviour {
 	}
 	public void startQuestSetup(){
 		activeQuest.setSponsor(players[activePlayerSub]);
-		ui.askForStageSelection(activeQuest.getSponsor(), activeQuest.getStageNum());
+		//ui.askForStageSelection(activeQuest.getSponsor(), activeQuest.getStageNum());
+		ui.askForCards(
+			activeQuest.getSponsor(), 
+			activeQuest.getStageNum(), 
+			GameState.state.ASKINGFORSTAGES, 
+			"Select up to " + activeQuest.getStageNum() + " stages", 
+			"null",
+			"Forfeit", 
+			true, 
+			false, 
+			false
+			);
 	}	
 	public void endQuestSetup(Card[] stages){
 		Debug.Log("endQuestSetup");
 		activeQuest.setStages(stages);
 		gameState = state.GOTINPUT;
 		bool validQuest = true;
-		for(int i = 0; i < stages.Length; i++)
-		{
+		for(int i = 0; i < stages.Length; i++) {
 			int prevBP;
 			if(i == 0) { prevBP = -1; }
 			else {prevBP = stages[i-1].getBP();}
-			if(stages[i].getBP() < prevBP)
-			{
+			if(stages[i].getBP() < prevBP) {
 				validQuest = false;
 			}	
 		}
 		
-		if(validQuest)
-		{
+		if(validQuest) {
 			Debug.Log("Valid quest");
-			for(int i = 0; i < stages.Length; i++){
-				activeQuest.getSponsor().discardCard(new Card[] {stages[i]});
-			}
+			activeQuest.getSponsor().discardCard(stages);
 			activePlayerSub = activePlayerMeta;
-			getPlayers();
+			startStageWeaponSetup();
 		}
-		else
-		{
+		else {
 			Debug.Log("Invalid quest");
 			ui.displayAlert("Invalid selection. Stage's BP must be in increasing order.");
-			ui.askForStageSelection(activeQuest.getSponsor(), activeQuest.getStageNum());
+			ui.askForCards(
+				activeQuest.getSponsor(), 
+				activeQuest.getStageNum(), 
+				GameState.state.ASKINGFORSTAGES, 
+				"Select up to " + activeQuest.getStageNum() + " stages", 
+				"Forfeit", 
+				"null",
+				true, 
+				false, 
+				false
+				);
 		}
 	}
+	
+	public void startStageWeaponSetup(){
+		ui.askForCards(
+			activeQuest.getSponsor(), 
+			activeQuest.getSponsor().getHand().Length, 
+			GameState.state.ASKINGFORSTAGEWEAPONS, 
+			"Select weapons to enhance this stage", 
+			"Done", 
+			"null",
+			false, 
+			true, 
+			false
+			);
+		ui.showCard(activeQuest.getCurrentStage());
+	}	
+	public void endStageWeaponSetup(Card[] stageWeapons){
+		if(stageWeapons == null)
+		{
+			Debug.Log("no stageWeapons selected");
+			activeQuest.setStageWeapons(new Card[] {null});
+		}
+		else{
+			Debug.Log(stageWeapons.Length + " stageWeapons selected");
+			activeQuest.setStageWeapons(stageWeapons);
+		}
+		if(activeQuest.getCurrentStageNum() == activeQuest.getStageNum()-1) {
+			Debug.Log("stage weapon selection over");
+			activeQuest.setStage(0);
+			getPlayers();
+		}
+		else {
+			activeQuest.setStage(activeQuest.getCurrentStageNum()+1);
+			activeQuest.getSponsor().discardCard(stageWeapons);
+			startStageWeaponSetup();
+		}
+	}	
 	public void getPlayers(){	
 		activePlayerSub ++;
 		activePlayerSub = activePlayerSub % (playerCount-1);
@@ -146,22 +197,28 @@ public class GameManager : MonoBehaviour {
 		return;
 	}
 	public void startStage() {
-		if(activeQuest.getQuest() == null)
-		{
+		if(activeQuest.getQuest() == null) {
 			endQuest("Quest over");
 		}
-		else if(activeQuest.getPlayerNum() == 0)
-		{
+		else if(activeQuest.getPlayerNum() == 0) {
 			endQuest("All players dead");
 		}
 		else{
 			ui.showStage(activeQuest);
-			ui.askForBattleCardSelection(activeQuest.getCurrentPlayer());
+			ui.askForCards(
+							activeQuest.getCurrentPlayer(), 
+							activeQuest.getCurrentPlayer().getHand().Length, 
+							GameState.state.ASKINGFORCARDSINQUEST, 
+							"Select cards to play, then press FIGHT", 
+							"FIGHT",
+							"Give up", 
+							false, 
+							true, 
+							true);
 		}
 		return;
 	}
-	public void endQuest(string text = "Quest over")
-	{
+	public void endQuest(string text = "Quest over") {
 			Debug.Log(text);
 			activeQuest = null;
 			ui.endQuest();
@@ -171,18 +228,15 @@ public class GameManager : MonoBehaviour {
 	public void questAttack(Card [] selection) {
 		//Debug.Log("Quest Attack");
 		int extraBP = 0;
-		if(selection.Length > 0)
-		{
-			for(int i = 0; i < selection.Length; i++)
-			{
-				extraBP = extraBP + selection[i].getBP();
+		if(selection != null) {
+			if(selection.Length > 0) {
+				for(int i = 0; i < selection.Length; i++) {
+					extraBP = extraBP + selection[i].getBP();
+				}
 			}
-
 		}
-		if(activeQuest.getCurrentStage().getBP() <= activeQuest.getCurrentPlayer().getBP() + extraBP)
-		{
-			if(selection.Length > 0)
-			{
+		if(activeQuest.getCurrentStageBP() <= activeQuest.getCurrentPlayer().getBP() + extraBP) {
+			if(selection.Length > 0) {
 				activeQuest.getCurrentPlayer().discardCard(selection);
 			}
 			activeQuest.nextPlayer();
@@ -191,7 +245,17 @@ public class GameManager : MonoBehaviour {
 		else
 		{
 			ui.displayAlert("Too weak to defeat foe!");
-			ui.askForBattleCardSelection(activeQuest.getCurrentPlayer());
+			ui.askForCards(
+							activeQuest.getCurrentPlayer(), 
+							activeQuest.getCurrentPlayer().getHand().Length, 
+							GameState.state.ASKINGFORCARDSINQUEST, 
+							"Select cards to play, then press FIGHT", 
+							"FIGHT",
+							"Give up", 
+							false, 
+							true, 
+							true
+							);
 		}
 	}
 	

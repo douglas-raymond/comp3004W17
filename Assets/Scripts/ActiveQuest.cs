@@ -5,10 +5,11 @@ using UnityEngine;
 public class ActiveQuest{
 
 	QuestCard quest;
-	Card [] foes;
+	Card [] stages;
+	Card [][] stageWeapons;
 	Player [] players;
 	int playerNum;
-	int stages;
+	int stageNum;
 	Player sponsor;
 	int currentStage;
 	Player currentPlayer;
@@ -16,7 +17,7 @@ public class ActiveQuest{
 	public ActiveQuest(QuestCard _quest)
 	{
 		quest = _quest;
-		stages = _quest.getStages();
+		stageNum = _quest.getStages();
 		playerNum = 0;
 		currentStage = 0;
 	}
@@ -85,7 +86,7 @@ public class ActiveQuest{
 		if(playerNum == 0) { return;}
 		for(int i = 0; i< players.Length; i ++)
 		{
-			players[i].addShields(stages);
+			players[i].addShields(stageNum);
 		}
 		quest = null;
 	}
@@ -100,7 +101,7 @@ public class ActiveQuest{
 
 		if(currentPlayerIndex == players.Length-1){
 			currentPlayer = players[0];
-			if(currentStage + 1 == stages){
+			if(currentStage + 1 == stageNum){
 				quest = null;
 				finishQuest();
 				return;
@@ -131,15 +132,24 @@ public class ActiveQuest{
 	public void setSponsor(Player player){
 		sponsor = player;
 	}
-	public void setStages(Card[] newFoes){
-		foes = newFoes;
+	public void setStages(Card[] newStages){
+		stages = newStages;
+		stageWeapons = new Card[stages.Length][];
 		return;
+	}
+	public void setStageWeapons(Card[] newStageWeapons){
+		
+		stageWeapons[currentStage] = newStageWeapons;
+		return;
+	}
+	public void setStage(int i) {
+		currentStage = i;
 	}
 	public Player getCurrentPlayer() {
 		return currentPlayer;
 	}
 	public int getStageNum() {
-		return stages;
+		return stageNum;
 	}
 	public int getPlayerNum() {
 		return playerNum;
@@ -147,10 +157,33 @@ public class ActiveQuest{
 	public Player getSponsor() {
 		return sponsor;
 	}
+	public Card getStage(int i) {
+		return stages[i];
+	}
 	public Card getCurrentStage() {
-		return foes[currentStage];
+		return stages[currentStage];
+	}
+	public int getCurrentStageNum(){
+		return currentStage;
 	}
 	public Card getQuest() {
+		
 		return quest;
+	}
+	public Card[] getCurrentStageWeapons() {
+		return stageWeapons[currentStage];
+	}
+	public int getCurrentStageBP()
+	{
+		int baseBP = stages[currentStage].getBP();
+		int extraBP = 0;
+		if(stageWeapons[currentStage][0] != null)
+		{
+			for(int i = 0; i< stageWeapons[currentStage].Length; i++)
+			{
+				extraBP = extraBP + stageWeapons[currentStage][i].getBP();
+			}
+		}
+		return (baseBP + extraBP);
 	}
 }
