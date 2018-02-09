@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using GameState;
 public class GameManager : MonoBehaviour {
-	
+	//Initialize logging functionality
+	Logger log = new Logger("GameManager");
 	
 	//Initialize the two decks
-	AdvDeck advDeck = new AdvDeck();
-	StoryDeck storyDeck = new StoryDeck();
+	DiscardDeck advDiscard = new DiscardDeck();
+	DiscardDeck storyDiscard = new DiscardDeck();
+	AdvDeck advDeck;
+	StoryDeck storyDeck;
 	UI ui;
+
 	
 	int playerCount = 3;
 	
@@ -24,35 +28,57 @@ public class GameManager : MonoBehaviour {
 	ActiveQuest activeQuest;
 	// Use this for initialization
 	void Start () {
+		advDeck = new AdvDeck(advDiscard);
+		storyDeck = new StoryDeck(storyDiscard);
+		log.Init ();
 		ui = new UI(this);
+		log.log ("created UI");
 		//Create all the players and add it to the players array
 		players = new Player[playerCount];
+		log.log ("created player array");
 		
 		for(int i = 0; i < playerCount; i++){
 			players[i] = new Player(new Card[12], 0, 0, "Player " + (i+1));
 		}
+		log.log ("dealt cards");
 			
 		//Init the decks
 		advDeck.initDeck();
 		storyDeck.initDeck();
+		log.log ("decks initialized");
 
 		gameStart();
 	}
 	private void gameStart(){
 		activePlayerMeta++;
 		dealHands(playerCount);
+		log.log ("Dealing hands, drawing first quest");
 		drawQuestCard();
 	}
 	private void drawQuestCard(){
 		Card drawnCard = storyDeck.drawCard();
-		
-		if(drawnCard.getType().Equals("quest")) {
+		evaluateStory (drawnCard);
+	}
+
+	//Track splitter that evaluates based on card type.
+	public void evaluateStory(Card storyCard){
+		switch (storyCard.getType ()) {
+		case "quest":
 			activePlayerSub = activePlayerMeta;
-			activeQuest = new ActiveQuest((QuestCard)drawnCard);
+			activeQuest = new ActiveQuest((QuestCard)storyCard);
 			getSponsor();
-		}
-		else {
-			drawQuestCard();
+			break;
+			/*block these out until we can get the tourneys and events sorted
+		case "tourney":
+			createTourney (storyCard);
+			break;
+		case "event":
+			//Event handling. Pretty much done because events are handled in the cards themselves.
+			storyCard.runEvent (players, activePlayer);
+			break; */
+		default:
+			drawQuestCard ();
+			break;
 		}
 	}
 	public void getSponsor(){	
@@ -61,11 +87,13 @@ public class GameManager : MonoBehaviour {
 		activePlayerSub = (activePlayerSub+1) % playerCount;
 		if(activePlayerSub != activePlayerMeta)
 		{
+			log.log ("Getting sponsor");
 			Debug.Log("Getting sponsor...");
 			ui.askYesOrNo(players[activePlayerSub], "Do you want to sponsor this quest?", GameState.state.ASKINGFORSPONSORS);
 		}
 		else
 		{
+			log.log ("Sponsor not found");
 			Debug.Log("Sponsor not found.");
 			activeQuest = null;
 			drawQuestCard();

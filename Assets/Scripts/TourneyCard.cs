@@ -5,6 +5,7 @@ using UnityEngine;
 public class TourneyCard : StoryCard {
 
 	protected int shields;
+	Logger log = new Logger("TourneyCard");
 	
 	public TourneyCard(string _name, string _type, int _shields, Sprite _sprite)
 	{
@@ -12,5 +13,6 @@ public class TourneyCard : StoryCard {
 		type = _type;
 		shields = _shields;
 		sprite = _sprite;
+		log.log ("creating card " + name);
 	}
 }

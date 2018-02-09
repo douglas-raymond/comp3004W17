@@ -15,6 +15,7 @@ public class UI : MonoBehaviour {
 	GameObject[] cardsToShow;
 	//public Card inputCard;
 	GameManager gm;
+	Logger log = new Logger("UI");
 	
 
 	state gameState = state.STANDBY;
@@ -62,6 +63,7 @@ public class UI : MonoBehaviour {
 	//Prints out a given hand
 	public GameObject[] showHand(Card[] hand){
 		int n = hand.Length;
+		log.log ("getting cards to show");
 		if(cardsToShow != null)
 		{
 			for(int i = 0; i < cardsToShow.Length; i ++) {
@@ -73,6 +75,7 @@ public class UI : MonoBehaviour {
 		float buffer = panelWidth/(n*2);
 		float cardWidth = panelWidth/15;
 		float offsetX = (panelWidth - n*buffer)/6;
+		log.log ("setting up area");
 		for(int i = 0; i< n; i++)
 		{	
 			Vector2 pos = 	new Vector2(panelPosX - (buffer+cardWidth)*(n/2) + offsetX + i*buffer, panelPosY -  panelHeight/6);
@@ -98,27 +101,36 @@ public class UI : MonoBehaviour {
 	public void gotButtonClick(string input) {
 		//This method is called when a button is clicked
 		if(gameState == state.ASKINGFORSPONSORS) { //If the game is current looking for sponsors
+			log.log("currently asking for sponsors");
 			if(input.Equals("Yes")) { //If the current player wants to be sponsor
+				log.log("player clicked yes");
 				gameState = state.STANDBY; 
 				clearButtons();
+				log.log ("telling GM to set up quest");
 				gm.startQuestSetup(); //Tell GameManager to set the current player as sponsor
 			}
 			else {
+				log.log ("telling GM to ask next player");
 				gm.getSponsor(); //Other wise have GameManager call getSponsor for the next player.
 			}
 		}
 		else if(gameState == state.ASKINGFORPLAYERS){
+			log.log ("currently asking for players");
 			if(input.Equals("Yes")) { //If the current player wants to be sponsor 
+				log.log("player clicked yes");
 				gameState = state.STANDBY; 
 				clearButtons();
+				log.log ("telling GM we have an active player");
 				gm.gotPlayer(activePlayer); //Tell GameManager to set the current player as sponsor
 			}
 			else {
 				clearButtons();
+				log.log ("telling GM we don't have an active player");
 				gm.gotPlayer(null); //Other wise have GameManager call getSponsor for the next player.
 			}
 		}
 		else if(gameState == state.ASKINGFORCARDSINQUEST){
+			log.log ("asking for cards in quest");
 			if(input.Equals("FIGHT")) {
 				gm.questAttack(cleanUpArray(multipleCardInput));
 			}
@@ -127,6 +139,7 @@ public class UI : MonoBehaviour {
 			}
 		}
 		else if(gameState == state.ASKINGFORSTAGES) {
+			log.log ("asking for stages");
 			clearButtons();
 			clearDeckOnScreen();
 			gm.endQuest("Quest forfeited");
@@ -137,7 +150,7 @@ public class UI : MonoBehaviour {
 	public void askForBattleCardSelection(Player player){
 		
 		activePlayer = player;
-		cardsToShow = showHand(getOnlyTypeFromDeck(player.getHand(), false, true, true)); //Display the cards
+		cardsToShow = showHand(getOnlyTypeFromDeck(player.getHand(), false, true, true, true)); //Display the cards
 		gameState = state.ASKINGFORCARDSINQUEST;
 		multipleCardInput = new Card[player.getHand().Length]; //Get multipleCardInput ready to hold the new card choices
 		changeHeaderMessage("Select cards to play, then press FIGHT", instructionHeader);
@@ -163,7 +176,7 @@ public class UI : MonoBehaviour {
 	public void askForStageSelection(Player player, int n){
 		Debug.Log("askForStageSelection");
 		activePlayer = player;
-		Card [] foesOnly = getOnlyTypeFromDeck(player.getHand(), true, false, false);
+		Card [] foesOnly = getOnlyTypeFromDeck(player.getHand(), true, false, false, false);
 		cardsToShow = showHand(foesOnly); //Display the cards
 		gameState = state.ASKINGFORSTAGES;
 		multipleCardInput = new Card[n]; //Get multipleCardInput ready to hold the new card choices
@@ -337,24 +350,22 @@ public class UI : MonoBehaviour {
 		
 	}
 	
-	private Card[] getOnlyTypeFromDeck(Card[] deck, bool getFoes, bool getWeap, bool getAlly){
+	private Card[] getOnlyTypeFromDeck(Card[] deck, bool getFoes, bool getWeap, bool getAlly, bool getAmour){
 		Card[] tempHand = new Card[deck.Length];
 		int counter = 0;
 		for(int i = 0; i < deck.Length; i++ )
 		{
-			if(Object.ReferenceEquals(deck[i].GetType(), typeof(Foe)) && getFoes)
-			{
-				tempHand[counter] = deck[i];
+			if (Object.ReferenceEquals (deck [i].GetType (), typeof(Foe)) && getFoes) {
+				tempHand [counter] = deck [i];
 				counter++;
-			}
-			else if(Object.ReferenceEquals(deck[i].GetType(), typeof(Weapon)) && getWeap)
-			{
-				tempHand[counter] = deck[i];
+			} else if (Object.ReferenceEquals (deck [i].GetType (), typeof(Weapon)) && getWeap) {
+				tempHand [counter] = deck [i];
 				counter++;
-			}
-			else if(Object.ReferenceEquals(deck[i].GetType(), typeof(Ally)) && getAlly)
-			{
-				tempHand[counter] = deck[i];
+			} else if (Object.ReferenceEquals (deck [i].GetType (), typeof(Ally)) && getAlly) {
+				tempHand [counter] = deck [i];
+				counter++;
+			} else if (Object.ReferenceEquals (deck [i].GetType (), typeof(Amour)) && getAmour) {
+				tempHand [counter] = deck [i];
 				counter++;
 			}
 		}
