@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224201721298684224}
   - component: {fileID: 212406076000144430}
-  - component: {fileID: 114065484928606518}
+  - component: {fileID: 114304340762647920}
   m_Layer: 5
   m_Name: UICard
   m_TagString: Untagged
@@ -28,7 +28,7 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &114065484928606518
+--- !u!114 &114304340762647920
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -88,13 +88,13 @@ RectTransform:
   m_GameObject: {fileID: 1313248529309212}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -118.03858}
-  m_LocalScale: {x: 15, y: 15, z: 0.5400174}
+  m_LocalScale: {x: 9.644027, y: 9.644027, z: 0.5400174}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 509.54868, y: 185.9043}
+  m_AnchoredPosition: {x: -46.149994, y: 79.322945}
   m_SizeDelta: {x: 7.53, y: 10.48}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: -0.5, y: 1.5}
