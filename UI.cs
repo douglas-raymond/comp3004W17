@@ -435,6 +435,7 @@ public class UI : MonoBehaviour {
 	public void endQuest()
 	{
 		clearGameObjectArray(currButtons);
+		clearGameObjectArray(currIcons);
 		Destroy(enemyBP);
 		Destroy(playerBP);
 		

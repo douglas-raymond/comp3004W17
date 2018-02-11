@@ -107,13 +107,15 @@ public class GameManager : MonoBehaviour {
 			cyclingThroughPlayers = true;
 			log.log ("Getting sponsor");
 			Debug.Log("Getting sponsor...");
-			ui.askYesOrNo(players[activePlayerSub], "Do you want to sponsor this quest?", GameState.state.ASKINGFORSPONSORS);	
 			activePlayerSub = nextPlayer(activePlayerSub);
+			ui.askYesOrNo(players[activePlayerSub], "Do you want to sponsor this quest?", GameState.state.ASKINGFORSPONSORS);	
+			
 			
 		}
 	}
 	public void startQuestSetup(){
-		activeQuest.setSponsor(players[activePlayerSub]);
+		Debug.Log("settign this player as sponser " + players[activePlayerSub].getName());
+		activeQuest.setSponsor(players[activePlayerSub], activePlayerSub);
 		//ui.askForStageSelection(activeQuest.getSponsor(), activeQuest.getStageNum());
 		ui.askForCards(
 			activeQuest.getSponsor(), 
@@ -184,7 +186,7 @@ public class GameManager : MonoBehaviour {
 					activeQuest.getSponsor().discardCard(new Card[] {activeQuest.getStage(i)});
 					activeQuest.getSponsor().discardCard(activeQuest.getStageWeapons(i));
 				}
-				activePlayerSub = activePlayerMeta;
+				activePlayerSub = activeQuest.getSponsorNum();
 				getPlayers();
 			}
 			else {
@@ -205,7 +207,7 @@ public class GameManager : MonoBehaviour {
 					);
 				return;
 			}
-			getPlayers();
+			//getPlayers();
 		}
 		else {
 			activeQuest.setStage(activeQuest.getCurrentStageNum()+1);
@@ -223,7 +225,11 @@ public class GameManager : MonoBehaviour {
 		{
 			activeQuest.addPlayer(newPlayer);
 		}
-		if(players[activePlayerSub] == activeQuest.getSponsor())
+		Debug.Log("current player: " + players[activePlayerSub].getName());
+		Debug.Log("next player: " + players[nextPlayer(activePlayerSub)].getName());
+		Debug.Log("sponser: " + activeQuest.getSponsor().getName());
+		
+		if(players[nextPlayer(activePlayerSub)].getName().Equals(activeQuest.getSponsor().getName()))
 		{
 			Debug.Log("Done getting players");
 			startStage();

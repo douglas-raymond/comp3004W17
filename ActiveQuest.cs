@@ -11,6 +11,7 @@ public class ActiveQuest{
 	int playerNum;
 	int stageNum;
 	Player sponsor;
+	int sponsorNum;
 	int currentStage;
 	Player currentPlayer;
 	
@@ -136,8 +137,9 @@ public class ActiveQuest{
 		stageWeapons = new Card[stageNum][];
 		stages = new Card[stageNum];
 	}
-	public void setSponsor(Player player){
+	public void setSponsor(Player player, int playerNum){
 		sponsor = player;
+		sponsorNum = playerNum;
 	}
 	public void setStages(Card[] newStages){
 		stages = newStages;
@@ -163,6 +165,9 @@ public class ActiveQuest{
 	}
 	public Player getSponsor() {
 		return sponsor;
+	}
+	public int getSponsorNum() {
+		return sponsorNum;
 	}
 	public Card getStage(int i) {
 		return stages[i];
