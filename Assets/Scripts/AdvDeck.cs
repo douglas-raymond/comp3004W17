@@ -4,19 +4,35 @@ using UnityEngine;
 
 public class AdvDeck : Deck  {
 
+	DiscardDeck discardPile;
+	
+	public AdvDeck(DiscardDeck discard){
+		discardPile = discard;
+	}
+	
+	public Card drawCard()
+	{
+		/*
+		if(this.getCount()<1){
+			discardPile.reshuffle(this);
+		}
+		*/
+		return deck.Pop();
+	}
+
 
 	//Creates a stack of all adventure cards
 	public void initDeck(){
 
-		Card[] tempCardArr = new Card[117];
-		
+		Card[] tempCardArr = new Card[125];
+
 		Weapon excalibur = new Weapon("excalibur", 30, getCardImage("excalibur"));
 		Weapon lance = new Weapon("lance", 20, getCardImage("lance"));
 		Weapon battleax = new Weapon("battleax", 15, getCardImage("battleax"));
 		Weapon sword = new Weapon("sword", 10, getCardImage("sword"));
 		Weapon horse = new Weapon("horse", 10, getCardImage("horse"));
 		Weapon dagger = new Weapon("dagger", 5, getCardImage("dagger"));
-		
+
 		//Foes
 		Foe dragon = new Foe("dragon", 50, 70, getCardImage("dragon"));
 		Foe giant = new Foe("giant", 40, 0, getCardImage("giant"));
@@ -29,7 +45,7 @@ public class AdvDeck : Deck  {
 		Foe saxons = new Foe("saxons", 10, 20, getCardImage("saxons"));
 		Foe boar = new Foe("boar", 5, 15, getCardImage("boar"));
 		Foe thieves = new Foe("thieves", 5, 0, getCardImage("thieves"));	
-		
+
 		//Tests
 		Test tovalor = new Test("tovalor", 0, 0, getCardImage("tovalor"));
 		Test toquestingbeast = new Test("toquestingbeast", 0, 4, getCardImage("toquestingbeast"));
@@ -37,7 +53,7 @@ public class AdvDeck : Deck  {
 		Test tomorganlefey = new Test("tomorganlefey", 0, 3, getCardImage("tomorganlefey"));
 
 		//Allies
-		
+
 		Ally galahad = new Ally("galahad", 15, 0, 0, getCardImage("galahad"));
 		Ally arthur = new Ally("arthur", 10, 0, 2, getCardImage("arthur"));
 		Ally pellinore = new Ally("pellinore", 10, 0, 4, getCardImage("pellinore"));
@@ -47,6 +63,9 @@ public class AdvDeck : Deck  {
 		Ally lancelot = new Ally("lancelot", 15, 0, 0, getCardImage("lancelot"));
 		Ally percival = new Ally("percival", 5, 0, 0, getCardImage("percival"));
 		Ally tristan = new Ally("tristan", 10, 0, 0, getCardImage("tristan"));
+
+		//Amour amour amour amour amour
+		Amour amour = new Amour ("amour", 10, 2, getCardImage("amour"));
 		
 		for(int i = 0; i < 2; i ++) { tempCardArr[i] = excalibur; }
 		for(int i = 2; i < 8; i ++) { tempCardArr[i] = lance; }
@@ -73,19 +92,22 @@ public class AdvDeck : Deck  {
 		for(int i = 103; i < 105; i ++) { tempCardArr[i] = totemptation; }
 		for(int i = 105; i < 107; i ++) { tempCardArr[i] = tomorganlefey; }
 		
-		for(int i = 107; i < 108; i ++) { tempCardArr[i] = galahad; }
-		for(int i = 108; i < 109; i ++) { tempCardArr[i] = arthur; }
-		for(int i = 109; i < 110; i ++) { tempCardArr[i] = pellinore; }
-		for(int i = 110; i < 111; i ++) { tempCardArr[i] = guinevere; }
-		for(int i = 111; i < 112; i ++) { tempCardArr[i] = iseult; }
-		for(int i = 112; i < 113; i ++) { tempCardArr[i] = gawain; }
-		for(int i = 113; i < 114; i ++) { tempCardArr[i] = lancelot; }
-		for(int i = 114; i < 115; i ++) { tempCardArr[i] = percival; }
-		for(int i = 115; i < 116; i ++) { tempCardArr[i] = tristan; }		
+		for(int i = 108; i < 109; i ++) { tempCardArr[i] = galahad; }
+		for(int i = 109; i < 110; i ++) { tempCardArr[i] = arthur; }
+		for(int i = 110; i < 111; i ++) { tempCardArr[i] = pellinore; }
+		for(int i = 111; i < 112; i ++) { tempCardArr[i] = guinevere; }
+		for(int i = 112; i < 113; i ++) { tempCardArr[i] = iseult; }
+		for(int i = 113; i < 114; i ++) { tempCardArr[i] = gawain; }
+		for(int i = 114; i < 115; i ++) { tempCardArr[i] = lancelot; }
+		for(int i = 115; i < 116; i ++) { tempCardArr[i] = percival; }
+		for(int i = 116; i < 117; i ++) { tempCardArr[i] = tristan; }		
+
+		for (int i = 117; i < 125; i++) {
+			tempCardArr [i] = amour;
+		}
 		
-		for(int i = 0; i< 116; i++)
+		for(int i = 0; i< 125; i++)
 		{
-			
 			deck.Push(tempCardArr[i]);
 		}
 		

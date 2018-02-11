@@ -4,6 +4,21 @@ using UnityEngine;
 
 public class StoryDeck : Deck  {
 
+	DiscardDeck discardPile;
+
+	public StoryDeck(DiscardDeck discard){
+		discardPile = discard;
+	}
+	
+	public Card drawCard()
+	{
+		/*
+		if(this.getCount()<1){
+			discardPile.reshuffle(this);
+		}
+		*/
+		return deck.Pop();
+	}
 
 	//Creates a stack of all the story cards
 	public void initDeck(){
@@ -47,7 +62,10 @@ public class StoryDeck : Deck  {
 		
 		
 		
-		for(int i = 0; i< 16; i++) { deck.Push(tempCardArr[i]); }
+		for(int i = 0; i< 16; i++)
+		{
+			deck.Push(tempCardArr[i]);
+		}
 		
 		shuffle();
 		

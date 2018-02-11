@@ -129,6 +129,13 @@ public class ActiveQuest{
 		}
 		return index;
 	}
+	public void resetQuest() {
+		currentStage = 0;
+		stageWeapons = null;
+		stages = null;
+		stageWeapons = new Card[stageNum][];
+		stages = new Card[stageNum];
+	}
 	public void setSponsor(Player player){
 		sponsor = player;
 	}
@@ -170,18 +177,18 @@ public class ActiveQuest{
 		
 		return quest;
 	}
-	public Card[] getCurrentStageWeapons() {
-		return stageWeapons[currentStage];
+	public Card[] getStageWeapons(int i) {
+		return stageWeapons[i];
 	}
-	public int getCurrentStageBP()
+	public int getStageBP(int i)
 	{
-		int baseBP = stages[currentStage].getBP();
+		int baseBP = stages[i].getBP();
 		int extraBP = 0;
-		if(stageWeapons[currentStage][0] != null)
+		if(stageWeapons[i][0] != null)
 		{
-			for(int i = 0; i< stageWeapons[currentStage].Length; i++)
+			for(int j = 0; j< stageWeapons[i].Length; j++)
 			{
-				extraBP = extraBP + stageWeapons[currentStage][i].getBP();
+				extraBP = extraBP + stageWeapons[i][j].getBP();
 			}
 		}
 		return (baseBP + extraBP);
