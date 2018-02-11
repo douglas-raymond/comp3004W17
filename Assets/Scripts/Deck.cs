@@ -27,6 +27,8 @@ public abstract class Deck  {
 		return deck.Pop();
 	}
 	
+	public int getCount(){ return deck.Count;}
+	
 	//returns acard to the stack
 	public void returnCard(Card card)
 	{
@@ -49,8 +51,8 @@ public abstract class Deck  {
 		
 		return tempDeck;
     }
-	
-	
+
+
 	protected Sprite getCardImage(string cardTitle)
 	{
 		if(cardTitle.Equals("excalibur")){ return Resources.Load<Sprite>("Cards/W Excalibur");}
@@ -83,7 +85,11 @@ public abstract class Deck  {
 		if(cardTitle.Equals("lancelot")){ return Resources.Load<Sprite>("Cards/A Sir Lancelot");}
 		if(cardTitle.Equals("percival")){ return Resources.Load<Sprite>("Cards/A Sir Percival");}
 		if(cardTitle.Equals("tristan")){ return Resources.Load<Sprite>("Cards/A Sir Tristan");}
-		
+
+		if (cardTitle.Equals ("amour")) {
+			return Resources.Load<Sprite> ("Cards/Amour");
+		}
+
 		if(cardTitle.Equals("holygrail")){ return Resources.Load<Sprite>("Cards/Q Search For The Holy Grail");}
 		if(cardTitle.Equals("enchantedforest")){ return Resources.Load<Sprite>("Cards/Q Journey Through The Enchanted Forest");}
 		if(cardTitle.Equals("arthursenemies")){ return Resources.Load<Sprite>("Cards/Q Vanquish King Arthur's Enemies");}
@@ -98,7 +104,7 @@ public abstract class Deck  {
 		if(cardTitle.Equals("orkney")){ return Resources.Load<Sprite>("Cards/To Orkney");}
 		if(cardTitle.Equals("tintagel")){ return Resources.Load<Sprite>("Cards/To Tintagel");}
 		if(cardTitle.Equals("york")){ return Resources.Load<Sprite>("Cards/To York");}
-		
+
 		else return null;
 	}
 }

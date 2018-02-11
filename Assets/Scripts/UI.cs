@@ -229,7 +229,20 @@ public class UI : MonoBehaviour {
 			displayAlert("Cannot have two weapons of the same type!");
 			return;
 		}
-		
+		changeHeaderMessage("Player BP: " + (activePlayer.getBP() + extraBP), playerBP);
+	}
+	
+	public void askForStageSelection(Player player, int n){
+		Debug.Log("askForStageSelection");
+		activePlayer = player;
+		Card [] foesOnly = getOnlyTypeFromDeck(player.getHand(), true, false, false, false);
+		cardsToShow = showHand(foesOnly); //Display the cards
+		gameState = state.ASKINGFORSTAGES;
+		multipleCardInput = new Card[n]; //Get multipleCardInput ready to hold the new card choices
+		Debug.Log("created new multipleCardInput: " + multipleCardInput.Length );
+		changeHeaderMessage("Select card 1 out of " + multipleCardInput.Length, instructionHeader);
+		createButtonMessage(panelPosX - panelWidth/5, panelPosY + panelHeight/5, "Forfeit");
+		return;
 	}
 	public void drawingQuestCard()
 	{

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EventCard : StoryCard {
-	
+
+  
 	Logger log = new Logger("c:/comp3004");
 
 	public EventCard(string _name, string _type)

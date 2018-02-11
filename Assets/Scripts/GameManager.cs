@@ -73,6 +73,7 @@ public class GameManager : MonoBehaviour {
 		case "quest":
 			activePlayerSub = activePlayerMeta;
 			activeQuest = new ActiveQuest((QuestCard)storyCard);
+
 			cyclingThroughPlayers = false;
 			getSponsor();
 			
@@ -93,8 +94,7 @@ public class GameManager : MonoBehaviour {
 	public void getSponsor(){	
 
 		ui.showCard(activeQuest.getQuest());
-		
-		
+
 		if(activePlayerSub == activePlayerMeta && cyclingThroughPlayers == true)
 		{
 			log.log ("Sponsor not found");
