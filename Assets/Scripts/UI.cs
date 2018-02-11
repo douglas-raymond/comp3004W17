@@ -115,7 +115,6 @@ public class UI : MonoBehaviour {
 		/*
 		This method is called when a card is clicked. Depending on the current gameState, a difference received mthod will be called.
 		*/
-		Debug.Log(gameState);
 		if (gameState == state.ASKINGFORSTAGES) {
 			gotStageSelection(selected.GetComponent<CardButtonUI>().getCard(), selected.GetComponent<CardButtonUI>().getPos());
 		}
@@ -229,20 +228,7 @@ public class UI : MonoBehaviour {
 			displayAlert("Cannot have two weapons of the same type!");
 			return;
 		}
-		changeHeaderMessage("Player BP: " + (activePlayer.getBP() + extraBP), playerBP);
-	}
-	
-	public void askForStageSelection(Player player, int n){
-		Debug.Log("askForStageSelection");
-		activePlayer = player;
-		Card [] foesOnly = getOnlyTypeFromDeck(player.getHand(), true, false, false, false);
-		cardsToShow = showHand(foesOnly); //Display the cards
-		gameState = state.ASKINGFORSTAGES;
-		multipleCardInput = new Card[n]; //Get multipleCardInput ready to hold the new card choices
-		Debug.Log("created new multipleCardInput: " + multipleCardInput.Length );
-		changeHeaderMessage("Select card 1 out of " + multipleCardInput.Length, instructionHeader);
-		createButtonMessage(panelPosX - panelWidth/5, panelPosY + panelHeight/5, "Forfeit");
-		return;
+		
 	}
 	public void drawingQuestCard()
 	{
@@ -330,7 +316,6 @@ public class UI : MonoBehaviour {
 		GameObject tempButton = (GameObject)Instantiate(Resources.Load("UIButton"), new Vector2(x, y), Quaternion.identity);			
 		tempButton.GetComponent<ButtonUI>().init(this);
 		tempButton.GetComponentInChildren<Text>().text = newText;
-		Debug.Log("createButtonMessage");
 		int n = 0;
 		if(currButtons != null) {
 			

@@ -29,5 +29,7 @@ public abstract class Card {
 		return sprite;
 	}
 	public virtual int getBP() {return -1;}
+	public virtual int getAltBP() {return -1;}
+
 
 }

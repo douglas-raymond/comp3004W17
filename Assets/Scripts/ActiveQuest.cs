@@ -180,9 +180,24 @@ public class ActiveQuest{
 	public Card[] getStageWeapons(int i) {
 		return stageWeapons[i];
 	}
+	private bool isStageSpecial(int i) {
+		Card temp = stages[i];
+		for(int j = 0; j < quest.getSpecialNum(); j++) {
+			if(quest.getSpecialFoe(j).getName().Equals(temp.getName())) { return true; }
+		}
+		return false;
+	}
 	public int getStageBP(int i)
 	{
-		int baseBP = stages[i].getBP();
+		int baseBP;
+		if(isStageSpecial(i)) { 
+			baseBP = stages[i].getAltBP();
+		}
+		else {
+			baseBP = stages[i].getBP();
+		}
+		
+		Debug.Log("base BP: " + baseBP);
 		int extraBP = 0;
 		if(stageWeapons[i][0] != null)
 		{

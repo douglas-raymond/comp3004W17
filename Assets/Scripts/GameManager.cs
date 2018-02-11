@@ -64,12 +64,12 @@ public class GameManager : MonoBehaviour {
 		activePlayerMeta = nextPlayer(activePlayerMeta);
 		Debug.Log("after: " + activePlayerMeta);
 		Card drawnCard = storyDeck.drawCard();
-		evaluateStory (drawnCard);
+		evaluateStory(drawnCard);
 	}
 
 	//Track splitter that evaluates based on card type.
 	public void evaluateStory(Card storyCard){
-		switch (storyCard.getType ()) {
+		switch (storyCard.getType()) {
 		case "quest":
 			activePlayerSub = activePlayerMeta;
 			activeQuest = new ActiveQuest((QuestCard)storyCard);
@@ -214,13 +214,8 @@ public class GameManager : MonoBehaviour {
 		}
 	}	
 	public void getPlayers(){	
-		activePlayerSub ++;
-		activePlayerSub = activePlayerSub % (playerCount-1);
-		if(players[activePlayerSub] == activeQuest.getSponsor()) {
-			activePlayerSub ++;
-			activePlayerSub = activePlayerSub % (playerCount-1);
-		}
-		
+		activePlayerSub = nextPlayer(activePlayerSub);
+		//activePlayerSub = activePlayerSub % (playerCount-1);
 		ui.askYesOrNo(players[activePlayerSub], "Do you want to join this quest?", GameState.state.ASKINGFORPLAYERS);
 	}
 	public void gotPlayer(Player newPlayer){
@@ -228,7 +223,7 @@ public class GameManager : MonoBehaviour {
 		{
 			activeQuest.addPlayer(newPlayer);
 		}
-		if(activePlayerSub == activePlayerMeta)
+		if(players[activePlayerSub] == activeQuest.getSponsor())
 		{
 			Debug.Log("Done getting players");
 			startStage();

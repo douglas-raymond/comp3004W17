@@ -13,6 +13,8 @@ public class Foe : AdvCard {
 		altBP = _altBP;
 		sprite = _sprite;
 	}
-	
+	public override int getAltBP() {
+		return altBP;
+	}
 	
 }

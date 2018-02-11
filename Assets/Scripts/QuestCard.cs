@@ -21,4 +21,10 @@ public class QuestCard : StoryCard {
 	public int getStages(){
 		return stages;
 		}
+	public Foe getSpecialFoe(int i) {
+		return special[i];
+	}
+	public int getSpecialNum() {
+		return special.Length;
+	}
 }
