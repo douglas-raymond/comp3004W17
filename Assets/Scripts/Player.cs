@@ -39,6 +39,7 @@ public class Player {
 		return BP;
 	}
 	public void discardCard(Card [] card){
+		if(card == null) {Debug.Log("Removing nothing"); return;}
 		int n = hand.Length;
 		int j = -1;
 		Card[] temp = new Card[n-1];
@@ -52,7 +53,7 @@ public class Player {
 			}
 			if(j == -1){
 				Debug.Log("Requested card to delete is not in hand");
-				break;
+				return;
 			}
 		
 			

@@ -6,6 +6,7 @@ public class DiscardDeck : Deck  {
 
 
 	//Creates a stack of all the story cards
+	/*
 	public void reshuffle(Deck realDeck){
 		while(this.getCount()>0){
 			realDeck.returnCard(this.drawCard());
@@ -16,4 +17,5 @@ public class DiscardDeck : Deck  {
 		
 		return;
 	}
+	*/
 }

@@ -12,9 +12,11 @@ public class AdvDeck : Deck  {
 	
 	public Card drawCard()
 	{
+		/*
 		if(this.getCount()<1){
 			discardPile.reshuffle(this);
 		}
+		*/
 		return deck.Pop();
 	}
 
