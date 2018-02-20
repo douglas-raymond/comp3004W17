@@ -125,13 +125,22 @@ public class GameManager : MonoBehaviour {
 			true, 
 			false, 
 			false,
-			false
+			false,
+			true
 			);
 	}	
 	public void endQuestSetup(Card[] stages){
 		Debug.Log("endQuestSetup");
 		activeQuest.setStages(stages);
 		gameState = state.GOTINPUT;
+		for(int i = 0; i < activeQuest.getStageNum(); i ++) {
+			
+			if(Object.ReferenceEquals (activeQuest.getStage(i).GetType (), typeof(Foe))) {
+				activeQuest.setStage(i);
+				break;
+			}
+		}
+		
 		startStageWeaponSetup();
 	}
 	
@@ -145,6 +154,7 @@ public class GameManager : MonoBehaviour {
 			"null",
 			false, 
 			true, 
+			false,
 			false,
 			false
 			);
@@ -163,19 +173,16 @@ public class GameManager : MonoBehaviour {
 			Debug.Log("stage weapon selection over");
 			activeQuest.setStage(0);
 			bool validQuest = true;
+			int prevBP = -1;
 			for(int i = 0; i < activeQuest.getStageNum(); i++) {
-				int prevBP;
-				if(i == 0) { prevBP = -1; }
-				else {
-					prevBP  = activeQuest.getStageBP(i-1);
+				if(Object.ReferenceEquals (activeQuest.getStage(activeQuest.getCurrentStageNum()).GetType (), typeof(Foe))) {  
+					int currBP;
+					currBP = activeQuest.getStageBP(i);
+					if(currBP < prevBP) {
+						validQuest = false;
+					}	
+					prevBP  = activeQuest.getStageBP(i);
 				}
-				
-				int currBP;
-				
-				currBP = activeQuest.getStageBP(i);
-				if(currBP < prevBP) {
-					validQuest = false;
-				}	
 			}
 				
 			if(validQuest) {
@@ -184,6 +191,7 @@ public class GameManager : MonoBehaviour {
 					activeQuest.getSponsor().discardCard(new Card[] {activeQuest.getStage(i)});
 					activeQuest.getSponsor().discardCard(activeQuest.getStageWeapons(i));
 				}
+				activeQuest.setStage(0);
 				activePlayerSub = activePlayerMeta;
 				getPlayers();
 			}
@@ -201,14 +209,20 @@ public class GameManager : MonoBehaviour {
 					true, 
 					false, 
 					false,
-					false
+					false,
+					true
 					);
 				return;
 			}
 			getPlayers();
 		}
 		else {
-			activeQuest.setStage(activeQuest.getCurrentStageNum()+1);
+			for(int i = activeQuest.getCurrentStageNum()+1; i < activeQuest.getStageNum(); i ++) {
+			if(Object.ReferenceEquals (activeQuest.getStage(i).GetType (), typeof(Foe))) {
+				activeQuest.setStage(i);
+				break;
+			}
+		}
 			activeQuest.getSponsor().discardCard(stageWeapons);
 			startStageWeaponSetup();
 		}
@@ -226,7 +240,7 @@ public class GameManager : MonoBehaviour {
 		if(players[activePlayerSub] == activeQuest.getSponsor())
 		{
 			Debug.Log("Done getting players");
-			startStage();
+			startQuest();
 		}
 		else
 		{
@@ -246,6 +260,14 @@ public class GameManager : MonoBehaviour {
 		}
 		return;
 	}
+	
+	public void startQuest() {
+		Debug.Log("starting quest");
+		activeQuest.setStage(0);
+		Debug.Log(activeQuest.getCurrentPlayer().getName());
+		startStage();
+		
+	}
 	public void startStage() {
 		if(activeQuest.getQuest() == null) {
 			endQuest("Quest over");
@@ -255,28 +277,68 @@ public class GameManager : MonoBehaviour {
 		}
 		else{
 			ui.showStage(activeQuest);
-			ui.askForCards(
-							activeQuest.getCurrentPlayer(), 
-							activeQuest.getCurrentPlayer().getHand().Length, 
-							GameState.state.ASKINGFORCARDSINQUEST, 
-							"Select cards to play, then press FIGHT", 
-							"FIGHT",
-							"Give up", 
-							false, 
-							true, 
-							true,
-							true);
+			if(Object.ReferenceEquals(activeQuest.getCurrentStage().GetType(), typeof(Foe))) {
+				Debug.Log(activeQuest.getCurrentStageNum());
+				ui.askForCards(
+								activeQuest.getCurrentPlayer(), 
+								activeQuest.getCurrentPlayer().getHand().Length, 
+								GameState.state.ASKINGFORCARDSINQUEST, 
+								"Select cards to play, then press FIGHT", 
+								"FIGHT",
+								"Give up", 
+								false, 
+								true, 
+								true,
+								true,
+								false);
+			}
+			if(Object.ReferenceEquals(activeQuest.getCurrentStage().GetType(), typeof(Test))) {			
+				ui.askForCards(
+								activeQuest.getCurrentPlayer(), 
+								activeQuest.getCurrentPlayer().getHand().Length, 
+								GameState.state.ASKINGFORCARDSINBID, 
+								"Select cards to bit, then press BID", 
+								"BID",
+								"Give up", 
+								false, 
+								true, 
+								true,
+								true,
+								false);
+			}
 		}
 		return;
 	}
-	public void endQuest(string text = "Quest over")
-	{
+	public void endQuest(string text = "Quest over") {
 			Debug.Log(text);
 			activeQuest = null;
 			ui.endQuest();
 			ui.drawingQuestCard();
 			drawQuestCard();
 	}
+	public void bidPhase(Card [] selection) {		
+		if(activeQuest.placeBid(selection, 0)) {
+			activeQuest.setTentativeBet(selection);
+			activeQuest.nextPlayer();
+			startStage();			
+		}
+		else {
+			ui.displayAlert("Bid too low. Bid more cards of forfeit the quest.");
+			ui.askForCards(
+							activeQuest.getCurrentPlayer(), 
+							activeQuest.getCurrentPlayer().getHand().Length, 
+							GameState.state.ASKINGFORCARDSINBID, 
+							"Select cards to bit, then press BID", 
+							"BID",
+							"Give up", 
+							false, 
+							true, 
+							true,
+							true,
+							false);
+		}
+	}
+	
 	public void questAttack(Card [] selection) {
 		//Debug.Log("Quest Attack");
 		int extraBP = 0;
@@ -309,13 +371,13 @@ public class GameManager : MonoBehaviour {
 							false, 
 							true, 
 							true,
-							true
+							true,
+							false
 							);
 		}
 	}
 	
 	public void forfeitQuest() {
-		//Debug.Log("Quest Attack");
 		activeQuest.deletePlayer(activeQuest.getCurrentPlayer());
 		startStage();
 	}

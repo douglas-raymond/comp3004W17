@@ -13,13 +13,16 @@ public class ActiveQuest{
 	Player sponsor;
 	int currentStage;
 	Player currentPlayer;
-	
-	public ActiveQuest(QuestCard _quest)
-	{
+	int highestBid;
+	Player highestBidder;
+	Card [] tentativeBet;
+	public ActiveQuest(QuestCard _quest) {
 		quest = _quest;
 		stageNum = _quest.getStages();
 		playerNum = 0;
 		currentStage = 0;
+		highestBid = -1;
+		highestBidder = null;
 	}
 	
 	public void addPlayer(Player newPlayer) {
@@ -44,7 +47,6 @@ public class ActiveQuest{
 			quest = null;
 			return;
 		}
-		Debug.Log("Old size: " + players.Length);
 		int indexToDelete = getPlayerInt(player);
 		if(indexToDelete == -1) {
 			Debug.Log("Not found");
@@ -54,15 +56,13 @@ public class ActiveQuest{
 		Player [] newArr = new Player[players.Length-1];
 		playerNum --;
 		if(indexToDelete == players.Length-1) {
-			Debug.Log("Tail");
 			for(int i = 0; i < newArr.Length; i++) {
 				newArr[i] = players[i];	
 			}
 			currentPlayer = newArr[newArr.Length-1];
-			nextPlayer();
+			nextStage();
 		}
 		else if(indexToDelete == 0) {
-			Debug.Log("Head");
 			for(int i = 0; i < newArr.Length; i++) {
 				newArr[i] = players[i+1];
 			}
@@ -70,7 +70,6 @@ public class ActiveQuest{
 		}
 		else {
 			currentPlayer = players[indexToDelete+1];
-			Debug.Log("Middle");
 			for(int i = 0; i < indexToDelete; i++) {
 				newArr[i] = players[i];
 			}
@@ -80,7 +79,6 @@ public class ActiveQuest{
 		}
 		
 		players = newArr;
-		Debug.Log("New size: " + players.Length);
 	}
 	private void finishQuest() {
 		if(playerNum == 0) { return;}
@@ -92,29 +90,49 @@ public class ActiveQuest{
 	}
 
 	public void nextPlayer() {
-		if(playerNum == 0)
-		{
+		if(playerNum == 0) {
 			Debug.Log("Quest lost, No players left");
 			quest = null;
 		}
 		int currentPlayerIndex = getPlayerInt(currentPlayer);
 
 		if(currentPlayerIndex == players.Length-1){
-			currentPlayer = players[0];
-			if(currentStage + 1 == stageNum){
-				quest = null;
-				finishQuest();
-				return;
-			}
-			else {
-				currentStage++;
-			}
 			
+			currentPlayer = players[0];
+			nextStage();
+
 		}
 		else {
 			currentPlayer = players[currentPlayerIndex+1];
 		}
 		
+	}
+	
+	public void nextStage() {
+		Debug.Log("NEXT STAGE");
+		Debug.Log("CURRENT STAGE: " + stages[currentStage]);
+		if(Object.ReferenceEquals(stages[currentStage].GetType(), typeof(Test))) {
+			Debug.Log("test over");
+			highestBidder.discardCard(tentativeBet);
+			players = new Player[1]; 
+			players[0] = highestBidder;
+			currentPlayer = highestBidder;
+			playerNum = 1;
+			highestBidder = null;
+			highestBid = -1;
+		}
+		
+		if(currentStage + 1 == stageNum){
+			quest = null;
+			finishQuest();
+			return;
+		}
+		else {
+			currentStage++;
+			if(Object.ReferenceEquals(stages[currentStage].GetType(), typeof(Test))) {
+				highestBid = stages[currentStage].getMinBid();
+			}
+		}
 	}
 	//Getters and setters
 	public int getPlayerInt(Player player) {
@@ -152,8 +170,27 @@ public class ActiveQuest{
 	public void setStage(int i) {
 		currentStage = i;
 	}
+	public void setTentativeBet(Card [] bet) {
+		tentativeBet = bet;
+	}
 	public Player getCurrentPlayer() {
 		return currentPlayer;
+	}
+	
+	public bool placeBid(Card [] bid, int freeBids) {
+		int totalBet;
+		if(bid.Length == null) {
+			totalBet = freeBids;
+		}
+		else {
+			totalBet = bid.Length + freeBids;
+		}
+		if(totalBet <= highestBid) {
+			return false;
+		}
+		highestBid = totalBet;
+		highestBidder = currentPlayer;
+		return true;
 	}
 	public int getStageNum() {
 		return stageNum;
@@ -173,6 +210,13 @@ public class ActiveQuest{
 	public int getCurrentStageNum(){
 		return currentStage;
 	}
+	public int getHighestBid(){
+		if(highestBid == -1 && Object.ReferenceEquals(stages[currentStage].GetType(), typeof(Test)))
+		{
+			highestBid = stages[currentStage].getMinBid();
+		}
+		return highestBid;
+	}
 	public Card getQuest() {
 		
 		return quest;
@@ -187,8 +231,7 @@ public class ActiveQuest{
 		}
 		return false;
 	}
-	public int getStageBP(int i)
-	{
+	public int getStageBP(int i) {
 		int baseBP;
 		if(isStageSpecial(i)) { 
 			baseBP = stages[i].getAltBP();
@@ -196,8 +239,6 @@ public class ActiveQuest{
 		else {
 			baseBP = stages[i].getBP();
 		}
-		
-		Debug.Log("base BP: " + baseBP);
 		int extraBP = 0;
 		if(stageWeapons[i][0] != null)
 		{

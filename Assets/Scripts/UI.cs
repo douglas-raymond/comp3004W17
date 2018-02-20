@@ -31,6 +31,8 @@ public class UI : MonoBehaviour {
 	
 	GameObject enemyBP;
 	GameObject playerBP;
+	GameObject highestBid;
+	GameObject currentBid;
 	Vector2 canvasSize;
 	
 	GameObject canvas;
@@ -65,6 +67,7 @@ public class UI : MonoBehaviour {
 	public GameObject[] showHand(Card[] hand){
 		int n = hand.Length;
 		log.log ("getting cards to show");
+		if(hand.Length == null){return null;}
 		if(cardsToShow != null)
 		{
 			for(int i = 0; i < cardsToShow.Length; i ++) {
@@ -121,6 +124,9 @@ public class UI : MonoBehaviour {
 		else if (gameState == state.ASKINGFORCARDSINQUEST) {
 			gotBattleCardSelection(selected.GetComponent<CardButtonUI>().getCard(), selected.GetComponent<CardButtonUI>().getPos());
 		}
+		else if (gameState == state.ASKINGFORCARDSINBID) {
+			gotBidCardSelection(selected.GetComponent<CardButtonUI>().getCard(), selected.GetComponent<CardButtonUI>().getPos());
+		}
 		else if (gameState == state.ASKINGFORSTAGEWEAPONS) {
 			gotStageWeaponSelection(selected.GetComponent<CardButtonUI>().getCard(), selected.GetComponent<CardButtonUI>().getPos());
 		}
@@ -165,6 +171,15 @@ public class UI : MonoBehaviour {
 				gm.forfeitQuest();
 			}
 		}
+		else if(gameState == state.ASKINGFORCARDSINBID){
+			log.log ("got for cards in bid");
+			if(input.Equals("BID")) {
+				gm.bidPhase(cleanUpArray(multipleCardInput));
+			}
+			else if(input.Equals("Give up")) {
+				gm.forfeitQuest();
+			}
+		}
 		else if(gameState == state.ASKINGFORSTAGES) {
 			log.log ("asking for stages");
 			clearGameObjectArray(currButtons);
@@ -186,11 +201,12 @@ public class UI : MonoBehaviour {
 		}
 	}
 	
-	public void askForCards(Player player, int n, state newState, string instructions, string button1, string button2, bool getFoes, bool getWeap, bool getAlly, bool getAmour) {
+	public void askForCards(Player player, int n, state newState, string instructions, string button1, string button2, bool getFoes, bool getWeap, bool getAlly, bool getAmour, bool getTest) {
 		clearGameObjectArray(cardsToShow);
 		clearGameObjectArray(currButtons);
 		activePlayer = player;
-		Card [] cards = getOnlyTypeFromDeck(player.getHand(), getFoes, getWeap, getAlly, getAmour);
+		Card [] cards = getOnlyTypeFromDeck(player.getHand(), getFoes, getWeap, getAlly, getAmour, getTest);
+		if(cards == null) { return; }
 		cardsToShow = showHand(cards); //Display the cards
 		gameState = newState;
 		multipleCardInput = null;
@@ -206,8 +222,7 @@ public class UI : MonoBehaviour {
 	}
 	
 	private void gotBattleCardSelection(Card selected, Vector2 pos){
-		if(!checkIfArrayContainsCard(multipleCardInput, selected))
-		{
+		if(!checkIfArrayContainsCard(multipleCardInput, selected)) {
 			Instantiate(Resources.Load("UISelectedCard"), pos, Quaternion.identity);
 			for(int i = 0; i < multipleCardInput.Length; i++) {  //Find the next empty spot in multipleCardInput
 				if(multipleCardInput[i] == null) { 
@@ -223,15 +238,27 @@ public class UI : MonoBehaviour {
 			}
 			changeHeaderMessage("Player BP: " + (activePlayer.getBP() + extraBP), playerBP);
 		}
-		else
-		{
+		else {
 			displayAlert("Cannot have two weapons of the same type!");
 			return;
 		}
-		
 	}
-	public void drawingQuestCard()
-	{
+	
+	
+	private void gotBidCardSelection(Card selected, Vector2 pos) {
+		Instantiate(Resources.Load("UISelectedCard"), pos, Quaternion.identity);
+		int currentBidCounter = 0;
+		for(int i = 0; i < multipleCardInput.Length; i++) {  //Find the next empty spot in multipleCardInput
+			currentBidCounter++;
+			if(multipleCardInput[i] == null) { 
+				multipleCardInput[i] = selected; //Add the new selected card to multipleCardInput
+				break;
+			}
+		}
+		
+		changeHeaderMessage("Current bid: " + currentBidCounter, currentBid);
+	}
+	public void drawingQuestCard() {
 		clearGameObjectArray(cardsToShow);
 		clearGameObjectArray(currButtons);
 		changeHeaderMessage("Drawing new card", instructionHeader);
@@ -362,25 +389,41 @@ public class UI : MonoBehaviour {
 			clearGameObjectArray(cardsToShow);
 		}
 			
-		if(playerBP == null) { playerBP = createHeaderMessage(panelWidth/4, panelHeight/2, " ");}
-		if(enemyBP == null) { enemyBP = createHeaderMessage(panelWidth - panelWidth/4, panelHeight/2, " ");}
+		
 		
 		showCard(activeQuest.getCurrentStage());
-		showCards(activeQuest.getStageWeapons(activeQuest.getCurrentStageNum()), new Vector2(panelPosX + panelWidth/10, panelPosY) , new Vector2(10,10));
 		activePlayer = activeQuest.getCurrentPlayer();
-		changeHeaderMessage("Player BP: " + activePlayer.getBP(), playerBP);
-		changeHeaderMessage("Enemy BP: " + activeQuest.getStageBP(activeQuest.getCurrentStageNum()), enemyBP);
 		changeHeaderMessage(activePlayer.getName() + "'s turn", headerCurrPlayer);	
-		changeHeaderMessage("Select the cards you wish to play to defeat this foe.", instructionHeader);	
-		createButtonMessage(panelPosX, panelPosY - panelHeight/10, "FIGHT");
+		if(Object.ReferenceEquals(activeQuest.getCurrentStage().GetType(), typeof(Foe))) {
+			Destroy(currentBid);
+			Destroy(highestBid);
+			
+			if(playerBP == null) { playerBP = createHeaderMessage(panelWidth/4, panelHeight/2, " ");}
+			if(enemyBP == null) { enemyBP = createHeaderMessage(panelWidth - panelWidth/4, panelHeight/2, " ");}
+			showCards(activeQuest.getStageWeapons(activeQuest.getCurrentStageNum()), new Vector2(panelPosX + panelWidth/10, panelPosY) , new Vector2(10,10));
+			changeHeaderMessage("Player BP: " + activePlayer.getBP(), playerBP);
+			changeHeaderMessage("Enemy BP: " + activeQuest.getStageBP(activeQuest.getCurrentStageNum()), enemyBP);
+			changeHeaderMessage("Select the cards you wish to play to defeat this foe.", instructionHeader);	
+			//createButtonMessage(panelPosX, panelPosY - panelHeight/10, "FIGHT");
+			gameState = state.ASKINGFORCARDSINQUEST;
+		}
+		else if(Object.ReferenceEquals(activeQuest.getCurrentStage().GetType(), typeof(Test))) {
+			Destroy(enemyBP);
+			Destroy(playerBP);
+			
+			if(currentBid == null) { currentBid = createHeaderMessage(panelWidth/4, panelHeight/2, " ");}
+			if(highestBid == null) { highestBid = createHeaderMessage(panelWidth - panelWidth/4, panelHeight/2, " ");}
+			changeHeaderMessage("Current bid: 0", currentBid);
+			changeHeaderMessage("Highest bid: " + activeQuest.getHighestBid(), highestBid);
+			gameState = state.ASKINGFORCARDSINBID;
+		}
 		createButtonMessage(panelPosX - panelWidth/5, panelPosY + panelHeight/5, "Give up");
-		gameState = state.ASKINGFORCARDSINQUEST;
+		
 
 	}
 	
 	//Other utilities
-	public void displayAlert(string input)
-	{
+	public void displayAlert(string input) {
 		changeHeaderMessage(input, messageHeader);
 	}
 	private Card[] cleanUpArray(Card [] oldArr){
@@ -403,7 +446,11 @@ public class UI : MonoBehaviour {
 		
 	}
 	
-	private Card[] getOnlyTypeFromDeck(Card[] deck, bool getFoes, bool getWeap, bool getAlly, bool getAmour){
+	private Card[] getOnlyTypeFromDeck(Card[] deck, bool getFoes, bool getWeap, bool getAlly, bool getAmour, bool getTest){
+		if(deck.Length == null){
+			Debug.Log("No cards to show");
+			return null;
+			}
 		Card[] tempHand = new Card[deck.Length];
 		int counter = 0;
 		for(int i = 0; i < deck.Length; i++ )
@@ -421,6 +468,10 @@ public class UI : MonoBehaviour {
 				tempHand [counter] = deck [i];
 				counter++;
 			}
+			else if (Object.ReferenceEquals (deck [i].GetType (), typeof(Test)) && getTest) {
+				tempHand [counter] = deck [i];
+				counter++;
+			}
 		}
 		
 		Card[] newTempHand = new Card[counter];
@@ -432,14 +483,19 @@ public class UI : MonoBehaviour {
 		return newTempHand;
 	}
 	
-	public void endQuest()
-	{
+	public void endQuest() {
 		clearGameObjectArray(currButtons);
 		Destroy(enemyBP);
 		Destroy(playerBP);
 		
 		enemyBP = null;
 		playerBP = null;
+		
+		Destroy(currentBid);
+		Destroy(highestBid);
+		
+		currentBid = null;
+		highestBid = null;
 	}
 	
 	private bool checkIfArrayContainsCard(Card[] arr, Card cardToFind) {
