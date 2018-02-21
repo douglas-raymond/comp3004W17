@@ -76,13 +76,13 @@ public class UI : MonoBehaviour {
 			}
 		}
 		cardsToShow = new GameObject[n];
-		float buffer = panelWidth/(n*2);
-		float cardWidth = panelWidth/15;
-		float offsetX = (panelWidth - n*buffer)/6;
+		float cardWidth = panelWidth/21;
+		float cardSpacing = cardWidth/4;
+		float totalDeckWidth = (n-1)*cardSpacing + (n-1)*cardWidth;
 		log.log ("setting up area");
 		for(int i = 0; i< n; i++)
 		{	
-			Vector2 pos = 	new Vector2(panelPosX - (buffer+cardWidth)*(n/2) + offsetX + i*buffer, panelPosY -  panelHeight/6);
+			Vector2 pos = 	new Vector2(panelPosX - totalDeckWidth/2 + i*cardWidth + i*cardSpacing, panelPosY -  panelHeight/6);
 			cardsToShow[i] = (GameObject)Instantiate(Resources.Load("UICardButton"), pos , Quaternion.identity);			
 			cardsToShow[i].GetComponent<CardButtonUI>().init(hand[i], this, pos);
 		}
