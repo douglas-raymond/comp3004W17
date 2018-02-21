@@ -59,12 +59,16 @@
      <Compile Include="Assets\Scripts\ButtonUI.cs" />
      <Compile Include="Assets\Scripts\Card.cs" />
      <Compile Include="Assets\Scripts\CardButtonUI.cs" />
+     <Compile Include="Assets\Scripts\CardLibrary.cs" />
+     <Compile Include="Assets\Scripts\CardUI.cs" />
      <Compile Include="Assets\Scripts\Deck.cs" />
+     <Compile Include="Assets\Scripts\DiscardDeck.cs" />
      <Compile Include="Assets\Scripts\Draggable.cs" />
      <Compile Include="Assets\Scripts\EventCard.cs" />
      <Compile Include="Assets\Scripts\Foe.cs" />
      <Compile Include="Assets\Scripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\HeaderUI.cs" />
+     <Compile Include="Assets\Scripts\Logger.cs" />
      <Compile Include="Assets\Scripts\MainMenuUI.cs" />
      <Compile Include="Assets\Scripts\Namespace.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />

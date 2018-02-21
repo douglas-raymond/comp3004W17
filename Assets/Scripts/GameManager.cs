@@ -66,6 +66,12 @@ public class GameManager : MonoBehaviour {
 		Card drawnCard = storyDeck.drawCard();
 		evaluateStory(drawnCard);
 	}
+//	public void drawAdvCard(){
+//		Debug.Log("before: " + activePlayerMeta);
+//		activePlayerMeta = nextPlayer(activePlayerMeta);
+//		Debug.Log("after: " + activePlayerMeta);
+//		Card drawnCard = advDeck.drawCard();
+//	}
 
 	//Track splitter that evaluates based on card type.
 	public void evaluateStory(Card storyCard){
@@ -312,6 +318,27 @@ public class GameManager : MonoBehaviour {
 							true
 							);
 		}
+	}
+
+	public void createTourney(TourneyCard tourneyCard){
+		getPlayers ();
+
+		switch (tourneyCard.getName ()) {
+
+		case "camelot":
+			break;
+
+		case "orkney":
+			break;
+
+		case "tintagel":
+			break;
+
+		case "york":
+			break;
+
+		}
+			
 	}
 	
 	public void forfeitQuest() {
