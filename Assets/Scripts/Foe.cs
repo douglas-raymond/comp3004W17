@@ -16,5 +16,4 @@ public class Foe : AdvCard {
 	public override int getAltBP() {
 		return altBP;
 	}
-	
 }

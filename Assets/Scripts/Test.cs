@@ -13,4 +13,6 @@ public class Test : AdvCard {
 		bids = _bids;
 		sprite = _sprite;
 	}
+	
+	public override int getMinBid() {return bids;}
 }

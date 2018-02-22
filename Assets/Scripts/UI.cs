@@ -21,7 +21,7 @@ public class UI : MonoBehaviour {
 
 	state gameState = state.STANDBY;
 	
-	Card[] multipleCardInput;
+	GameObject[] multipleCardInput;
 	
 	GameObject instructionHeader;  //This gives th current instruction to the player
 	GameObject headerCurrPlayer; //This says which player's turn it is
@@ -31,10 +31,13 @@ public class UI : MonoBehaviour {
 	
 	GameObject enemyBP;
 	GameObject playerBP;
+	GameObject highestBid;
+	GameObject currentBid;
 	Vector2 canvasSize;
 	
 	GameObject canvas;
 	
+	int multipleCardInputMaxNum;
 	//Use these variables to place this on UI, this assures that the relative positions will change the same in different resolutions
 	float panelWidth;
 	float panelHeight;
@@ -65,6 +68,7 @@ public class UI : MonoBehaviour {
 	public GameObject[] showHand(Card[] hand){
 		int n = hand.Length;
 		log.log ("getting cards to show");
+		if(hand.Length == null){return null;}
 		if(cardsToShow != null)
 		{
 			for(int i = 0; i < cardsToShow.Length; i ++) {
@@ -73,15 +77,15 @@ public class UI : MonoBehaviour {
 			}
 		}
 		cardsToShow = new GameObject[n];
-		float buffer = panelWidth/(n*2);
-		float cardWidth = panelWidth/15;
-		float offsetX = (panelWidth - n*buffer)/6;
+		float cardWidth = panelWidth/21;
+		float cardSpacing = cardWidth/4;
+		float totalDeckWidth = (n-1)*cardSpacing + (n-1)*cardWidth;
 		log.log ("setting up area");
 		for(int i = 0; i< n; i++)
 		{	
-			Vector2 pos = 	new Vector2(panelPosX - (buffer+cardWidth)*(n/2) + offsetX + i*buffer, panelPosY -  panelHeight/6);
+			Vector2 pos = 	new Vector2(panelPosX - totalDeckWidth/2 + i*cardWidth + i*cardSpacing, panelPosY -  panelHeight/6);
 			cardsToShow[i] = (GameObject)Instantiate(Resources.Load("UICardButton"), pos , Quaternion.identity);			
-			cardsToShow[i].GetComponent<CardButtonUI>().init(hand[i], this, pos);
+			cardsToShow[i].GetComponent<CardButtonUI>().init(hand[i], this, pos, i);
 		}
 		return cardsToShow;
 	}	
@@ -116,14 +120,69 @@ public class UI : MonoBehaviour {
 		This method is called when a card is clicked. Depending on the current gameState, a difference received mthod will be called.
 		*/
 		if (gameState == state.ASKINGFORSTAGES) {
-			gotStageSelection(selected.GetComponent<CardButtonUI>().getCard(), selected.GetComponent<CardButtonUI>().getPos());
+			gotStageSelection(selected, selected.GetComponent<CardButtonUI>().getPos());
 		}
 		else if (gameState == state.ASKINGFORCARDSINQUEST) {
-			gotBattleCardSelection(selected.GetComponent<CardButtonUI>().getCard(), selected.GetComponent<CardButtonUI>().getPos());
+			gotBattleCardSelection(selected, selected.GetComponent<CardButtonUI>().getPos());
+		}
+		else if (gameState == state.ASKINGFORCARDSINBID) {
+			gotBidCardSelection(selected, selected.GetComponent<CardButtonUI>().getPos());
 		}
 		else if (gameState == state.ASKINGFORSTAGEWEAPONS) {
-			gotStageWeaponSelection(selected.GetComponent<CardButtonUI>().getCard(), selected.GetComponent<CardButtonUI>().getPos());
+			gotStageWeaponSelection(selected, selected.GetComponent<CardButtonUI>().getPos());
 		}
+	}
+	
+	public void removeCardSelection(GameObject selected){
+		/*
+		This method is called when a card is clicked. Depending on the current gameState, a difference received mthod will be called.
+		*/
+		
+		if(selected == null) {Debug.Log("Removing nothing"); return;}
+		int n = multipleCardInput.Length;
+		Debug.Log(n);
+		int j = -1;
+		GameObject[] temp = new GameObject[n-1];
+		j = selected.GetComponent<CardButtonUI>().getIndexInSelection();
+
+		if(j == 0){
+			for(int i = 0; i < n-1; i++)
+			{
+				temp[i] = multipleCardInput[i];
+			}	
+		}
+		else if(j == multipleCardInput.Length){
+			for(int i = 1; i < n; i++)
+			{
+				temp[i-1] = multipleCardInput[i];
+			}
+		}
+		else
+		{
+			for(int i = 0; i < j; i++){
+				temp[i] = multipleCardInput[i];
+			}
+			for(int i = j+1; i < multipleCardInput.Length; i++){
+				temp[i-1] = multipleCardInput[i];
+			}
+		}
+
+		multipleCardInput = temp;
+		Destroy(selected.GetComponent<CardButtonUI>().getSelectedCardIcon());
+		
+		for(int i = 0; i < multipleCardInput.Length; i++) {
+			multipleCardInput[i].GetComponent<CardButtonUI>().setIndexInSelection(i);
+		}
+		if (gameState == state.ASKINGFORCARDSINQUEST) {
+			changeHeaderMessage("Player BP: " + getPlayersBP(), playerBP);
+		}
+		if (gameState == state.ASKINGFORCARDSINBID) {
+			int currentBidCounter;
+			if(multipleCardInput.Length == null){currentBidCounter = 0;}
+			else{currentBidCounter = multipleCardInput.Length;}
+			changeHeaderMessage("Current bid: " + currentBidCounter, currentBid);
+		}
+		return;
 	}
 	public void gotButtonClick(string input) {
 		//This method is called when a button is clicked
@@ -159,7 +218,16 @@ public class UI : MonoBehaviour {
 		else if(gameState == state.ASKINGFORCARDSINQUEST){
 			log.log ("asking for cards in quest");
 			if(input.Equals("FIGHT")) {
-				gm.questAttack(cleanUpArray(multipleCardInput));
+				gm.questAttack(gameObjectArrayToCardArray(multipleCardInput));
+			}
+			else if(input.Equals("Give up")) {
+				gm.forfeitQuest();
+			}
+		}
+		else if(gameState == state.ASKINGFORCARDSINBID){
+			log.log ("got for cards in bid");
+			if(input.Equals("BID")) {
+				gm.bidPhase(gameObjectArrayToCardArray(multipleCardInput));
 			}
 			else if(input.Equals("Give up")) {
 				gm.forfeitQuest();
@@ -181,20 +249,21 @@ public class UI : MonoBehaviour {
 				gm.endStageWeaponSetup(null);
 			}
 			else{
-			gm.endStageWeaponSetup(cleanUpArray(multipleCardInput));
+				gm.endStageWeaponSetup(gameObjectArrayToCardArray(multipleCardInput));
 			}
 		}
 	}
 	
-	public void askForCards(Player player, int n, state newState, string instructions, string button1, string button2, bool getFoes, bool getWeap, bool getAlly, bool getAmour) {
+	public void askForCards(Player player,  state newState, string instructions, string button1, string button2, bool getFoes, bool getWeap, bool getAlly, bool getAmour, bool getTest, int n = -1) {
 		clearGameObjectArray(cardsToShow);
 		clearGameObjectArray(currButtons);
+		multipleCardInputMaxNum = n;
 		activePlayer = player;
-		Card [] cards = getOnlyTypeFromDeck(player.getHand(), getFoes, getWeap, getAlly, getAmour);
+		Card [] cards = getOnlyTypeFromDeck(player.getHand(), getFoes, getWeap, getAlly, getAmour, getTest);
+		if(cards == null) { return; }
 		cardsToShow = showHand(cards); //Display the cards
 		gameState = newState;
-		multipleCardInput = null;
-		multipleCardInput = new Card[n]; //Get multipleCardInput ready to hold the new card choices
+		multipleCardInput = null; //Get multipleCardInput ready to hold the new card choices
 		changeHeaderMessage(instructions, instructionHeader);
 		if(!button1.Equals("null")){
 			createButtonMessage(panelPosX, panelPosY - panelHeight/20, button1);
@@ -205,33 +274,30 @@ public class UI : MonoBehaviour {
 		return;
 	}
 	
-	private void gotBattleCardSelection(Card selected, Vector2 pos){
-		if(!checkIfArrayContainsCard(multipleCardInput, selected))
-		{
-			Instantiate(Resources.Load("UISelectedCard"), pos, Quaternion.identity);
-			for(int i = 0; i < multipleCardInput.Length; i++) {  //Find the next empty spot in multipleCardInput
-				if(multipleCardInput[i] == null) { 
-					multipleCardInput[i] = selected; //Add the new selected card to multipleCardInput
-					break;
-				}
-			}
-			int extraBP = 0;
-			for(int i = 0; i< multipleCardInput.Length; i++)
-			{
-				if(multipleCardInput[i] == null){break;}
-				extraBP = extraBP + multipleCardInput[i].getBP();
-			}
-			changeHeaderMessage("Player BP: " + (activePlayer.getBP() + extraBP), playerBP);
+	private void gotBattleCardSelection(GameObject selected, Vector2 pos){
+		//Card selected = selectedObj.GetComponent<CardButtonUI>().getCard();
+		if(!checkIfArrayContainsCard(multipleCardInput, selected)) {
+			addNewCardToMultipleCardArray(selected, pos);
+			changeHeaderMessage("Player BP: " + getPlayersBP(), playerBP);
 		}
-		else
-		{
+		else {
 			displayAlert("Cannot have two weapons of the same type!");
 			return;
 		}
-		
 	}
-	public void drawingQuestCard()
-	{
+	
+	
+	private void gotBidCardSelection(GameObject selected, Vector2 pos) {
+
+		
+		int currentBidCounter;
+		if(multipleCardInput == null) { currentBidCounter = 1;}
+		else {currentBidCounter = multipleCardInput.Length + 1;}
+		addNewCardToMultipleCardArray(selected, pos);
+		
+		changeHeaderMessage("Current bid: " + currentBidCounter, currentBid);
+	}
+	public void drawingQuestCard() {
 		clearGameObjectArray(cardsToShow);
 		clearGameObjectArray(currButtons);
 		changeHeaderMessage("Drawing new card", instructionHeader);
@@ -239,36 +305,32 @@ public class UI : MonoBehaviour {
 		changeHeaderMessage(" ", headerCurrPlayer);
 		
 	}
-	private void gotStageSelection(Card selected, Vector2 pos){
-		for(int i = 0; i < multipleCardInput.Length; i++) {  //Find the next empty spot in multipleCardInput
-			if(multipleCardInput[i] == null) { 
-				multipleCardInput[i] = selected; //Add the new selected card to multipleCardInput
-				if(i == multipleCardInput.Length-1) {  //If all the cards has been chosen
-					changeHeaderMessage("Stages selected", instructionHeader); //Update header
-					gameState = state.STANDBY;
-					clearGameObjectArray(cardsToShow);	
-					Card[] temp = multipleCardInput;
-					multipleCardInput = null;
-					gameState = state.STANDBY;
-					gm.endQuestSetup(temp); //Send cards back to GameManager
-					return;
-				}
-				Instantiate(Resources.Load("UISelectedCard"), pos, Quaternion.identity);	
-				changeHeaderMessage("Select card " + (i+2) + " out of " + multipleCardInput.Length, instructionHeader);
-				return;
-			}
+	private void gotStageSelection(GameObject selected, Vector2 pos){
+		//Card selected = selectedObj.GetComponent<CardButtonUI>().getCard();
+		addNewCardToMultipleCardArray(selected, pos);
+		
+		if(multipleCardInput.Length == multipleCardInputMaxNum) {  //If all the cards has been chosen
+			changeHeaderMessage("Stages selected", instructionHeader); //Update header
+			gameState = state.STANDBY;
+			clearGameObjectArray(cardsToShow);	
+			
+			gameState = state.STANDBY;
+			
+			Card [] temp = gameObjectArrayToCardArray(multipleCardInput);
+			gm.endQuestSetup(gameObjectArrayToCardArray(multipleCardInput)); //Send cards back to GameManager
+			return;
 		}
+		//multipleCardInput[multipleCardInput.Length-1].GetComponent<CardButtonUI>().setSelectedCardIcon((GameObject)Instantiate(Resources.Load("UISelectedCard"), pos, Quaternion.identity));	
+		changeHeaderMessage("Select card " + (multipleCardInput.Length) + " out of " + multipleCardInputMaxNum, instructionHeader);
+		return;
+
 	}
-	private void gotStageWeaponSelection(Card selected, Vector2 pos){
+	private void gotStageWeaponSelection(GameObject selected, Vector2 pos){
+		//Card selected = selectedObj.GetComponent<CardButtonUI>().getCard();
 		if(!checkIfArrayContainsCard(multipleCardInput, selected))
 		{
-			Instantiate(Resources.Load("UISelectedCard"), pos, Quaternion.identity);	
-			for(int i = 0; i < multipleCardInput.Length; i++) {  //Find the next empty spot in multipleCardInput
-				if(multipleCardInput[i] == null) { 
-					multipleCardInput[i] = selected; //Add the new selected card to multipleCardInput
-					return;
-				}
-			}
+			
+			addNewCardToMultipleCardArray(selected, pos);
 		}
 		else
 		{
@@ -362,30 +424,46 @@ public class UI : MonoBehaviour {
 			clearGameObjectArray(cardsToShow);
 		}
 			
-		if(playerBP == null) { playerBP = createHeaderMessage(panelWidth/4, panelHeight/2, " ");}
-		if(enemyBP == null) { enemyBP = createHeaderMessage(panelWidth - panelWidth/4, panelHeight/2, " ");}
+		
 		
 		showCard(activeQuest.getCurrentStage());
-		showCards(activeQuest.getStageWeapons(activeQuest.getCurrentStageNum()), new Vector2(panelPosX + panelWidth/10, panelPosY) , new Vector2(10,10));
 		activePlayer = activeQuest.getCurrentPlayer();
-		changeHeaderMessage("Player BP: " + activePlayer.getBP(), playerBP);
-		changeHeaderMessage("Enemy BP: " + activeQuest.getStageBP(activeQuest.getCurrentStageNum()), enemyBP);
 		changeHeaderMessage(activePlayer.getName() + "'s turn", headerCurrPlayer);	
-		changeHeaderMessage("Select the cards you wish to play to defeat this foe.", instructionHeader);	
-		createButtonMessage(panelPosX, panelPosY - panelHeight/10, "FIGHT");
+		if(Object.ReferenceEquals(activeQuest.getCurrentStage().GetType(), typeof(Foe))) {
+			Destroy(currentBid);
+			Destroy(highestBid);
+			
+			if(playerBP == null) { playerBP = createHeaderMessage(panelWidth/4, panelHeight/2, " ");}
+			if(enemyBP == null) { enemyBP = createHeaderMessage(panelWidth - panelWidth/4, panelHeight/2, " ");}
+			showCards(activeQuest.getStageWeapons(activeQuest.getCurrentStageNum()), new Vector2(panelPosX + panelWidth/10, panelPosY) , new Vector2(10,10));
+			changeHeaderMessage("Player BP: " + activePlayer.getBP(), playerBP);
+			changeHeaderMessage("Enemy BP: " + activeQuest.getStageBP(activeQuest.getCurrentStageNum()), enemyBP);
+			changeHeaderMessage("Select the cards you wish to play to defeat this foe.", instructionHeader);	
+			//createButtonMessage(panelPosX, panelPosY - panelHeight/10, "FIGHT");
+			gameState = state.ASKINGFORCARDSINQUEST;
+		}
+		else if(Object.ReferenceEquals(activeQuest.getCurrentStage().GetType(), typeof(Test))) {
+			Destroy(enemyBP);
+			Destroy(playerBP);
+			
+			if(currentBid == null) { currentBid = createHeaderMessage(panelWidth/4, panelHeight/2, " ");}
+			if(highestBid == null) { highestBid = createHeaderMessage(panelWidth - panelWidth/4, panelHeight/2, " ");}
+			changeHeaderMessage("Current bid: 0", currentBid);
+			changeHeaderMessage("Highest bid: " + activeQuest.getHighestBid(), highestBid);
+			gameState = state.ASKINGFORCARDSINBID;
+		}
 		createButtonMessage(panelPosX - panelWidth/5, panelPosY + panelHeight/5, "Give up");
-		gameState = state.ASKINGFORCARDSINQUEST;
+		
 
 	}
 	
 	//Other utilities
-	public void displayAlert(string input)
-	{
+	public void displayAlert(string input) {
 		changeHeaderMessage(input, messageHeader);
 	}
 	private Card[] cleanUpArray(Card [] oldArr){
 		int newN = 0;
-		if(oldArr[0] == null) { return null; }
+		if(oldArr == null) { return null; }
 		for(int i = 0; i< oldArr.Length; i++)
 		{
 			if(oldArr[i] == null)
@@ -403,23 +481,33 @@ public class UI : MonoBehaviour {
 		
 	}
 	
-	private Card[] getOnlyTypeFromDeck(Card[] deck, bool getFoes, bool getWeap, bool getAlly, bool getAmour){
+	private Card[] getOnlyTypeFromDeck(Card[] deck, bool getFoes, bool getWeap, bool getAlly, bool getAmour, bool getTest){
+		if(deck.Length == null){
+			Debug.Log("No cards to show");
+			return null;
+			}
 		Card[] tempHand = new Card[deck.Length];
 		int counter = 0;
 		for(int i = 0; i < deck.Length; i++ )
 		{
-			if (Object.ReferenceEquals (deck [i].GetType (), typeof(Foe)) && getFoes) {
-				tempHand [counter] = deck [i];
-				counter++;
-			} else if (Object.ReferenceEquals (deck [i].GetType (), typeof(Weapon)) && getWeap) {
-				tempHand [counter] = deck [i];
-				counter++;
-			} else if (Object.ReferenceEquals (deck [i].GetType (), typeof(Ally)) && getAlly) {
-				tempHand [counter] = deck [i];
-				counter++;
-			} else if (Object.ReferenceEquals (deck [i].GetType (), typeof(Amour)) && getAmour) {
-				tempHand [counter] = deck [i];
-				counter++;
+			if(deck[i] != null){
+				if (Object.ReferenceEquals (deck [i].GetType (), typeof(Foe)) && getFoes) {
+					tempHand [counter] = deck [i];
+					counter++;
+				} else if (Object.ReferenceEquals (deck [i].GetType (), typeof(Weapon)) && getWeap) {
+					tempHand [counter] = deck [i];
+					counter++;
+				} else if (Object.ReferenceEquals (deck [i].GetType (), typeof(Ally)) && getAlly) {
+					tempHand [counter] = deck [i];
+					counter++;
+				} else if (Object.ReferenceEquals (deck [i].GetType (), typeof(Amour)) && getAmour) {
+					tempHand [counter] = deck [i];
+					counter++;
+				}
+				else if (Object.ReferenceEquals (deck [i].GetType (), typeof(Test)) && getTest) {
+					tempHand [counter] = deck [i];
+					counter++;
+				}
 			}
 		}
 		
@@ -432,17 +520,39 @@ public class UI : MonoBehaviour {
 		return newTempHand;
 	}
 	
-	public void endQuest()
-	{
+	public void endQuest() {
 		clearGameObjectArray(currButtons);
 		Destroy(enemyBP);
 		Destroy(playerBP);
 		
 		enemyBP = null;
 		playerBP = null;
+		
+		Destroy(currentBid);
+		Destroy(highestBid);
+		
+		currentBid = null;
+		highestBid = null;
 	}
-	
-	private bool checkIfArrayContainsCard(Card[] arr, Card cardToFind) {
+	private void addNewCardToMultipleCardArray(GameObject selected, Vector2 pos) {
+		selected.GetComponent<CardButtonUI>().setSelectedCardIcon((GameObject)Instantiate(Resources.Load("UISelectedCard"), pos, Quaternion.identity));	
+		if(multipleCardInput == null){
+			multipleCardInput = new GameObject[]{selected};
+			multipleCardInput[0].GetComponent<CardButtonUI>().setIndexInSelection(0);
+		}
+		else {
+			GameObject [] temp = new GameObject[multipleCardInput.Length+1];
+			for(int i = 0 ; i < multipleCardInput.Length; i++) {
+				temp[i] = multipleCardInput[i];
+			}
+			temp[temp.Length-1] = selected;
+			temp[temp.Length-1].GetComponent<CardButtonUI>().setIndexInSelection(temp.Length-1);
+			multipleCardInput = null;
+			multipleCardInput = temp;
+		}
+		return;
+	}
+	private bool checkIfArrayContainsCard(GameObject[] arr, GameObject cardToFind) {
 		if(arr == null) { return false;}
 		for(int i = 0; i < arr.Length; i++){
 			if(arr[i] == cardToFind){
@@ -450,5 +560,25 @@ public class UI : MonoBehaviour {
 			}
 		}
 		return false;
+	}
+	private int getPlayersBP() {
+		int extraBP = 0;
+		for(int i = 0; i< multipleCardInput.Length; i++)
+		{
+			if(multipleCardInput[i] == null){break;}
+			extraBP = extraBP + multipleCardInput[i].GetComponent<CardButtonUI>().getCard().getBP();
+		}
+		return activePlayer.getBP() + extraBP;
+	}
+	private Card[] gameObjectArrayToCardArray(GameObject[] arr){ 
+		if(arr == null){ return null;}
+		Card[] newArr = new Card[arr.Length];
+		for(int i = 0; i< arr.Length; i++) {
+			newArr[i] = arr[i].GetComponent<CardButtonUI>().getCard();
+			Debug.Log(newArr[i]);
+		}
+		
+		return newArr;
+	
 	}
 }

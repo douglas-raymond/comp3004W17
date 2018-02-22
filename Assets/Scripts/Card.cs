@@ -20,16 +20,14 @@ public abstract class Card {
 	{
 		return name;
 	}
-	public string getType()
-	{
-		return type;
-	}
+	public string getType() { return type; }
 	public Sprite getSprite()
 	{
 		return sprite;
 	}
 	public virtual int getBP() {return -1;}
 	public virtual int getAltBP() {return -1;}
+	public virtual int getMinBid() {return -1;}
 
 
 }
