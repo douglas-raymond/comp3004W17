@@ -117,7 +117,6 @@ public class GameManager : MonoBehaviour {
 		//ui.askForStageSelection(activeQuest.getSponsor(), activeQuest.getStageNum());
 		ui.askForCards(
 			activeQuest.getSponsor(), 
-			activeQuest.getStageNum(), 
 			GameState.state.ASKINGFORSTAGES, 
 			"Select up to " + activeQuest.getStageNum() + " stages", 
 			"null",
@@ -126,7 +125,8 @@ public class GameManager : MonoBehaviour {
 			false, 
 			false,
 			false,
-			true
+			true,
+			activeQuest.getStageNum()
 			);
 	}	
 	public void endQuestSetup(Card[] stages){
@@ -147,7 +147,6 @@ public class GameManager : MonoBehaviour {
 	public void startStageWeaponSetup(){
 		ui.askForCards(
 			activeQuest.getSponsor(), 
-			activeQuest.getSponsor().getHand().Length, 
 			GameState.state.ASKINGFORSTAGEWEAPONS, 
 			"Select weapons to enhance this stage", 
 			"Done", 
@@ -200,8 +199,7 @@ public class GameManager : MonoBehaviour {
 				ui.displayAlert("Invalid selection. Stage's BP must be in increasing order.");
 				activeQuest.resetQuest();
 				ui.askForCards(
-					activeQuest.getSponsor(), 
-					activeQuest.getStageNum(), 
+					activeQuest.getSponsor(),  
 					GameState.state.ASKINGFORSTAGES, 
 					"Select up to " + activeQuest.getStageNum() + " stages", 
 					"Forfeit", 
@@ -210,7 +208,8 @@ public class GameManager : MonoBehaviour {
 					false, 
 					false,
 					false,
-					true
+					true,
+					activeQuest.getStageNum()
 					);
 				return;
 			}
@@ -281,7 +280,6 @@ public class GameManager : MonoBehaviour {
 				Debug.Log(activeQuest.getCurrentStageNum());
 				ui.askForCards(
 								activeQuest.getCurrentPlayer(), 
-								activeQuest.getCurrentPlayer().getHand().Length, 
 								GameState.state.ASKINGFORCARDSINQUEST, 
 								"Select cards to play, then press FIGHT", 
 								"FIGHT",
@@ -294,8 +292,7 @@ public class GameManager : MonoBehaviour {
 			}
 			if(Object.ReferenceEquals(activeQuest.getCurrentStage().GetType(), typeof(Test))) {			
 				ui.askForCards(
-								activeQuest.getCurrentPlayer(), 
-								activeQuest.getCurrentPlayer().getHand().Length, 
+								activeQuest.getCurrentPlayer(),  
 								GameState.state.ASKINGFORCARDSINBID, 
 								"Select cards to bit, then press BID", 
 								"BID",
@@ -326,7 +323,6 @@ public class GameManager : MonoBehaviour {
 			ui.displayAlert("Bid too low. Bid more cards of forfeit the quest.");
 			ui.askForCards(
 							activeQuest.getCurrentPlayer(), 
-							activeQuest.getCurrentPlayer().getHand().Length, 
 							GameState.state.ASKINGFORCARDSINBID, 
 							"Select cards to bit, then press BID", 
 							"BID",
@@ -363,7 +359,6 @@ public class GameManager : MonoBehaviour {
 			ui.displayAlert("Too weak to defeat foe!");
 			ui.askForCards(
 							activeQuest.getCurrentPlayer(), 
-							activeQuest.getCurrentPlayer().getHand().Length, 
 							GameState.state.ASKINGFORCARDSINQUEST, 
 							"Select cards to play, then press FIGHT", 
 							"FIGHT",
