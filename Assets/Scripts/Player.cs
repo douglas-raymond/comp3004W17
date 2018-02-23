@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Player {
 
-	public Card[] hand,inPlay;
+	public Card[] hand;
 	protected int shields;
 	public int rank;
 	private string name;
@@ -22,8 +22,21 @@ public class Player {
 	}
 	public void addShields(int newShields)
 	{
-		shields += newShields;
-		changeRank();
+		shields = shields + newShields;
+		if(shields >= 5 && rank == 0) {rank = 1; shields = shields-5; BP = 10;}
+		if(shields >= 7 && rank == 1) {rank = 2; shields = shields-7; BP = 20;}
+		if(shields >= 10 && rank == 2) {rank = 3; shields = shields-10;}
+	}
+
+	public void removeShields(int shieldLoss){
+		if (shields < shieldLoss) {
+			shields = 0;
+			return;
+		} else {
+			shields = shields - shieldLoss;
+			return;
+		}
+
 	}
 	public Card[] getHand(){
 		return hand;
@@ -36,6 +49,15 @@ public class Player {
 	public int getBP(){
 		return BP;
 	}
+
+	public int getRank(){
+		return rank;
+	}
+
+	public int getShields(){
+		return shields;
+	}
+
 	public void discardCard(Card [] card){
 		if(card == null) {Debug.Log("Removing nothing"); return;}
 		int n = hand.Length;
@@ -79,22 +101,8 @@ public class Player {
 		}
 		hand = null;
 		hand = temp;
-		return;	
-	}
-
-	public void changeRank(){
-		if (rank == 0 && shields >= 5) {
-			rank = 1;
-			if (shields > 5)
-				shields -= 5;
-		} else if (rank == 1 && shields >= 7) {
-			rank = 2;
-			if (shields > 7)
-				shields -= 7;
-		} else if (rank == 2 && shields >= 10) {
-			rank = 3;
-		}
-			
+		return;
+		
 	}
 	
 	public bool isNextRank(){
