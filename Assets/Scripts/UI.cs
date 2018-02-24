@@ -14,6 +14,8 @@ public class UI : MonoBehaviour {
 	GameObject[] currButtons;
 	GameObject[] cardsToShow;
 	GameObject[] currIcons;
+	GameObject[] currPlayerHand;
+	
 	//public Card inputCard;
 	GameManager gm;
 	Logger log = new Logger("UI");
@@ -44,6 +46,10 @@ public class UI : MonoBehaviour {
 	float panelPosX;
 	float panelPosY;
 	
+	ShowHandUI showHandUI;
+	
+	
+	
 	public UI(GameManager _gm) {
 		
 		canvas = GameObject.Find("Canvas");
@@ -53,9 +59,13 @@ public class UI : MonoBehaviour {
 		panelPosY = canvas.GetComponent<RectTransform>().position.y;
 		gm = _gm;
 		
-		instructionHeader  = createHeaderMessage(panelPosX, panelPosY + panelHeight/4, "Current action required");	
-		headerCurrPlayer  = createHeaderMessage(panelPosX, panelPosY + panelHeight/5, "Current player's turn");	
-		messageHeader  = createHeaderMessage(panelPosX, panelPosY - panelHeight/2, " ");	
+		instructionHeader  = createHeaderMessage(panelPosX, panelPosY + panelHeight/3 + panelHeight/15, new Vector3(0,0,0), "Current action required");	
+		headerCurrPlayer  = createHeaderMessage(panelPosX, panelPosY + panelHeight/3, new Vector3(0,0,0), "Current player's turn");	
+		messageHeader  = createHeaderMessage(panelPosX, panelPosY - panelHeight/3, new Vector3(0,0,0), " ");	
+		
+		
+		GameObject showHandUITemp = (GameObject)Instantiate(Resources.Load("UIShowHand"), new Vector2(panelPosX + panelWidth/3, panelPosY + panelHeight/4) , Quaternion.identity);
+		showHandUITemp.GetComponent<ShowHandUI>().init(this);
 	}
 	
 	void Start () { }
@@ -104,6 +114,7 @@ public class UI : MonoBehaviour {
 			}
 		}
 		currIcons = new GameObject[n];
+		Debug.Log(currPlayerHand.Length);
 		float buffer = panelWidth/20;
 		float cardWidth = panelWidth/15;
 		float offsetX = (panelWidth - buffer)/6;
@@ -113,6 +124,7 @@ public class UI : MonoBehaviour {
 			currIcons[i] = (GameObject)Instantiate(Resources.Load("UICard"), pos , Quaternion.identity);			
 			currIcons[i].GetComponent<CardUI>().init(hand[i], this, pos, scale);
 		}
+		Debug.Log(currPlayerHand.Length);
 		return cardsToShow;
 	}
 	public void gotCardSelection(GameObject selected){
@@ -394,16 +406,16 @@ public class UI : MonoBehaviour {
 		return tempButton;
 	}
 	
-	private GameObject createHeaderMessage(float x, float y, string input = "Header") {
+	private GameObject createHeaderMessage(float x, float y, Vector3 color, string input = "Header") {
 		GameObject header;
 		header = (GameObject)Instantiate(Resources.Load("UIHeader"), new Vector2(x, y), Quaternion.identity);	
-		header.GetComponent<HeaderUI>().init();
+		header.GetComponent<HeaderUI>().init(color);
 		changeHeaderMessage(input, header);
 		return header;
 	}
 	
 	private void changeHeaderMessage(string input, GameObject header){
-		header.GetComponent<Text>().text = input;
+		header.GetComponent<TextMesh>().text = input;
 	}
 	
 	public void showCard(Card cardToShow){
@@ -433,8 +445,8 @@ public class UI : MonoBehaviour {
 			Destroy(currentBid);
 			Destroy(highestBid);
 			
-			if(playerBP == null) { playerBP = createHeaderMessage(panelWidth/4, panelHeight/2, " ");}
-			if(enemyBP == null) { enemyBP = createHeaderMessage(panelWidth - panelWidth/4, panelHeight/2, " ");}
+			if(playerBP == null) { playerBP = createHeaderMessage(panelWidth/4, panelHeight/2, new Vector3(0,0,0), " ");}
+			if(enemyBP == null) { enemyBP = createHeaderMessage(panelWidth - panelWidth/4, panelHeight/2, new Vector3(0,0,0), " ");}
 			showCards(activeQuest.getStageWeapons(activeQuest.getCurrentStageNum()), new Vector2(panelPosX + panelWidth/10, panelPosY) , new Vector2(10,10));
 			changeHeaderMessage("Player BP: " + activePlayer.getBP(), playerBP);
 			changeHeaderMessage("Enemy BP: " + activeQuest.getStageBP(activeQuest.getCurrentStageNum()), enemyBP);
@@ -446,8 +458,8 @@ public class UI : MonoBehaviour {
 			Destroy(enemyBP);
 			Destroy(playerBP);
 			
-			if(currentBid == null) { currentBid = createHeaderMessage(panelWidth/4, panelHeight/2, " ");}
-			if(highestBid == null) { highestBid = createHeaderMessage(panelWidth - panelWidth/4, panelHeight/2, " ");}
+			if(currentBid == null) { currentBid = createHeaderMessage(panelWidth/4, panelHeight/2, new Vector3(0,0,0), " ");}
+			if(highestBid == null) { highestBid = createHeaderMessage(panelWidth - panelWidth/4, panelHeight/2, new Vector3(0,0,0), " ");}
 			changeHeaderMessage("Current bid: 0", currentBid);
 			changeHeaderMessage("Highest bid: " + activeQuest.getHighestBid(), highestBid);
 			gameState = state.ASKINGFORCARDSINBID;
@@ -581,4 +593,57 @@ public class UI : MonoBehaviour {
 		return newArr;
 	
 	}
+	
+	
+	
+	public string[] mouseOverShowHandIcon() {
+		Player currPlayer = gm.getCurrentPlayer();
+		
+		Card [] tempCardsToShow = gm.getCurrentPlayer().getHand();
+		int n = tempCardsToShow.Length;
+		currPlayerHand = new GameObject[n];
+		float cardWidth = panelWidth/10;
+		float cardSpacing = cardWidth/3;
+		float totalDeckWidth = (n-1)*cardSpacing + (n-1)*cardWidth;
+		string[] mouseOverShowHandUIHeaders = new string[]{
+			currPlayer.getName(),
+			"Rank: " + currPlayer.getRank(),
+			"Shields: " + currPlayer.getShields()
+			
+		};
+		for(int i = 0; i< n/2; i++)
+		{	
+			if(tempCardsToShow[i] != null){
+				Vector2 pos = new Vector2(panelPosX - totalDeckWidth/4 + i*cardWidth + (i+1)*cardSpacing, panelPosY);
+				currPlayerHand[i] = (GameObject)Instantiate(Resources.Load("UICard"), pos , Quaternion.identity);			
+				currPlayerHand[i].GetComponent<CardUI>().init(tempCardsToShow[i], this, pos, new Vector2(15,15));
+				
+				currPlayerHand[i].GetComponent<SpriteRenderer>().sortingOrder = 4;
+			}
+		}
+		for(int i = n/2; i< n; i++)
+		{	
+			if(tempCardsToShow[i] != null){
+				Vector2 pos = new Vector2(panelPosX - totalDeckWidth/4 + (i-n/2)*cardWidth + ((i+1)-n/2)*cardSpacing, panelPosY- cardWidth*2);
+				currPlayerHand[i] = (GameObject)Instantiate(Resources.Load("UICard"), pos , Quaternion.identity);			
+				currPlayerHand[i].GetComponent<CardUI>().init(tempCardsToShow[i], this, pos, new Vector2(15,15));
+				
+				currPlayerHand[i].GetComponent<SpriteRenderer>().sortingOrder = 4;
+			}
+		}
+		
+		return mouseOverShowHandUIHeaders;
+	}
+	
+	public void mouseLeaveShowHandIcon() {
+
+		if(currPlayerHand .Length != null) {
+			for(int i = 0; i< currPlayerHand.Length; i++) {
+				Destroy(currPlayerHand[i]);
+			}
+			
+			//currPlayerHand = null;
+		}
+	}
+	
 }
