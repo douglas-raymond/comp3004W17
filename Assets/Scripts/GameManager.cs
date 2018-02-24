@@ -58,8 +58,10 @@ public class GameManager : MonoBehaviour {
 		dealHands(playerCount);
 		log.log ("Dealing hands, drawing first quest");
 		drawQuestCard();
+		activePlayerSub = -1;
 	}
 	private void drawQuestCard(){
+		activePlayerSub = -1;
 		Debug.Log("before: " + activePlayerMeta);
 		activePlayerMeta = nextPlayer(activePlayerMeta);
 		Debug.Log("after: " + activePlayerMeta);
@@ -119,6 +121,7 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 	public void startQuestSetup(){
+		activePlayerSub = activePlayerMeta;
 		activeQuest.setSponsor(players[activePlayerSub]);
 		//ui.askForStageSelection(activeQuest.getSponsor(), activeQuest.getStageNum());
 		ui.askForCards(
@@ -270,8 +273,7 @@ public class GameManager : MonoBehaviour {
 		Debug.Log("starting quest");
 		activeQuest.setStage(0);
 		Debug.Log(activeQuest.getCurrentPlayer().getName());
-		startStage();
-		
+		startStage();		
 	}
 	public void startStage() {
 		if(activeQuest.getQuest() == null) {
@@ -413,5 +415,19 @@ public class GameManager : MonoBehaviour {
 			temp = 0;
 		}
 		return temp;
+	}
+	public Player getCurrentPlayer() {
+		if(activeQuest != null && activeQuest.isInProgress()) {
+			Debug.Log("returning activePlayer in quest");
+			return activeQuest.getCurrentPlayer();
+		}
+		else if(activePlayerSub != -1) {
+			Debug.Log("returning activePlayerSub ");
+			return players[activePlayerSub];
+		}
+		else {
+			Debug.Log("returning activePlayerMeta ");
+			return players[activePlayerMeta];
+		}
 	}
 }

@@ -16,6 +16,8 @@ public class ActiveQuest{
 	int highestBid;
 	Player highestBidder;
 	Card [] tentativeBet;
+	
+	bool inProgress;
 	public ActiveQuest(QuestCard _quest) {
 		quest = _quest;
 		stageNum = _quest.getStages();
@@ -23,6 +25,7 @@ public class ActiveQuest{
 		currentStage = 0;
 		highestBid = -1;
 		highestBidder = null;
+		inProgress = false;
 	}
 	
 	public void addPlayer(Player newPlayer) {
@@ -87,6 +90,7 @@ public class ActiveQuest{
 			players[i].addShields(stageNum);
 		}
 		quest = null;
+		inProgress = false;
 	}
 
 	public void nextPlayer() {
@@ -249,4 +253,6 @@ public class ActiveQuest{
 		}
 		return (baseBP + extraBP);
 	}
+	
+	public bool isInProgress() { return inProgress;}
 }
