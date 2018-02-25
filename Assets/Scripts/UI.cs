@@ -18,7 +18,7 @@ public class UI : MonoBehaviour {
 	Logger log = new Logger("UI");
 	
 
-	state gameState = state.STANDBY;
+	// gameState = state.STANDBY;
 	
 	GameObject[] multipleCardInput;
 	
@@ -111,22 +111,22 @@ public class UI : MonoBehaviour {
 	}
 	public void gotCardSelection(GameObject selected){
 		/*
-		This method is called when a card is clicked. Depending on the current gameState, a difference received mthod will be called.
+		This method is called when a card is clicked. Depending on the current gm.getUserInputState(), a difference received mthod will be called.
 		*/
-		if (gameState == state.ASKINGFORSTAGES) {
+		if (gm.getUserInputState() == state.ASKINGFORSTAGES) {
 			gotStageSelection(selected, selected.GetComponent<CardButtonUI>().getPos());
 		}
-		else if (gameState == state.ASKINGFORCARDSINQUEST) {
+		else if (gm.getUserInputState() == state.ASKINGFORCARDSINQUEST) {
 			gotBattleCardSelection(selected, selected.GetComponent<CardButtonUI>().getPos());
 		}
-		else if (gameState == state.ASKINGFORCARDSINBID) {
+		else if (gm.getUserInputState() == state.ASKINGFORCARDSINBID) {
 			gotBidCardSelection(selected, selected.GetComponent<CardButtonUI>().getPos());
 		}
-		else if (gameState == state.ASKINGFORSTAGEWEAPONS) {
+		else if (gm.getUserInputState() == state.ASKINGFORSTAGEWEAPONS) {
 			gotStageWeaponSelection(selected, selected.GetComponent<CardButtonUI>().getPos());
 		}
 		
-		else if (gameState == state.ASKINGFORCARDSTODISCARD) {
+		else if (gm.getUserInputState() == state.ASKINGFORCARDSTODISCARD) {
 			gotCardToDiscardSelection(selected, selected.GetComponent<CardButtonUI>().getPos());
 		}
 	}
@@ -136,7 +136,7 @@ public class UI : MonoBehaviour {
 		This method is called when a card is clicked. Depending on the current gameState, a difference received mthod will be called.
 		*/
 		
-		if(selected == null) {Debug.Log("Removing nothing"); return;}
+		if(selected == null) { return;}
 		int n = multipleCardInput.Length;
 		int j = -1;
 		GameObject[] temp = new GameObject[n-1];
@@ -170,10 +170,10 @@ public class UI : MonoBehaviour {
 		for(int i = 0; i < multipleCardInput.Length; i++) {
 			multipleCardInput[i].GetComponent<CardButtonUI>().setIndexInSelection(i);
 		}
-		if (gameState == state.ASKINGFORCARDSINQUEST) {
+		if (gm.getUserInputState() == state.ASKINGFORCARDSINQUEST) {
 			changeHeaderMessage("Player BP: " + getPlayersBP(), playerBP);
 		}
-		if (gameState == state.ASKINGFORCARDSINBID) {
+		if (gm.getUserInputState() == state.ASKINGFORCARDSINBID) {
 			int currentBidCounter;
 			if(multipleCardInput.Length == null){currentBidCounter = 0;}
 			else{currentBidCounter = multipleCardInput.Length;}
@@ -183,11 +183,11 @@ public class UI : MonoBehaviour {
 	}
 	public void gotButtonClick(string input) {
 		//This method is called when a button is clicked
-		if(gameState == state.ASKINGFORSPONSORS) { //If the game is current looking for sponsors
+		if(gm.getUserInputState() == state.ASKINGFORSPONSORS) { //If the game is current looking for sponsors
 			log.log("currently asking for sponsors");
 			if(input.Equals("Yes")) { //If the current player wants to be sponsor
 				log.log("player clicked yes");
-				gameState = state.STANDBY; 
+				gm.setUserInputState(state.STANDBY); 
 				clearGameObjectArray(currButtons);
 				log.log ("telling GM to set up quest");
 				gm.startQuestSetup(); //Tell GameManager to set the current player as sponsor
@@ -197,11 +197,11 @@ public class UI : MonoBehaviour {
 				gm.getSponsor(); //Other wise have GameManager call getSponsor for the next player.
 			}
 		}
-		else if(gameState == state.ASKINGFORPLAYERS){
+		else if(gm.getUserInputState() == state.ASKINGFORPLAYERS){
 			log.log ("currently asking for players");
 			if(input.Equals("Yes")) { //If the current player wants to be sponsor 
 				log.log("player clicked yes");
-				gameState = state.STANDBY; 
+				gm.setUserInputState(state.STANDBY); 
 				clearGameObjectArray(currButtons);
 				log.log ("telling GM we have an active player");
 				gm.gotPlayer(activePlayer); //Tell GameManager to set the current player as sponsor
@@ -212,7 +212,7 @@ public class UI : MonoBehaviour {
 				gm.gotPlayer(null); //Other wise have GameManager call getSponsor for the next player.
 			}
 		}
-		else if(gameState == state.ASKINGFORCARDSINQUEST){
+		else if(gm.getUserInputState() == state.ASKINGFORCARDSINQUEST){
 			log.log ("asking for cards in quest");
 			if(input.Equals("FIGHT")) {
 				gm.questAttack(gameObjectArrayToCardArray(multipleCardInput));
@@ -221,7 +221,7 @@ public class UI : MonoBehaviour {
 				gm.forfeitQuest();
 			}
 		}
-		else if(gameState == state.ASKINGFORCARDSINBID){
+		else if(gm.getUserInputState() == state.ASKINGFORCARDSINBID){
 			log.log ("got for cards in bid");
 			if(input.Equals("BID")) {
 				gm.bidPhase(gameObjectArrayToCardArray(multipleCardInput));
@@ -230,19 +230,18 @@ public class UI : MonoBehaviour {
 				gm.forfeitQuest();
 			}
 		}
-		else if(gameState == state.ASKINGFORSTAGES) {
+		else if(gm.getUserInputState() == state.ASKINGFORSTAGES) {
 			log.log ("asking for stages");
 			clearGameObjectArray(currButtons);
 			clearGameObjectArray(cardsToShow);
 			gm.endQuest("Quest forfeited");
 			displayAlert("Quest forfeited");
 		}
-		else if(gameState == state.ASKINGFORSTAGEWEAPONS) {
+		else if(gm.getUserInputState() == state.ASKINGFORSTAGEWEAPONS) {
 			clearGameObjectArray(currButtons);
 			clearGameObjectArray(cardsToShow);
 			if(multipleCardInput == null)
 			{
-				Debug.Log("No battle cards selected");
 				gm.endStageWeaponSetup(null);
 			}
 			else{
@@ -251,7 +250,7 @@ public class UI : MonoBehaviour {
 		}
 	}
 	
-	public void askForCards(Player player,  state newState, string instructions, string button1, string button2, bool getFoes, bool getWeap, bool getAlly, bool getAmour, bool getTest, int n = -1) {
+	public void askForCards(Player player, state newState, string instructions, string button1, string button2, bool getFoes, bool getWeap, bool getAlly, bool getAmour, bool getTest, int n = -1) {
 		clearGameObjectArray(cardsToShow);
 		clearGameObjectArray(currButtons);
 		multipleCardInputMaxNum = n;
@@ -259,7 +258,8 @@ public class UI : MonoBehaviour {
 		Card [] cards = getOnlyTypeFromDeck(player.getHand(), getFoes, getWeap, getAlly, getAmour, getTest);
 		if(cards == null) { return; }
 		cardsToShow = showHand(cards); //Display the cards
-		gameState = newState;
+		gm.setUserInputState(newState);
+		Debug.Log(gm.getUserInputState());
 		multipleCardInput = null; //Get multipleCardInput ready to hold the new card choices
 		changeHeaderMessage(instructions, instructionHeader);
 		if(!button1.Equals("null")){
@@ -308,10 +308,8 @@ public class UI : MonoBehaviour {
 		
 		if(multipleCardInput.Length == multipleCardInputMaxNum) {  //If all the cards has been chosen
 			changeHeaderMessage("Stages selected", instructionHeader); //Update header
-			gameState = state.STANDBY;
+			gm.setUserInputState(state.STANDBY);
 			clearGameObjectArray(cardsToShow);	
-			
-			gameState = state.STANDBY;
 			
 			Card [] temp = gameObjectArrayToCardArray(multipleCardInput);
 			gm.endQuestSetup(gameObjectArrayToCardArray(multipleCardInput)); //Send cards back to GameManager
@@ -339,7 +337,7 @@ public class UI : MonoBehaviour {
 		addNewCardToMultipleCardArray(selected, pos);
 		
 		if(multipleCardInput.Length == multipleCardInputMaxNum) {  //If all the cards has been chosen
-			gameState = state.STANDBY;
+			//gm.setUserInputState(state.STANDBY);
 			clearGameObjectArray(cardsToShow);	
 			Card [] temp = gameObjectArrayToCardArray(multipleCardInput);
 			gm.gotCardLimitReached(gameObjectArrayToCardArray(multipleCardInput)); //Send cards back to GameManager
@@ -356,7 +354,7 @@ public class UI : MonoBehaviour {
 		will have the appropriate action done according to the current state.
 		*/
 		clearGameObjectArray(currButtons);
-		gameState = messageState;
+		gm.setUserInputState(messageState);
 		activePlayer = player;
 		
 		changeHeaderMessage(activePlayer.getName() + "'s turn", headerCurrPlayer);	
@@ -436,7 +434,7 @@ public class UI : MonoBehaviour {
 		clearGameObjectArray(currButtons);
 		if(activeQuest.getQuest() == null)
 		{
-			gameState = state.STANDBY;
+			gm.setUserInputState(state.STANDBY);
 			clearGameObjectArray(cardsToShow);
 		}
 			
@@ -456,7 +454,7 @@ public class UI : MonoBehaviour {
 			changeHeaderMessage("Enemy BP: " + activeQuest.getStageBP(activeQuest.getCurrentStageNum()), enemyBP);
 			changeHeaderMessage("Select the cards you wish to play to defeat this foe.", instructionHeader);	
 			//createButtonMessage(panelPosX, panelPosY - panelHeight/10, "FIGHT");
-			gameState = state.ASKINGFORCARDSINQUEST;
+			gm.setUserInputState(state.ASKINGFORCARDSINQUEST);
 		}
 		else if(Object.ReferenceEquals(activeQuest.getCurrentStage().GetType(), typeof(Test))) {
 			Destroy(enemyBP);
@@ -466,7 +464,7 @@ public class UI : MonoBehaviour {
 			if(highestBid == null) { highestBid = createHeaderMessage(panelPosX + panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}
 			changeHeaderMessage("Current bid: 0", currentBid);
 			changeHeaderMessage("Highest bid: " + activeQuest.getHighestBid(), highestBid);
-			gameState = state.ASKINGFORCARDSINBID;
+			gm.setUserInputState(state.ASKINGFORCARDSINBID);
 		}
 		createButtonMessage(panelPosX - panelWidth/5, panelPosY + panelHeight/5, "Give up");
 		
@@ -499,7 +497,6 @@ public class UI : MonoBehaviour {
 	
 	private Card[] getOnlyTypeFromDeck(Card[] deck, bool getFoes, bool getWeap, bool getAlly, bool getAmour, bool getTest){
 		if(deck.Length == null){
-			Debug.Log("No cards to show");
 			return null;
 			}
 		Card[] tempHand = new Card[deck.Length];
@@ -615,8 +612,6 @@ public class UI : MonoBehaviour {
 
 		else { n2 = 0; }
 		
-				Debug.Log("n1: " + n1 + ", n2: "+ n2);
-		
 		currPlayerHand = new GameObject[n1 + n2];
 		float cardWidth = panelWidth/10;
 		float cardSpacing = cardWidth/3;
@@ -647,7 +642,7 @@ public class UI : MonoBehaviour {
 		}
 		
 		for(int i = n1; i< n1+n2; i++) {	
-		Debug.Log(tempCardsInPlayToShow[i-n1]);
+
 			if(tempCardsInPlayToShow[i-n1] != null){
 				
 				Vector2 pos = new Vector2(panelPosX - panelPosX/3 + (i-n1) * cardWidth, panelPosY + panelHeight/3 + panelHeight/10);
