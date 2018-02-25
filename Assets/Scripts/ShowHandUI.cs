@@ -25,8 +25,6 @@ public class ShowHandUI : MonoBehaviour {
 		panelHeight = canvas.GetComponent<RectTransform>().rect.height * canvas.GetComponent<RectTransform>().localScale.y;
 		panelPosX = canvas.GetComponent<RectTransform>().position.x;
 		panelPosY = canvas.GetComponent<RectTransform>().position.y;
-		
-		Debug.Log("dadsda");
 	}
 	
 	void Start () {

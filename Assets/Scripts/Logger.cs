@@ -30,7 +30,7 @@ public class Logger{
 	public void log(string msg)
 	{
 		StreamWriter file = new StreamWriter(path, true);
-		file.WriteLine("["+source+"]: "+msg);
+		file.WriteLine("INFO ["+source+"]: "+msg);
 		file.Close ();
 	}
 }

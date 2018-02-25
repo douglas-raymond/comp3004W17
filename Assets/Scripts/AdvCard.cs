@@ -13,7 +13,6 @@ public class AdvCard : Card {
 	{
 		name = _name;
 		BP = _BP;
-		log.log ("creating card " + name);
 	}
 	
 	public override int getBP(){return BP;}

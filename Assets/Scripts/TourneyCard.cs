@@ -13,6 +13,5 @@ public class TourneyCard : StoryCard {
 		type = _type;
 		shields = _shields;
 		sprite = _sprite;
-		log.log ("creating card " + name);
 	}
 }

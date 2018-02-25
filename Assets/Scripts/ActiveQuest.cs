@@ -286,4 +286,37 @@ public class ActiveQuest{
 		}
 	}
 	
+	public string getStageWeaponString() {
+		string stringToReturn = "";
+		if(stageWeapons[currentStage][0] != null) {
+			for(int i = 0; i < stageWeapons[currentStage].Length; i++){
+				stringToReturn = stringToReturn + stageWeapons[currentStage][i].getName();
+				if((i+1) == stageWeapons[currentStage].Length){
+					stringToReturn = stringToReturn +  ", ";
+				}
+				else {
+					stringToReturn = stringToReturn +  " ";
+				}
+			}
+		}
+		else {
+			return null;
+		}
+		return stringToReturn;
+	}
+	
+	public string getPlayersString() {
+		string stringToReturn = "";
+		for(int i = 0; i < players.Length; i++){
+			stringToReturn = stringToReturn + players[i].getName();
+			if((i+1) == players.Length){
+				stringToReturn = stringToReturn +  ", ";
+			}
+			else {
+				stringToReturn = stringToReturn +  " ";
+			}
+		}
+		return stringToReturn;
+	}
+	
 }

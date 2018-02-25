@@ -15,7 +15,6 @@ public class QuestCard : StoryCard {
 		stages = _stages;
 		special = _special;
 		sprite = _sprite;
-		log.log ("creating card " + name);
 	}
 	
 	public int getStages(){
