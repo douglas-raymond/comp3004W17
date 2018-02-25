@@ -113,10 +113,8 @@ public class ActiveQuest{
 	}
 	
 	public void nextStage() {
-		Debug.Log("NEXT STAGE");
-		Debug.Log("CURRENT STAGE: " + stages[currentStage]);
+		
 		if(Object.ReferenceEquals(stages[currentStage].GetType(), typeof(Test))) {
-			Debug.Log("test over");
 			highestBidder.discardCard(tentativeBet);
 			players = new Player[1]; 
 			players[0] = highestBidder;
@@ -151,12 +149,18 @@ public class ActiveQuest{
 		}
 		return index;
 	}
+	
+	public Player getPlayer(int i) {
+		
+		return players[i];
+	}
 	public void resetQuest() {
 		currentStage = 0;
 		stageWeapons = null;
 		stages = null;
 		stageWeapons = new Card[stageNum][];
 		stages = new Card[stageNum];
+		inProgress = false;
 	}
 	public void setSponsor(Player player){
 		sponsor = player;
@@ -255,4 +259,17 @@ public class ActiveQuest{
 	}
 	
 	public bool isInProgress() { return inProgress;}
+	public void setQuestAsInProgress(){
+		inProgress = true;
+		currentStage = 0;
+	}
+	public bool isStageDone() {
+		if(getPlayerInt(currentPlayer) == players.Length-1) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
 }
