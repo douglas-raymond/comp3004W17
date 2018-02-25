@@ -10,6 +10,7 @@ public class Player {
 	public int rank;
 	private string name;
 	private int BP; 
+	Logger log = new Logger("PlayerNull");
 
 	public Player(Card[] _hand, int _shields, int _rank, string _name){
 		hand = _hand;
@@ -17,8 +18,13 @@ public class Player {
 		rank = _rank;
 		name = _name;
 		BP = 5;
-		Logger log = new Logger("Player: "+name);
+		log.setSource = "Player: " + name;
 	}
+
+	public Logger getLogger(){
+		return log;
+	}
+
 	public void setHand(Card[] newHand){
 		hand = newHand;
 	}
@@ -71,14 +77,17 @@ public class Player {
 	public void addShields(int newShields)
 	{
 		shields += newShields;
+		log.log ("Received " + newShields + " shields.");
 		changeRank();
 	}
 
-	public void removeShields(int remove){
-		if (remove > shields) {
+	public void removeShields(int _remove){
+		if (_remove > shields) {
+			log.log ("Lost " + shields + " shields, down to the minimum of zero.");
 			shields = 0;
 		} else {
-			shields = shields - remove;
+			log.log ("Lost " + _remove + "shields.");
+			shields = shields - _remove;
 		}
 	}
 
@@ -161,20 +170,20 @@ public class Player {
 		if (rank == 0 && shields >= 5) {
 			rank = 1;
 			BP = 10;
+			log.log ("Player ranks up to Knight!");
 			if (shields > 5)
 				shields -= 5;
 		} else if (rank == 1 && shields >= 7) {
 			rank = 2;
 			BP = 20;
+			log.log ("Player ranks up to Champion Knight!");
 			if (shields > 7)
 				shields -= 7;
 		} else if (rank == 2 && shields >= 10) {
 			rank = 3;
+			log.log ("Player is eligible for victory!");
 		}
 			
 	}
-	
-	public bool isNextRank(){
-		return true;
-	}
+
 }

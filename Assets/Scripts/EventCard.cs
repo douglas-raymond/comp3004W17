@@ -14,13 +14,15 @@ public class EventCard : StoryCard {
 		log.log ("creating card " + name);
 	}
 
-	void runEvent(Player[] playerList, int activePlayer, int playerCount)
+	void runEvent(Player[] playerList, int activePlayer, int playerCount, AdvDeck advDeck)
 	{
+		int lowestShields = 50; //arbitrarily high count
+		int lowestRank = 10; //arbitrarily high count
+		Card[] draws = new Card[2];
+		Card[] empty = null;
 		switch (name) {
 		case "chivalrous deed":
 			//player(s) in last receive 3 shields
-			int lowestShields = 50; //arbitrarily high count
-			int lowestRank = 10; //arbitrarily high count
 			for (int i = 0; i < playerCount; i++) {
 				if (playerList [i].getRank () < lowestRank) {
 					lowestRank = playerList [i].getRank ();
@@ -37,6 +39,10 @@ public class EventCard : StoryCard {
 			break;
 		case "court called to camelot":
 			//all players discard all allies
+			for (int i = 0; i < playerCount; i++) {
+				playerList [i].setInPlayHand (empty);
+				playerList [i].getLogger ().log ("Discarding all cards in play.");
+			}
 			break;
 		case "king's call to arms":
 			//top player(s) must discard 1 weapon. if they can't they must discard 2 foes
@@ -59,9 +65,31 @@ public class EventCard : StoryCard {
 			break;
 		case "prosperity throughout the realm":
 			//all players draw 2 adventure cards
+			for(int i=0; i<playerCount; i++){
+				draws[0] = advDeck.drawCard();
+				draws[1] = advDeck.drawCard();
+				playerList [i].getLogger ().log ("Player draws 2 adventure cards.");
+				playerList[i].addCard(draws, false);
+			}
 			break;
 		case "queen's favor":
 			//player(s) in last draw 2 adventure cards
+			for (int i = 0; i < playerCount; i++) {
+				if (playerList [i].getRank () < lowestRank) {
+					lowestRank = playerList [i].getRank ();
+				}
+				if (!(playerList [i].getRank () > lowestRank) && playerList [i].getShields () < lowestShields) {
+					lowestShields = playerList [i].getShields ();
+				}
+			}
+			for (int j = 0; j < playerCount; j++) {
+				if((playerList[j].getRank()==lowestRank) && (playerList[j].getShields()==lowestShields)){
+					draws[0] = advDeck.drawCard();
+					draws[1] = advDeck.drawCard();
+					playerList [j].getLogger ().log ("Player draws 2 adventure cards.");
+					playerList[j].addCard(draws, false);
+				}
+			}
 			break;
 		}
 		return;

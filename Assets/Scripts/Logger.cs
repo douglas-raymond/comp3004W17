@@ -33,4 +33,8 @@ public class Logger{
 		file.WriteLine("INFO ["+source+"]: "+msg);
 		file.Close ();
 	}
+
+	public void setSource(string _source){
+		source = _source;
+	}
 }
