@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Player {
 
+
 	public Card[] hand,inPlay;
 	protected int shields;
 	public int rank;
@@ -16,6 +17,7 @@ public class Player {
 		rank = _rank;
 		name = _name;
 		BP = 5;
+		Logger log = new Logger("Player: "+name);
 	}
 	public void setHand(Card[] newHand){
 		hand = newHand;
@@ -71,6 +73,15 @@ public class Player {
 		shields += newShields;
 		changeRank();
 	}
+
+	public void removeShields(int remove){
+		if (remove > shields) {
+			shields = 0;
+		} else {
+			shields = shields - remove;
+		}
+	}
+
 	public Card[] getHand(bool isInPlay = false){
 		if(isInPlay) {
 			Debug.Log("Returning inPlay");
@@ -99,6 +110,7 @@ public class Player {
 	
 	public int getShields() { return shields; }
 	public int getRank() { return rank; }
+
 	public void discardCard(Card [] card){
 		if(card == null) {Debug.Log("Removing nothing"); return;}
 		int n = hand.Length;
@@ -148,10 +160,12 @@ public class Player {
 	public void changeRank(){
 		if (rank == 0 && shields >= 5) {
 			rank = 1;
+			BP = 10;
 			if (shields > 5)
 				shields -= 5;
 		} else if (rank == 1 && shields >= 7) {
 			rank = 2;
+			BP = 20;
 			if (shields > 7)
 				shields -= 7;
 		} else if (rank == 2 && shields >= 10) {
