@@ -16,6 +16,7 @@ public class ActiveQuest{
 	int highestBid;
 	Player highestBidder;
 	Card [] tentativeBet;
+	int totalCardsUsed;
 	
 	bool inProgress;
 	public ActiveQuest(QuestCard _quest) {
@@ -26,6 +27,7 @@ public class ActiveQuest{
 		highestBid = -1;
 		highestBidder = null;
 		inProgress = false;
+		totalCardsUsed = 0;
 	}
 	
 	public void addPlayer(Player newPlayer) {
@@ -133,6 +135,9 @@ public class ActiveQuest{
 			currentStage++;
 			if(Object.ReferenceEquals(stages[currentStage].GetType(), typeof(Test))) {
 				highestBid = stages[currentStage].getMinBid();
+				if(players.Length == 1 && highestBid == 0) {
+					highestBid = 3;
+				}
 			}
 		}
 	}
@@ -151,7 +156,6 @@ public class ActiveQuest{
 	}
 	
 	public Player getPlayer(int i) {
-		
 		return players[i];
 	}
 	public void resetQuest() {
@@ -161,18 +165,23 @@ public class ActiveQuest{
 		stageWeapons = new Card[stageNum][];
 		stages = new Card[stageNum];
 		inProgress = false;
+		totalCardsUsed = 0;
+		playerNum = 0;
 	}
 	public void setSponsor(Player player){
 		sponsor = player;
 	}
 	public void setStages(Card[] newStages){
 		stages = newStages;
+		totalCardsUsed = stages.Length;
 		stageWeapons = new Card[stages.Length][];
 		return;
 	}
 	public void setStageWeapons(Card[] newStageWeapons){
-		
 		stageWeapons[currentStage] = newStageWeapons;
+		if(newStageWeapons[0] != null){
+			totalCardsUsed = totalCardsUsed + newStageWeapons.Length;
+		}
 		return;
 	}
 	public void setStage(int i) {
@@ -223,6 +232,9 @@ public class ActiveQuest{
 		{
 			highestBid = stages[currentStage].getMinBid();
 		}
+		if(players.Length == 1 && highestBid == 0) {
+			highestBid = 3;
+		}
 		return highestBid;
 	}
 	public Card getQuest() {
@@ -257,7 +269,9 @@ public class ActiveQuest{
 		}
 		return (baseBP + extraBP);
 	}
-	
+	public int getTotalCardsUsed() {
+		return totalCardsUsed;
+	}
 	public bool isInProgress() { return inProgress;}
 	public void setQuestAsInProgress(){
 		inProgress = true;
