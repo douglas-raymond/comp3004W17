@@ -20,13 +20,65 @@ public class Player {
 	public void setHand(Card[] newHand){
 		hand = newHand;
 	}
+	public void setInPlayHand(Card[] newHand){
+		inPlay = newHand;
+	}
+	
+	public void addCard(Card[] cardsToAdd, bool isInPlay = false) {
+		if(cardsToAdd == null){
+				Debug.Log("ERROR trying to add null cards");
+				return;
+		}
+		
+		if(isInPlay){
+			
+			if(inPlay == null){
+				Debug.Log("inPlay is getting its first cards");
+				inPlay = cardsToAdd;
+				return;
+			}		
+			int newSize = inPlay.Length + cardsToAdd.Length;
+			Card[] temp = new Card[newSize];
+			for(int i = 0; i< inPlay.Length; i++){
+				temp[i] = inPlay[i];
+			}
+			for(int i = inPlay.Length; i < newSize; i++) {
+				temp[i] = cardsToAdd[i-inPlay.Length];
+			}
+			
+			inPlay = temp;
+		}
+		else {
+			if(hand == null){
+				hand = cardsToAdd;
+				return;
+			}		
+			int newSize = hand.Length + cardsToAdd.Length;
+			Card[] temp = new Card[newSize];
+			for(int i = 0; i< hand.Length; i++){
+				temp[i] = hand[i];
+			}
+			for(int i = hand.Length; i < newSize; i++) {
+				temp[i] = cardsToAdd[i-hand.Length];
+			}
+			
+			hand = temp;
+			
+		}
+	}
 	public void addShields(int newShields)
 	{
 		shields += newShields;
 		changeRank();
 	}
-	public Card[] getHand(){
-		return hand;
+	public Card[] getHand(bool isInPlay = false){
+		if(isInPlay) {
+			Debug.Log("Returning inPlay");
+			return inPlay;
+		}
+		else{
+			return hand;
+		}
 	}	
 	public string getName(){
 		return name;
@@ -34,7 +86,15 @@ public class Player {
 	//Deletes a card from a hand.
 	
 	public int getBP(){
+		int extraBP = 0;
+		if(inPlay != null){
+			for(int i = 0; i < inPlay.Length; i++) {
+				extraBP = extraBP + inPlay[i].getBP();
+			}
+			return BP + extraBP;
+		}
 		return BP;
+		
 	}
 	
 	public int getShields() { return shields; }

@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour {
 
 	int activePlayerMeta;
 	int activePlayerSub;
+	int activePlayerOther; 
 	
 	ActiveQuest activeQuest;
 	
@@ -52,20 +53,19 @@ public class GameManager : MonoBehaviour {
 		gameStart();
 	}
 	private void gameStart(){
-		Debug.Log("before: " + activePlayerMeta);
+	
 		activePlayerMeta = nextPlayer(activePlayerMeta);
-		Debug.Log("after: " + activePlayerMeta);
 		dealHands(playerCount);
 		log.log ("Dealing hands, drawing first quest");
 		drawQuestCard();
 		activePlayerSub = -1;
+		activePlayerSub = activePlayerMeta;
 	}
 	private void drawQuestCard(){
-		activePlayerSub = -1;
-		Debug.Log("before: " + activePlayerMeta);
+		
 		activePlayerMeta = nextPlayer(activePlayerMeta);
-		Debug.Log("after: " + activePlayerMeta);
 		Card drawnCard = storyDeck.drawCard();
+		
 		evaluateStory(drawnCard);
 	}
 //	public void drawAdvCard(){
@@ -79,9 +79,9 @@ public class GameManager : MonoBehaviour {
 	public void evaluateStory(Card storyCard){
 		switch (storyCard.getType()) {
 		case "quest":
-			activePlayerSub = activePlayerMeta;
+			
 			activeQuest = new ActiveQuest((QuestCard)storyCard);
-
+			activePlayerSub = activePlayerMeta;
 			cyclingThroughPlayers = false;
 			getSponsor();
 			
@@ -106,7 +106,6 @@ public class GameManager : MonoBehaviour {
 		if(activePlayerSub == activePlayerMeta && cyclingThroughPlayers == true)
 		{
 			log.log ("Sponsor not found");
-			Debug.Log("Sponsor not found.");
 			activeQuest = null;
 			drawQuestCard();
 		}
@@ -114,7 +113,6 @@ public class GameManager : MonoBehaviour {
 		{
 			cyclingThroughPlayers = true;
 			log.log ("Getting sponsor");
-			Debug.Log("Getting sponsor...");
 			ui.askYesOrNo(players[activePlayerSub], "Do you want to sponsor this quest?", GameState.state.ASKINGFORSPONSORS);	
 			activePlayerSub = nextPlayer(activePlayerSub);
 			
@@ -154,6 +152,17 @@ public class GameManager : MonoBehaviour {
 	}
 	
 	public void startStageWeaponSetup(){
+		if(Object.ReferenceEquals (activeQuest.getStage(activeQuest.getCurrentStageNum()).GetType (), typeof(Test))) {
+			if(activeQuest.getCurrentStageNum() == activeQuest.getStageNum()) {
+				endStageWeaponSetup(null);
+			}
+			else {
+				//activeQuest.setStage(getCurrentStageNum+1);
+				endStageWeaponSetup(null);
+				return;
+			}
+		}
+		else {
 		ui.askForCards(
 			activeQuest.getSponsor(), 
 			GameState.state.ASKINGFORSTAGEWEAPONS, 
@@ -167,34 +176,49 @@ public class GameManager : MonoBehaviour {
 			false
 			);
 		ui.showCard(activeQuest.getCurrentStage());
+		}
 	}	
 	public void endStageWeaponSetup(Card[] stageWeapons){
+		
+		string errorMessage = " ";
 		if(stageWeapons == null) {
-			Debug.Log("no stageWeapons selected");
 			activeQuest.setStageWeapons(new Card[] {null});
 		}
 		else {
-			Debug.Log(stageWeapons.Length + " stageWeapons selected");
 			activeQuest.setStageWeapons(stageWeapons);
 		}
 		if(activeQuest.getCurrentStageNum() == activeQuest.getStageNum()-1) {
-			Debug.Log("stage weapon selection over");
 			activeQuest.setStage(0);
 			bool validQuest = true;
 			int prevBP = -1;
 			for(int i = 0; i < activeQuest.getStageNum(); i++) {
-				if(Object.ReferenceEquals (activeQuest.getStage(activeQuest.getCurrentStageNum()).GetType (), typeof(Foe))) {  
+				if(Object.ReferenceEquals (activeQuest.getStage(i).GetType(), typeof(Foe))) {  
 					int currBP;
 					currBP = activeQuest.getStageBP(i);
 					if(currBP < prevBP) {
 						validQuest = false;
+						errorMessage = "Invalid selection. Stage's BP must be in increasing order.";
 					}	
 					prevBP  = activeQuest.getStageBP(i);
 				}
 			}
+			int numberOfTests = 0;
+			for(int i = 0; i < activeQuest.getStageNum(); i++) {
+				if(Object.ReferenceEquals (activeQuest.getStage(i).GetType (), typeof(Test))) {  
+					numberOfTests++;
+				}
+			}
+			if(numberOfTests > 1) { 
+				validQuest = false;
+				if(errorMessage.Equals(" ")) {
+					errorMessage = "Invalid selection. Only one test card is allowed in a quest.";
+				}
+				else {
+					errorMessage = "Invalid selection. Stage's BP must be in increasing order, and only one test card is permitted in a quest.";
+				}
+			}
 				
 			if(validQuest) {
-				Debug.Log("Valid quest");
 				for(int i = 0; i <activeQuest.getStageNum(); i++) {
 					activeQuest.getSponsor().discardCard(new Card[] {activeQuest.getStage(i)});
 					activeQuest.getSponsor().discardCard(activeQuest.getStageWeapons(i));
@@ -204,8 +228,7 @@ public class GameManager : MonoBehaviour {
 				getPlayers();
 			}
 			else {
-				Debug.Log("Invalid quest");
-				ui.displayAlert("Invalid selection. Stage's BP must be in increasing order.");
+				ui.displayAlert(errorMessage);
 				activeQuest.resetQuest();
 				ui.askForCards(
 					activeQuest.getSponsor(),  
@@ -222,22 +245,18 @@ public class GameManager : MonoBehaviour {
 					);
 				return;
 			}
+			activePlayerSub = activePlayerMeta;
 			getPlayers();
 		}
 		else {
-			for(int i = activeQuest.getCurrentStageNum()+1; i < activeQuest.getStageNum(); i ++) {
-			if(Object.ReferenceEquals (activeQuest.getStage(i).GetType (), typeof(Foe))) {
-				activeQuest.setStage(i);
-				break;
-			}
-		}
+
 			activeQuest.getSponsor().discardCard(stageWeapons);
+			activeQuest.setStage(activeQuest.getCurrentStageNum()+1);
 			startStageWeaponSetup();
 		}
 	}	
 	public void getPlayers(){	
 		activePlayerSub = nextPlayer(activePlayerSub);
-		//activePlayerSub = activePlayerSub % (playerCount-1);
 		ui.askYesOrNo(players[activePlayerSub], "Do you want to join this quest?", GameState.state.ASKINGFORPLAYERS);
 	}
 	public void gotPlayer(Player newPlayer){
@@ -245,7 +264,7 @@ public class GameManager : MonoBehaviour {
 		{
 			activeQuest.addPlayer(newPlayer);
 		}
-		if(players[activePlayerSub] == activeQuest.getSponsor())
+		if(players[nextPlayer(activePlayerSub)] == activeQuest.getSponsor())
 		{
 			Debug.Log("Done getting players");
 			startQuest();
@@ -271,18 +290,23 @@ public class GameManager : MonoBehaviour {
 	
 	public void startQuest() {
 		Debug.Log("starting quest");
-		activeQuest.setStage(0);
+		activeQuest.setQuestAsInProgress();
 		Debug.Log(activeQuest.getCurrentPlayer().getName());
 		startStage();		
 	}
 	public void startStage() {
+		
 		if(activeQuest.getQuest() == null) {
 			endQuest("Quest over");
+			return;
 		}
 		else if(activeQuest.getPlayerNum() == 0) {
 			endQuest("All players dead");
+			return;
 		}
 		else{
+
+		
 			ui.showStage(activeQuest);
 			if(Object.ReferenceEquals(activeQuest.getCurrentStage().GetType(), typeof(Foe))) {
 				Debug.Log(activeQuest.getCurrentStageNum());
@@ -320,6 +344,7 @@ public class GameManager : MonoBehaviour {
 			ui.endQuest();
 			ui.drawingQuestCard();
 			drawQuestCard();
+			nextPlayer(activePlayerMeta);
 	}
 	public void bidPhase(Card [] selection) {		
 		if(activeQuest.placeBid(selection, 0)) {
@@ -342,25 +367,103 @@ public class GameManager : MonoBehaviour {
 							false);
 		}
 	}
-	
+	public void askForCardLimitReached(Player player, int cardsToDeleteNum) {
+		Debug.Log(player.getName() + "'s card limit reached. Asking to discard " + cardsToDeleteNum + " cards.");
+		ui.askForCards(
+			player, 
+			GameState.state.ASKINGFORCARDSTODISCARD, 
+								"Card limit reached. Please select "+ cardsToDeleteNum + " cards to discard.", 
+								"null",
+								"null", 
+								true, 
+								true, 
+								true,
+								true,
+								true,
+								cardsToDeleteNum);
+			
+	}
+	public void gotCardLimitReached(Card [] cards) {
+		activeQuest.getPlayer(activePlayerOther).discardCard(cards);
+		endStage();
+	}
 	public void questAttack(Card [] selection) {
 		//Debug.Log("Quest Attack");
+		Card[] toDispose;
+		Card[] toKeepInPlay;
+		
 		int extraBP = 0;
+		toDispose = null;
+		toKeepInPlay = null;
 		if(selection != null) {
+			toDispose = null;
+			toKeepInPlay = null;
+			
 			if(selection.Length > 0) {
 				for(int i = 0; i < selection.Length; i++) {
 					extraBP = extraBP + selection[i].getBP();
 				}
 			}
-		}
-		if(activeQuest.getStageBP(activeQuest.getCurrentStageNum()) <= activeQuest.getCurrentPlayer().getBP() + extraBP) {
-			if(selection != null) {
-				if(selection.Length > 0) {
-					activeQuest.getCurrentPlayer().discardCard(selection);
+		
+		
+		
+			for(int i = 0; i< selection.Length; i++){
+				if(Object.ReferenceEquals(selection[i].GetType(), typeof(Ally)) || Object.ReferenceEquals(selection[i].GetType(), typeof(Amour))) {
+					Debug.Log("Found an ally or amour");
+					if(toKeepInPlay == null) { 
+					
+						toKeepInPlay = new Card[] {selection[i]};
+						if(toKeepInPlay == null){
+							Debug.Log("ERROR 1");
+						}
+					}
+					else {
+						Debug.Log("OTHER CARDS");
+						Card[] temp = new Card[toKeepInPlay.Length+1];
+						for(int j = 0; j <toKeepInPlay.Length; j++){
+							temp[j] = toKeepInPlay[j];
+						}
+						temp[toKeepInPlay.Length] = selection[i];
+						toKeepInPlay = temp;
+					}
+				}
+				else {
+					Debug.Log("Found an ally or amour");
+					if(toDispose == null) { 
+						toDispose = new Card[] {selection[i]};
+					}
+					else {
+						Card[] temp = new Card[toDispose.Length+1];
+						for(int j = 0; j <toDispose.Length; j++){
+							temp[j] = toDispose[j];
+						}
+						temp[toDispose.Length] = selection[i];
+						toDispose = temp;
+					}
 				}
 			}
-			activeQuest.nextPlayer();
-			startStage();			
+		
+		}
+		
+		if(activeQuest.getStageBP(activeQuest.getCurrentStageNum()) <= activeQuest.getCurrentPlayer().getBP() + extraBP) {
+			if(toDispose != null) {
+				if(toDispose.Length > 0) {
+					activeQuest.getCurrentPlayer().discardCard(toDispose);
+				}
+			}
+			
+			activeQuest.getCurrentPlayer().addCard(toKeepInPlay, true);
+			if(toKeepInPlay != null) {
+				activeQuest.getCurrentPlayer().discardCard(toKeepInPlay);
+			}
+			if(activeQuest.isStageDone()) {
+				endStage();
+			}
+			else {
+				activeQuest.nextPlayer();
+				startStage();
+			}
+						
 		}
 		else
 		{
@@ -379,7 +482,12 @@ public class GameManager : MonoBehaviour {
 							);
 		}
 	}
-
+	private void endStage() {
+		Debug.Log("State is over.");
+		drawXNumberOfCards(1);
+		activeQuest.nextPlayer();
+		startStage();
+	}
 	public void createTourney(TourneyCard tourneyCard){
 		getPlayers ();
 
@@ -406,28 +514,63 @@ public class GameManager : MonoBehaviour {
 		startStage();
 	}
 	
-	private int nextPlayer(int activePlayer)
-	{
+	private int nextPlayer(int activePlayer) {
 		int temp = activePlayer;
 		temp ++;
 		if(temp == playerCount)
 		{
 			temp = 0;
 		}
+		Debug.Log("New current player is "+ temp);
 		return temp;
 	}
 	public Player getCurrentPlayer() {
 		if(activeQuest != null && activeQuest.isInProgress()) {
-			Debug.Log("returning activePlayer in quest");
 			return activeQuest.getCurrentPlayer();
 		}
 		else if(activePlayerSub != -1) {
-			Debug.Log("returning activePlayerSub ");
 			return players[activePlayerSub];
 		}
 		else {
-			Debug.Log("returning activePlayerMeta ");
 			return players[activePlayerMeta];
 		}
+	}
+	
+	private Card[] cleanUpArray(Card [] oldArr){
+		int newN = 0;
+		if(oldArr == null) { return null; }
+		for(int i = 0; i< oldArr.Length; i++)
+		{
+			if(oldArr[i] == null)
+			{
+				newN = i;
+				break;
+			}
+		}
+		Card [] newArr = new Card[newN];
+		for(int i = 0; i < newArr.Length; i++)
+		{
+			newArr[i] = oldArr[i];
+		}
+		return newArr;
+		
+	}
+
+	private void drawXNumberOfCards(int numOfCardsToDraw)
+	{
+		
+		for(int i = 0 ; i< activeQuest.getPlayerNum(); i ++){
+			if(activeQuest.getPlayer(i).getHand().Length + numOfCardsToDraw > 12){
+				askForCardLimitReached(activeQuest.getPlayer(i), (activeQuest.getPlayer(i).getHand().Length + numOfCardsToDraw) - 12);
+					activePlayerOther = i;
+					return;
+				}
+			}
+			
+			for(int i = 0 ; i< activeQuest.getPlayerNum(); i ++){
+				for(int j = 0; j < numOfCardsToDraw; j++) {
+					activeQuest.getPlayer(i).addCard(new Card[]{advDeck.drawCard()});
+				}
+			}
 	}
 }

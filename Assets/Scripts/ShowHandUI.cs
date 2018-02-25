@@ -47,25 +47,15 @@ public class ShowHandUI : MonoBehaviour {
 		
 		
 		string[] headerStrings = ui.mouseOverShowHandIcon();
-		headers = new GameObject[headerStrings.Length];
+		headers = new GameObject[headerStrings.Length +2 ];
 		Renderer blackScreenRenderer = blackScreen.GetComponent<Renderer>();
 		for(int i = 0; i < headerStrings.Length; i++) {
-			GameObject temp = (GameObject)Instantiate(Resources.Load("UIHeader"), new Vector2(panelPosX - panelPosX/3 - panelPosX/3 - panelPosX/5 , panelPosY + panelHeight/3 - i*(panelHeight/20)) , Quaternion.identity);
-			temp.GetComponent<HeaderUI>().init(new Vector3(1,1,1));
-			temp.GetComponent<TextMesh>().text = headerStrings[i];
-			Renderer tempRenderer = temp.GetComponent<Renderer>();
-			tempRenderer.sortingLayerID = blackScreenRenderer.sortingLayerID;
-			tempRenderer.sortingOrder = blackScreenRenderer.sortingOrder+ i+1;
-			headers[i] = temp;
-			
+			headers[i] = createHeader(headerStrings[i],  new Vector2(panelPosX - panelPosX/3 - panelPosX/3 - panelPosX/5 , panelPosY + panelHeight/3 - i*(panelHeight/20)), blackScreenRenderer);			
 		}
 		
 		
-		
- 
-         
-		
-		
+		headers[headerStrings.Length] = createHeader("Cards in play",  new Vector2(panelPosX , panelPosY + panelHeight/2- (panelHeight/20)), blackScreenRenderer);	
+		headers[headerStrings.Length] = createHeader("Current hand",  new Vector2(panelPosX , panelPosY + panelHeight/2- (panelHeight/3)), blackScreenRenderer);			
     }
 	
 	public void PointerExit()
@@ -76,5 +66,16 @@ public class ShowHandUI : MonoBehaviour {
 		}
         ui.mouseLeaveShowHandIcon();
     }
+	
+	
+	private GameObject createHeader(string text, Vector2 pos, Renderer _blackScreenRenderer) {
+			GameObject temp = (GameObject)Instantiate(Resources.Load("UIHeader"), pos , Quaternion.identity);
+			temp.GetComponent<HeaderUI>().init(new Vector3(1,1,1));
+			temp.GetComponent<TextMesh>().text = text;
+			Renderer tempRenderer = temp.GetComponent<Renderer>();
+			tempRenderer.sortingLayerID = _blackScreenRenderer.sortingLayerID;
+			tempRenderer.sortingOrder = _blackScreenRenderer.sortingOrder+1;
+			return temp;
+	}
 
 }
