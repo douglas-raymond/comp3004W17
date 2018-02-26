@@ -16,4 +16,6 @@ public class Ally : AdvCard {
 		sprite = _sprite;
 		
 	}
+	
+	public override int getFreeBid() {return freeBids;}
 }

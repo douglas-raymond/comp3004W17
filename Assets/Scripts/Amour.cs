@@ -4,13 +4,17 @@ using UnityEngine;
 
 public class Amour : AdvCard {
 
-	protected int bids;
+	protected int freeBids;
 	
 	public Amour(string _name, int _BP, int _bids, Sprite _sprite)
 	{
 		name = _name;
 		BP = _BP;
-		bids = _bids;
+		freeBids = _bids;
 		sprite = _sprite;
 	}
+	
+	public override int getFreeBid() {
+		Debug.Log(freeBids);
+		return freeBids;}
 }

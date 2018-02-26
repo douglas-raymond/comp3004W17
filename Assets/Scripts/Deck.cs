@@ -35,6 +35,32 @@ public abstract class Deck  {
 		deck.Push(card);
 		return;
 	}
+	
+	
+	public Card getCard(string cardToGet) {
+		
+		Card[] temp = deck.ToArray();
+		Card toReturn = null;
+		for(int i = 0; i< temp.Length ; i++) {
+			if(temp[i].getName().Equals(cardToGet)) {
+				toReturn = temp[i];
+				temp[i] = null;
+				break;
+			}
+		}
+		if(toReturn == null) {return null;}
+		else{
+			deck = null;
+			deck = new Stack<Card>();
+			for(int i = 0; i< temp.Length; i++) {
+				if(temp[i] != null) {
+					deck.Push(temp[i]);
+				}
+			}
+		}
+		
+		return toReturn;
+	}
 	private Card[] arrayShuffle(Card[] deck){
 	    //Random r = new Random();
 		//  Based on Java code from wikipedia:

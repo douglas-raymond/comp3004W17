@@ -117,6 +117,7 @@ public class ActiveQuest{
 	public void nextStage() {
 		
 		if(Object.ReferenceEquals(stages[currentStage].GetType(), typeof(Test))) {
+			
 			highestBidder.discardCard(tentativeBet);
 			players = new Player[1]; 
 			players[0] = highestBidder;
@@ -195,8 +196,8 @@ public class ActiveQuest{
 	}
 	
 	public bool placeBid(Card [] bid, int freeBids) {
-		int totalBet;
-		if(bid.Length == null) {
+		int totalBet = 0;
+		if(bid == null) {
 			totalBet = freeBids;
 		}
 		else {

@@ -27,7 +27,6 @@ public class UI : MonoBehaviour {
 	GameObject messageHeader; //Gives any messages to the player
 	
 	GameObject cardCenter;
-	
 	GameObject enemyBP, playerBP, highestBid, currentBid;
 
 	Vector2 canvasSize;
@@ -39,8 +38,6 @@ public class UI : MonoBehaviour {
 	float panelWidth, panelHeight, panelPosX, panelPosY;
 	
 	ShowHandUI showHandUI;
-	
-	
 	
 	public UI(GameManager _gm) {
 		canvas = GameObject.Find("Canvas");
@@ -177,6 +174,8 @@ public class UI : MonoBehaviour {
 			int currentBidCounter;
 			if(multipleCardInput.Length == null){currentBidCounter = 0;}
 			else{currentBidCounter = multipleCardInput.Length;}
+			
+			currentBidCounter = currentBidCounter + activePlayer.getFreeBids();
 			changeHeaderMessage("Current bid: " + currentBidCounter, currentBid);
 		}
 		return;
@@ -262,6 +261,7 @@ public class UI : MonoBehaviour {
 		Debug.Log(gm.getUserInputState());
 		multipleCardInput = null; //Get multipleCardInput ready to hold the new card choices
 		changeHeaderMessage(instructions, instructionHeader);
+		changeHeaderMessage(activePlayer.getName() + "'s turn", headerCurrPlayer);	
 		if(!button1.Equals("null")){
 			createButtonMessage(panelPosX, panelPosY - panelHeight/20, button1);
 		}
@@ -289,9 +289,11 @@ public class UI : MonoBehaviour {
 		
 		int currentBidCounter;
 		if(multipleCardInput == null) { currentBidCounter = 1;}
-		else {currentBidCounter = multipleCardInput.Length + 1;}
+		else {
+			currentBidCounter = multipleCardInput.Length + 1;
+			}
 		addNewCardToMultipleCardArray(selected, pos);
-		
+		currentBidCounter = currentBidCounter + activePlayer.getFreeBids();
 		changeHeaderMessage("Current bid: " + currentBidCounter, currentBid);
 	}
 	public void drawingQuestCard() {
@@ -462,7 +464,7 @@ public class UI : MonoBehaviour {
 			
 			if(currentBid == null) { currentBid = createHeaderMessage(panelPosX - panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}
 			if(highestBid == null) { highestBid = createHeaderMessage(panelPosX + panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}
-			changeHeaderMessage("Current bid: 0", currentBid);
+			changeHeaderMessage("Current bid: " + activePlayer.getFreeBids(), currentBid);
 			changeHeaderMessage("Highest bid: " + activeQuest.getHighestBid(), highestBid);
 			gm.setUserInputState(state.ASKINGFORCARDSINBID);
 		}
@@ -598,6 +600,9 @@ public class UI : MonoBehaviour {
 	
 	public string[] mouseOverShowHandIcon() {
 		Player currPlayer = gm.getCurrentPlayer();
+		GameObject blackScreen = GameObject.FindGameObjectWithTag("BlackFilter");
+		Renderer blackScreenRenderer = blackScreen.GetComponent<Renderer>();
+		
 		
 		Card [] tempCardsToShow = gm.getCurrentPlayer().getHand();
 		Card [] tempCardsInPlayToShow = gm.getCurrentPlayer().getHand(true);
@@ -627,8 +632,8 @@ public class UI : MonoBehaviour {
 				Vector2 pos = new Vector2(panelPosX - totalDeckWidth/4 + i*cardWidth + (i+1)*cardSpacing, panelPosY);
 				currPlayerHand[i] = (GameObject)Instantiate(Resources.Load("UICard"), pos , Quaternion.identity);			
 				currPlayerHand[i].GetComponent<CardUI>().init(tempCardsToShow[i], this, pos, new Vector2(15,15));
-				
-				currPlayerHand[i].GetComponent<SpriteRenderer>().sortingOrder = 4;
+				currPlayerHand[i].GetComponent<SpriteRenderer>().sortingLayerID  = blackScreenRenderer.sortingLayerID;				
+				currPlayerHand[i].GetComponent<SpriteRenderer>().sortingOrder  = blackScreenRenderer.sortingOrder+1;			
 			}
 		}
 		for(int i = n1/2; i< n1; i++) {	
@@ -651,8 +656,8 @@ public class UI : MonoBehaviour {
 				
 				currPlayerHand[i] = (GameObject)Instantiate(Resources.Load("UICard"), pos , Quaternion.identity);		
 				currPlayerHand[i].GetComponent<CardUI>().init(tempCardsInPlayToShow[i-n1], this, pos, new Vector2(7,7));
-				
-				currPlayerHand[i].GetComponent<SpriteRenderer>().sortingOrder = 5;
+				currPlayerHand[i].GetComponent<SpriteRenderer>().sortingLayerID = blackScreenRenderer.sortingLayerID;
+				currPlayerHand[i].GetComponent<SpriteRenderer>().sortingOrder = blackScreenRenderer.sortingOrder+1;
 			}
 		}
 		return mouseOverShowHandUIHeaders;

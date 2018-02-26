@@ -18,7 +18,7 @@ public class Player {
 		rank = _rank;
 		name = _name;
 		BP = 5;
-		log.setSource = "Player: " + name;
+		log.setSource("Player: " + name);
 	}
 
 	public Logger getLogger(){
@@ -104,7 +104,19 @@ public class Player {
 		return name;
 	}
 	//Deletes a card from a hand.
-	
+	public int getFreeBids() {
+		int freeBids = 0;
+		if(inPlay.Length != null) {
+			for(int i = 0; i< inPlay.Length; i++) {
+				if(inPlay[i].getFreeBid() != -1){
+					Debug.Log("free bid found");
+					freeBids = freeBids + inPlay[i].getFreeBid();
+				}
+			}
+		}
+		
+		return freeBids;
+	}
 	public int getBP(){
 		int extraBP = 0;
 		if(inPlay != null){
