@@ -623,7 +623,7 @@ public class UI : MonoBehaviour {
 		float totalDeckWidth = (n1-1)*cardSpacing + (n1-1)*cardWidth;
 		string[] mouseOverShowHandUIHeaders = new string[]{
 			currPlayer.getName(),
-			"Rank: " + currPlayer.getRank(),
+			"Rank: " + currPlayer.getRankString(),
 			"Shields: " + currPlayer.getShields()
 			
 		};
@@ -665,7 +665,7 @@ public class UI : MonoBehaviour {
 	
 	public void mouseLeaveShowHandIcon() {
 
-		if(currPlayerHand .Length != null) {
+		if(currPlayerHand.Length != null) {
 			for(int i = 0; i< currPlayerHand.Length; i++) {
 				Destroy(currPlayerHand[i]);
 			}

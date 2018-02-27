@@ -106,7 +106,7 @@ public class Player {
 	//Deletes a card from a hand.
 	public int getFreeBids() {
 		int freeBids = 0;
-		if(inPlay.Length != null) {
+		if(inPlay != null) {
 			for(int i = 0; i< inPlay.Length; i++) {
 				if(inPlay[i].getFreeBid() != -1){
 					Debug.Log("free bid found");
@@ -130,15 +130,39 @@ public class Player {
 	}
 	
 	public int getShields() { return shields; }
-	public int getRank() { return rank; }
+	public int getRank() { 
+		return rank;
+	}
+	public string getRankString() { 
+		if(rank == 0) {
+			return "Squire"; 
+		}
+		else if(rank == 1) {
+			return "Knight";
+		}
+		else if(rank == 2) {
+			return "Champion Knight";
+		}
+		else if(rank == 3) {
+			return "Knight Of The Round Table";
+		}
+		else {
+			return "ERROR";
+		}
+		
+	}
 
 	public void discardCard(Card [] card){
 		if(card == null) {Debug.Log("Removing nothing"); return;}
-		int n = hand.Length;
-		int j = -1;
-		Card[] temp = new Card[n-1];
+		
+		int j;
+		
 		for(int k = 0; k < card.Length; k++)
 		{
+			int n = hand.Length;
+			
+			Card[] temp = new Card[n-1];
+			j = -1;
 			for(int i = 0; i < n; i++){
 				if(hand[i] == card[k]){
 					j = i;
@@ -172,28 +196,29 @@ public class Player {
 					temp[i-1] = hand[i];
 				}
 			}
+			hand = null;
+			hand = temp;
 		}
-		hand = null;
-		hand = temp;
+		
 		return;	
 	}
 
 	public void changeRank(){
-		if (rank == 0 && shields >= 5) {
+		if (shields >= 5 && shields < 7) {
 			rank = 1;
 			BP = 10;
-			log.log ("Player ranks up to Knight!");
+			log.log (name + " ranks up to Knight!");
 			if (shields > 5)
 				shields -= 5;
-		} else if (rank == 1 && shields >= 7) {
+		} else if (shields >= 7 && shields < 10) {
 			rank = 2;
 			BP = 20;
-			log.log ("Player ranks up to Champion Knight!");
+			log.log (name + " ranks up to Champion Knight!");
 			if (shields > 7)
 				shields -= 7;
-		} else if (rank == 2 && shields >= 10) {
+		} else if (shields >= 10) {
 			rank = 3;
-			log.log ("Player is eligible for victory!");
+			log.log (name + " is eligible for victory!");
 		}
 			
 	}

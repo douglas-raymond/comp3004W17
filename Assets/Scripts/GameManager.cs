@@ -7,8 +7,8 @@ public class GameManager : MonoBehaviour {
 	Logger log = new Logger("GameManager");
 	
 	//Initialize the two decks
-	DiscardDeck advDiscard = new DiscardDeck();
-	DiscardDeck storyDiscard = new DiscardDeck();
+	//DiscardDeck advDiscard = new DiscardDeck();
+	//DiscardDeck storyDiscard = new DiscardDeck();
 	AdvDeck advDeck;
 	StoryDeck storyDeck;
 	UI ui;
@@ -37,8 +37,8 @@ public class GameManager : MonoBehaviour {
 		if(testingScenario == 1) {
 			playerCount = 4;
 		}
-		advDeck = new AdvDeck(advDiscard);
-		storyDeck = new StoryDeck(storyDiscard);
+		advDeck = new AdvDeck();
+		storyDeck = new StoryDeck();
 		log.Init ();
 		ui = new UI(this);
 		log.log ("created UI");
@@ -122,6 +122,7 @@ public class GameManager : MonoBehaviour {
 		if(counter == players.Length && cyclingThroughPlayers == true)
 		{
 			log.log ("Sponsor not found");
+			storyDeck.discardCard(new Card[]{activeQuest.getQuest()});
 			activeQuest = null;
 			drawQuestCard();
 		}
@@ -245,6 +246,8 @@ public class GameManager : MonoBehaviour {
 				
 			if(validQuest) {
 				for(int i = 0; i <activeQuest.getStageNum(); i++) {
+					advDeck.discardCard(new Card[] {activeQuest.getStage(i)});
+					advDeck.discardCard(activeQuest.getStageWeapons(i));
 					activeQuest.getSponsor().discardCard(new Card[] {activeQuest.getStage(i)});
 					activeQuest.getSponsor().discardCard(activeQuest.getStageWeapons(i));
 				}
@@ -271,9 +274,11 @@ public class GameManager : MonoBehaviour {
 				return;
 			}
 			activePlayerSub = activePlayerMeta;
+			counter = 1;
 			getPlayers();
 		}
 		else {
+			advDeck.discardCard(stageWeapons);
 			activeQuest.getSponsor().discardCard(stageWeapons);
 			activeQuest.setStage(activeQuest.getCurrentStageNum()+1);
 			startStageWeaponSetup();
@@ -285,14 +290,16 @@ public class GameManager : MonoBehaviour {
 		ui.askYesOrNo(players[activePlayerSub], "Do you want to join this quest?", GameState.state.ASKINGFORPLAYERS);
 	}
 	public void gotPlayer(Player newPlayer){
+		counter ++;
 		if(newPlayer != null) {
 			log.log("Player " + newPlayer.getName() + " joined quest.");
 			activeQuest.addPlayer(newPlayer);
 		}
-		if(players[nextPlayer(activePlayerSub)] == activeQuest.getSponsor())
+		if(counter == players.Length)
 		{
 			log.log("Done looking for players.");
 			startQuest();
+			counter = 0;
 		}
 		else
 		{
@@ -352,7 +359,8 @@ public class GameManager : MonoBehaviour {
 	
 	public void startQuest() {
 		if(activeQuest.getPlayerNum() == 0){
-			activeQuest.resetQuest();
+			storyDeck.discardCard(new Card[]{activeQuest.getQuest()});
+			activeQuest = null;
 			drawQuestCard();
 			return;
 		}
@@ -415,6 +423,7 @@ public class GameManager : MonoBehaviour {
 			
 			if(userInputState != state.ASKINGFORCARDSTODISCARD) {
 				log.log("Quest is over. Players will be awarded " + activeQuest.getStageNum() + " shields");
+				storyDeck.discardCard(new Card[]{activeQuest.getQuest()});
 				activeQuest = null;
 				ui.endQuest();
 				ui.drawingQuestCard();
@@ -468,7 +477,14 @@ public class GameManager : MonoBehaviour {
 			
 	}
 	public void gotCardLimitReached(Card [] cards) {
-		activeQuest.getPlayer(activePlayerOther).discardCard(cards);
+		advDeck.discardCard(cards);
+		if(activePlayerOther == -1){
+			activeQuest.getSponsor().discardCard(cards);
+		}
+		else {
+			activeQuest.getPlayer(activePlayerOther).discardCard(cards);
+			
+		}
 		userInputState = state.STANDBY;
 		if(gameState == state.QUESTSTARTING){
 			startQuest();
@@ -537,6 +553,7 @@ public class GameManager : MonoBehaviour {
 			if(toDispose != null) {
 				if(toDispose.Length > 0) {
 					activeQuest.getCurrentPlayer().discardCard(toDispose);
+					advDeck.discardCard(toDispose);
 				}
 			}
 			
