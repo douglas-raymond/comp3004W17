@@ -4,10 +4,8 @@ using UnityEngine;
 
 public class AdvDeck : Deck  {
 
-	DiscardDeck discardPile;
 	
-	public AdvDeck(DiscardDeck discard){
-		discardPile = discard;
+	public AdvDeck(){
 	}
 	
 

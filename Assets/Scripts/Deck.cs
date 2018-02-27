@@ -5,7 +5,8 @@ using UnityEngine;
 public abstract class Deck  {
 
 	protected Stack<Card> deck = new Stack<Card>();
-	
+	protected Stack<Card> discardDeck = new Stack<Card>();
+	Logger log = new Logger("Deck");
 	//Shuffles the stack of cards into a new order
 	public void shuffle() {
 		Card[] tempDeck = new Card[deck.Count];
@@ -24,7 +25,13 @@ public abstract class Deck  {
 	//remotes a card from the stack and returns it
 	public Card drawCard()
 	{
-		return deck.Pop();
+		if(deck.Count > 0) {
+			return deck.Pop();
+		}
+		else {
+			refillDeck();
+			return deck.Pop();
+		}
 	}
 	
 	public int getCount(){ return deck.Count;}
@@ -77,4 +84,16 @@ public abstract class Deck  {
 		
 		return tempDeck;
     }
+	public void discardCard(Card [] discardedCard) {
+		for(int i = 0; i <discardedCard.Length; i++) {
+			discardDeck.Push(discardedCard[i]);
+		}
+	}
+	private void refillDeck() {
+		log.log("Deck empty. Refilling");
+		while(discardDeck.Count > 0) {
+			deck.Push(discardDeck.Pop());
+		}
+		shuffle();
+	}
 }

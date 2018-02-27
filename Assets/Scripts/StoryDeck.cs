@@ -4,10 +4,7 @@ using UnityEngine;
 
 public class StoryDeck : Deck  {
 
-	DiscardDeck discardPile;
-
-	public StoryDeck(DiscardDeck discard){
-		discardPile = discard;
+	public StoryDeck(){
 	}
 	
 	
