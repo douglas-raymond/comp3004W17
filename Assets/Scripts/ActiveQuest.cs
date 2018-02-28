@@ -161,12 +161,14 @@ public class ActiveQuest{
 	//Getters and setters
 	public int getPlayerInt(Player player) {
 		int index = -1;
-		for(int i = 0; i < players.Length; i++)
-		{
-			if(players[i] == currentPlayer)
+		if(players != null) {
+			for(int i = 0; i < players.Length; i++)
 			{
-				index = i;
-				break;
+				if(players[i] == currentPlayer)
+				{
+					index = i;
+					break;
+				}
 			}
 		}
 		return index;

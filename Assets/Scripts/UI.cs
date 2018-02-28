@@ -260,6 +260,7 @@ public class UI : MonoBehaviour {
 	public void askForCards(Player player, state newState, string instructions, string button1, string button2, bool getFoes, bool getWeap, bool getAlly, bool getAmour, bool getTest, int n = -1) {
 		clearGameObjectArray(cardsToShow);
 		clearGameObjectArray(currButtons);
+		clearGameObjectArray(currIcons);
 		multipleCardInputMaxNum = n;
 		activePlayer = player;
 		Card [] cards = getOnlyTypeFromDeck(player.getHand(), getFoes, getWeap, getAlly, getAmour, getTest);
