@@ -18,6 +18,8 @@ public class ActiveQuest{
 	Card [] tentativeBet;
 	int totalCardsUsed;
 	
+	Player[] playersCompletedStage;
+	
 	bool inProgress;
 	public ActiveQuest(QuestCard _quest) {
 		quest = _quest;
@@ -33,6 +35,7 @@ public class ActiveQuest{
 	public void addPlayer(Player newPlayer) {
 		int n = playerNum;
 		Player[] temp = new Player[playerNum+1];
+		playersCompletedStage = new Player[playerNum+1];
 		for(int i = 0; i < playerNum; i++)
 		{
 			temp[i] = players[i];
@@ -42,6 +45,18 @@ public class ActiveQuest{
 		players = temp;
 		playerNum ++;
 		currentPlayer = players[0];
+	}
+	
+	public void addPlayerToStageCompleteArray(Player newPlayer) {
+		int n = playerNum;
+		Player[] temp = new Player[playerNum+1];
+		for(int i = 0; i < playerNum; i++)
+		{
+			temp[i] = players[i];
+		}
+		temp[playerNum] = newPlayer;
+		
+		playersCompletedStage = temp;
 	}
 	
 	public void deletePlayer(Player player) {
@@ -100,8 +115,9 @@ public class ActiveQuest{
 			Debug.Log("Quest lost, No players left");
 			quest = null;
 		}
+		Debug.Log(currentPlayer.getName());
 		int currentPlayerIndex = getPlayerInt(currentPlayer);
-
+		addPlayerToStageCompleteArray(currentPlayer);
 		if(currentPlayerIndex == players.Length-1){
 			
 			currentPlayer = players[0];
