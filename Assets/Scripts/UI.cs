@@ -21,7 +21,7 @@ public class UI : MonoBehaviour {
 	// gameState = state.STANDBY;
 	
 	GameObject[] multipleCardInput;
-	
+	GameObject[] stageWinners;
 	GameObject instructionHeader;  //This gives th current instruction to the player
 	GameObject headerCurrPlayer; //This says which player's turn it is
 	GameObject messageHeader; //Gives any messages to the player
@@ -247,7 +247,15 @@ public class UI : MonoBehaviour {
 				gm.endStageWeaponSetup(gameObjectArrayToCardArray(multipleCardInput));
 			}
 		}
+		else if(gm.getUserInputState() == state.SHOWINGFOE) {
+			clearGameObjectArray(currButtons);
+			clearGameObjectArray(cardsToShow);
+			clearGameObjectArray(stageWinners);
+			Destroy(playerBP);
+			gm.endStage();
+		}
 	}
+	
 	
 	public void askForCards(Player player, state newState, string instructions, string button1, string button2, bool getFoes, bool getWeap, bool getAlly, bool getAmour, bool getTest, int n = -1) {
 		clearGameObjectArray(cardsToShow);
@@ -355,6 +363,7 @@ public class UI : MonoBehaviour {
 		This method creates two buttons, yes or no. When one of these are clicked, gotButtonClick will be called and
 		will have the appropriate action done according to the current state.
 		*/
+		
 		clearGameObjectArray(currButtons);
 		gm.setUserInputState(messageState);
 		activePlayer = player;
@@ -431,6 +440,23 @@ public class UI : MonoBehaviour {
 		cardCenter.GetComponent<CardUI>().init(cardToShow, this, new Vector2(panelPosX, panelPosY + panelHeight/6), new Vector2(15, 15));
 	}
 
+	public void foeReveal(ActiveQuest activeQuest) {
+		if(enemyBP == null) { enemyBP = createHeaderMessage(panelPosX + panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}
+		Destroy(playerBP);
+		showCards(activeQuest.getStageWeapons(activeQuest.getCurrentStageNum()), new Vector2(panelPosX + panelWidth/10, panelPosY) , new Vector2(10,10));
+		showCard(activeQuest.getCurrentStage());
+		clearGameObjectArray(cardsToShow);
+		clearGameObjectArray(currButtons);
+		
+		
+		stageWinners = new GameObject[activeQuest.getPlayerNum()+1];
+		stageWinners[0] = createHeaderMessage(panelPosX - panelWidth/3, panelHeight/2, new Vector3(0,0,0), "Winners");
+		createButtonMessage(panelPosX, panelPosY - panelHeight/10, "OK");
+		for(int i = 1; i< activeQuest.getPlayerNum()+1; i++){
+			stageWinners[i] = createHeaderMessage(panelPosX - panelWidth/3, panelHeight/2 - i *(panelHeight/15), new Vector3(0,0,0), activeQuest.getPlayer(i-1).getName());
+		}
+		
+	}
 	public void showStage(ActiveQuest activeQuest){
 		clearGameObjectArray(cardsToShow);
 		clearGameObjectArray(currButtons);
@@ -441,26 +467,23 @@ public class UI : MonoBehaviour {
 		}
 			
 		
-		
-		showCard(activeQuest.getCurrentStage());
-		activePlayer = activeQuest.getCurrentPlayer();
 		changeHeaderMessage(activePlayer.getName() + "'s turn", headerCurrPlayer);	
 		if(Object.ReferenceEquals(activeQuest.getCurrentStage().GetType(), typeof(Foe))) {
+			showCard(activeQuest.getQuest());
 			Destroy(currentBid);
-			Destroy(highestBid);
-			
-			if(playerBP == null) { playerBP = createHeaderMessage(panelPosX - panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}
-			if(enemyBP == null) { enemyBP = createHeaderMessage(panelPosX + panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}
-			showCards(activeQuest.getStageWeapons(activeQuest.getCurrentStageNum()), new Vector2(panelPosX + panelWidth/10, panelPosY) , new Vector2(10,10));
+			Destroy(highestBid);			
+			if(playerBP == null){playerBP = createHeaderMessage(panelPosX - panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}
+
 			changeHeaderMessage("Player BP: " + activePlayer.getBP(), playerBP);
-			changeHeaderMessage("Enemy BP: " + activeQuest.getStageBP(activeQuest.getCurrentStageNum()), enemyBP);
-			changeHeaderMessage("Select the cards you wish to play to defeat this foe.", instructionHeader);	
+
+
+			changeHeaderMessage("Select the cards you wish to play in this stage", instructionHeader);	
 			//createButtonMessage(panelPosX, panelPosY - panelHeight/10, "FIGHT");
 			gm.setUserInputState(state.ASKINGFORCARDSINQUEST);
 		}
 		else if(Object.ReferenceEquals(activeQuest.getCurrentStage().GetType(), typeof(Test))) {
-			Destroy(enemyBP);
-			Destroy(playerBP);
+			showCard(activeQuest.getCurrentStage());
+
 			
 			if(currentBid == null) { currentBid = createHeaderMessage(panelPosX - panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}
 			if(highestBid == null) { highestBid = createHeaderMessage(panelPosX + panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}

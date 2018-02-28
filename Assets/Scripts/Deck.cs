@@ -85,8 +85,10 @@ public abstract class Deck  {
 		return tempDeck;
     }
 	public void discardCard(Card [] discardedCard) {
-		for(int i = 0; i <discardedCard.Length; i++) {
-			discardDeck.Push(discardedCard[i]);
+		if(discardedCard != null){
+			for(int i = 0; i < discardedCard.Length; i++) {
+				discardDeck.Push(discardedCard[i]);
+			}
 		}
 	}
 	private void refillDeck() {
