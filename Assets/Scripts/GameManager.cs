@@ -597,8 +597,14 @@ public class GameManager : MonoBehaviour {
 			return;
 		}
 		if(userInputState != state.ASKINGFORCARDSTODISCARD) {
-			activeQuest.nextPlayer();
-			startStage();
+			if(activeQuest.getCurrentStageNum() != activeQuest.getStageNum()){
+				activeQuest.nextPlayer();
+				activeQuest.nextStage();
+				startStage();
+			}
+			else{
+				endQuest();
+			}
 		}
 	}
 	public void createTourney(TourneyCard tourneyCard){
@@ -680,7 +686,8 @@ public class GameManager : MonoBehaviour {
 		
 	}
 
-	private void drawXNumberOfCards(int numOfCardsToDraw, Player player = null) {		
+	private void drawXNumberOfCards(int numOfCardsToDraw, Player player = null) {	
+		activePlayerOther = -1;
 		if(player == null) {
 			for(int i = 0 ; i< activeQuest.getPlayerNum(); i ++){
 				log.log("Drawing " + numOfCardsToDraw + " cards for " + activeQuest.getPlayer(i).getName());

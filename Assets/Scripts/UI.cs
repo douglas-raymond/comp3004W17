@@ -364,7 +364,7 @@ public class UI : MonoBehaviour {
 		This method creates two buttons, yes or no. When one of these are clicked, gotButtonClick will be called and
 		will have the appropriate action done according to the current state.
 		*/
-		
+		clearGameObjectArray(currIcons);
 		clearGameObjectArray(currButtons);
 		gm.setUserInputState(messageState);
 		activePlayer = player;
@@ -423,8 +423,8 @@ public class UI : MonoBehaviour {
 		changeHeaderMessage(input, header);
 		
 		Renderer tempRenderer = header.GetComponent<Renderer>();
-		tempRenderer.sortingLayerID = 2;
-			tempRenderer.sortingOrder = 2;
+		//tempRenderer.sortingLayerID = 2;
+		tempRenderer.sortingOrder = 2;
 		return header;
 	}
 	

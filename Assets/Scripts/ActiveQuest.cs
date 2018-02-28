@@ -115,13 +115,17 @@ public class ActiveQuest{
 			Debug.Log("Quest lost, No players left");
 			quest = null;
 		}
-		Debug.Log(currentPlayer.getName());
+		
 		int currentPlayerIndex = getPlayerInt(currentPlayer);
 		addPlayerToStageCompleteArray(currentPlayer);
+		if(players == null) {
+			nextStage();
+			return;
+		}
 		if(currentPlayerIndex == players.Length-1){
 			
 			currentPlayer = players[0];
-			nextStage();
+			//nextStage();
 
 		}
 		else {
@@ -133,17 +137,24 @@ public class ActiveQuest{
 	public void nextStage() {
 		
 		if(Object.ReferenceEquals(stages[currentStage].GetType(), typeof(Test))) {
+			if(highestBidder != null){
+				highestBidder.discardCard(tentativeBet);
+
 			
-			highestBidder.discardCard(tentativeBet);
 			players = new Player[1]; 
 			players[0] = highestBidder;
 			currentPlayer = highestBidder;
 			playerNum = 1;
 			highestBidder = null;
 			highestBid = -1;
+			}
+			else{
+				resetQuest();
+				return;
+			}
 		}
 		
-		if(currentStage + 1 == stageNum){
+		if(currentStage + 1 == stages.Length){
 			quest = null;
 			finishQuest();
 			return;
