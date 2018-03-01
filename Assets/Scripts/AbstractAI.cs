@@ -121,18 +121,31 @@ public abstract class AbstractAI{
 		return false;
 	}
 
-	public Card[] nextBid(){
+	//
+	public Card[] nextBid(Card[] hand, ActiveQuest quest){
 		Card[] submit = new Card[12];
+		if (quest.getHighestBid () > hand.Length) {
+			return submit;
+		}
+		int count = 0;
 		switch (strategy) {
 		case 1:
 			break;
 
 		case 2:
+			for (int i = 0; i < hand.Length; i++) {
+				if (hand [i].getType () == "foe" && hand [i].getBP () < 25) {
+					submit [count] = hand [i];
+					count++;
+				}
+			}
 			break;
 		}
 		return submit;
 	}
 
+	//NB Because of how bidding is handled, this method is redundant - nextBid handles that for us.
+	/* 
 	public void discardAfterWinningTest(Card[] hand, ActiveQuest quest){
 		Card[] disco = new Card[1];
 		switch (strategy) {
@@ -165,7 +178,7 @@ public abstract class AbstractAI{
 		}
 
 	}
-
+	*/
 	//AI submits cards for current quest stage (as a sponsor).
 	public void sponsorQuestSetup(Card[] hand, ActiveQuest quest){
 		Card[] submit = new Card[quest.getStageNum()];
