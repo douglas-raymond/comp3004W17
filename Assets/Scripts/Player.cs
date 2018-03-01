@@ -11,7 +11,7 @@ public class Player {
 	private string name;
 	private int BP; 
 	private bool human = true;
-	private AbstractAI AI = null;
+	private AIController AI = null;
 	Logger log = new Logger("PlayerNull");
 
 	public Player(Card[] _hand, int _shields, int _rank, string _name){
@@ -135,12 +135,12 @@ public class Player {
 		return human;
 	}
 
-	public void assumingDirectControl(AbstractAI _AI){
+	public void assumingDirectControl(AIController _AI){
 		human = false;
 		AI = _AI;
 	}
 
-	public AbstractAI getAI(){
+	public AIController getAI(){
 		return AI;
 	}
 

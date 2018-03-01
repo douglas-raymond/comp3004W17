@@ -16,4 +16,8 @@ public class AIController : AbstractAI {
 		log.setSource("AIController: " + player.getName());
 		player.assumingDirectControl (this);
 	}
+
+	public Logger getLogger(){
+		return log;
+	}
 }
