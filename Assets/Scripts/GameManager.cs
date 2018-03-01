@@ -14,9 +14,8 @@ public class GameManager : MonoBehaviour {
 	UI ui;
 
 	//0 = no test, 1 = scenario 1, 2 = scenario 2
-	int testingScenario = 0;
+	int testingScenario = 3;
 	int playerCount = 3;
-	
 	Player[] players;
 	
 	//Game states. There will eventually be many possible states, but for right now these two exist.
@@ -35,7 +34,10 @@ public class GameManager : MonoBehaviour {
 	bool cyclingThroughPlayers;
 	// Use this for initialization
 	void Start () {
+		//testingScenario = PlayerPrefs.GetInt("testScenario", 0);
+		//playerCount = PlayerPrefs.GetInt("humanPlayersNum", 0);
 		
+		Debug.Log(playerCount);
 		if(testingScenario == 1 || testingScenario == 2|| testingScenario == 3) {
 			playerCount = 4;
 		}

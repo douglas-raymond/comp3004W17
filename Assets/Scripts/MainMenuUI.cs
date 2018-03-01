@@ -13,6 +13,7 @@ public class MainMenuUI : MonoBehaviour {
 
 	public void NewGameBtnOnClick(){
 		Debug.Log ("New Game");
+		Debug.Log(human_DropdownVal);
 		PlayerPrefs.SetInt("aiPlayersNum",ai_DropdownVal);
 		PlayerPrefs.SetInt ("humanPlayersNum", human_DropdownVal);
 		PlayerPrefs.SetInt ("testScenario", test_DropdownVal);
