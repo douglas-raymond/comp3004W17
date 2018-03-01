@@ -21,7 +21,7 @@ public class UI : MonoBehaviour {
 	// gameState = state.STANDBY;
 	
 	GameObject[] multipleCardInput;
-	GameObject[] stageWinners;
+	
 	GameObject instructionHeader;  //This gives th current instruction to the player
 	GameObject headerCurrPlayer; //This says which player's turn it is
 	GameObject messageHeader; //Gives any messages to the player
@@ -280,20 +280,11 @@ public class UI : MonoBehaviour {
 				gm.endStageWeaponSetup(gameObjectArrayToCardArray(multipleCardInput));
 			}
 		}
-		else if(gm.getUserInputState() == state.SHOWINGFOE) {
-			clearGameObjectArray(currButtons);
-			clearGameObjectArray(cardsToShow);
-			clearGameObjectArray(stageWinners);
-			Destroy(playerBP);
-			gm.endStage();
-		}
 	}
-	
 	
 	public void askForCards(Player player, state newState, string instructions, string button1, string button2, bool getFoes, bool getWeap, bool getAlly, bool getAmour, bool getTest, int n = -1) {
 		clearGameObjectArray(cardsToShow);
 		clearGameObjectArray(currButtons);
-		clearGameObjectArray(currIcons);
 		multipleCardInputMaxNum = n;
 		activePlayer = player;
 		Card [] cards = getOnlyTypeFromDeck(player.getHand(), getFoes, getWeap, getAlly, getAmour, getTest);
@@ -424,7 +415,6 @@ public class UI : MonoBehaviour {
 		This method creates two buttons, yes or no. When one of these are clicked, gotButtonClick will be called and
 		will have the appropriate action done according to the current state.
 		*/
-		clearGameObjectArray(currIcons);
 		clearGameObjectArray(currButtons);
 		gm.setUserInputState(messageState);
 		activePlayer = player;
@@ -483,9 +473,8 @@ public class UI : MonoBehaviour {
 		changeHeaderMessage(input, header);
 		
 		Renderer tempRenderer = header.GetComponent<Renderer>();
-
-		//tempRenderer.sortingLayerID = 2;
-		tempRenderer.sortingOrder = 2;
+		
+			tempRenderer.sortingOrder = 2;
 		return header;
 	}
 	
@@ -502,23 +491,6 @@ public class UI : MonoBehaviour {
 		cardCenter.GetComponent<CardUI>().init(cardToShow, this, new Vector2(panelPosX, panelPosY + panelHeight/6), new Vector2(15, 15));
 	}
 
-	public void foeReveal(ActiveQuest activeQuest) {
-		if(enemyBP == null) { enemyBP = createHeaderMessage(panelPosX + panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}
-		Destroy(playerBP);
-		showCards(activeQuest.getStageWeapons(activeQuest.getCurrentStageNum()), new Vector2(panelPosX + panelWidth/10, panelPosY) , new Vector2(10,10));
-		showCard(activeQuest.getCurrentStage());
-		clearGameObjectArray(cardsToShow);
-		clearGameObjectArray(currButtons);
-		
-		
-		stageWinners = new GameObject[activeQuest.getPlayerNum()+1];
-		stageWinners[0] = createHeaderMessage(panelPosX - panelWidth/3, panelHeight/2, new Vector3(0,0,0), "Winners");
-		createButtonMessage(panelPosX, panelPosY - panelHeight/10, "OK");
-		for(int i = 1; i< activeQuest.getPlayerNum()+1; i++){
-			stageWinners[i] = createHeaderMessage(panelPosX - panelWidth/3, panelHeight/2 - i *(panelHeight/15), new Vector3(0,0,0), activeQuest.getPlayer(i-1).getName());
-		}
-		
-	}
 	public void showStage(ActiveQuest activeQuest){
 		clearGameObjectArray(cardsToShow);
 		clearGameObjectArray(currButtons);
