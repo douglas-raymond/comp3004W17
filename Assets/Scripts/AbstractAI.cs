@@ -6,6 +6,7 @@ public abstract class AbstractAI{
 
 	int strategy;
 	Player player;
+	Card[] hand;
 
 	protected AbstractAI(){
 	}
@@ -13,14 +14,15 @@ public abstract class AbstractAI{
 	protected AbstractAI(Player _player, int _strategy){
 		player = _player;
 		strategy = _strategy;
+		hand = player.getHand ();
 	}
 
 	//When tournament is played, this is called so AI decides whether/what to submit. Returns the cards it wants to play. If empty array, AI refuses to play.
-	public Card[] doIParticipateInTournament(Card[] hand, Player[] players){
+	public Card[] doIParticipateInTournament(Player[] players){
 		int BPtotal = 0;
 		Card[] submit = new Card[12];
 		int count = 0;
-		hand = sortHand (hand);
+		hand = sortHand ();
 		switch (strategy) {
 		case 1:
 			break;
@@ -44,11 +46,11 @@ public abstract class AbstractAI{
 		return submit;
 	}
 
-	public bool doISponsorAQuest (Card[] hand, Player[] players, QuestCard quest){ //strategy 1 and 2 run this the exact same way, so no switch statement needed... yet
+	public bool doISponsorAQuest (Player[] players, QuestCard quest){ //strategy 1 and 2 run this the exact same way, so no switch statement needed... yet
 		int hasTest = 0; //either 0 or 1, and we use int rather than bool to use it in quest stage calculations
 		int lowestBP = 0;
 		int totalFoes = 0;
-		hand = sortHand (hand);
+		hand = sortHand ();
 		for (int i = 0; i < players.GetLength (0); i++) {
 			switch (players [i].getRank ()) {
 			case 0:
@@ -86,12 +88,12 @@ public abstract class AbstractAI{
 		return true;
 	}
 
-	public bool doIParticipateInQuest (Card[] hand, QuestCard quest){
+	public bool doIParticipateInQuest (QuestCard quest){
 		bool c1 = false;
 		bool c2 = false;
 		int lowestBP = 0;
 		int count = 0;
-		hand = sortHand (hand);
+		hand = sortHand ();
 		switch (strategy) {
 		case 1:
 			return false;
@@ -125,7 +127,7 @@ public abstract class AbstractAI{
 	}
 
 	//
-	public Card[] nextBid(Card[] hand, ActiveQuest quest){
+	public Card[] nextBid(ActiveQuest quest){
 		Card[] submit = new Card[12];
 		if (quest.getHighestBid () > hand.Length) {
 			return submit;
@@ -183,10 +185,10 @@ public abstract class AbstractAI{
 	}
 	*/
 	//AI submits cards for current quest stage (as a sponsor).
-	public void sponsorQuestSetup(Card[] hand, ActiveQuest quest){
+	public void sponsorQuestSetup(ActiveQuest quest){
 		Card[] submit = new Card[quest.getStageNum()];
 		Card[] submitWeapons = new Card[10];
-		hand = sortHand (hand);
+		hand = sortHand ();
 		int BPtotal = 0;
 		int count = 0;
 		switch (strategy) {
@@ -235,14 +237,15 @@ public abstract class AbstractAI{
 	}
 
 	//AI submits cards for current quest stage (as a player).
-	public Card[] playQuestStage(Card[] hand, ActiveQuest quest){
+	public Card[] playQuestStage(ActiveQuest quest){
 		if (quest.getCurrentStage ().getType () == "test") {
-			return nextBid (hand, quest);
+			return nextBid (quest);
 		}
 		Card[] submit = new Card[12];
 		int BPhurdle = 0;
 		int count = 0;
-		hand = sortHandByType(sortHand (hand));
+		hand = sortHand ();
+		hand = sortHandByType ();
 		switch (strategy) {
 		case 1:
 			break;
@@ -275,7 +278,7 @@ public abstract class AbstractAI{
 		return submit;
 	}
 	
-	private Card[] sortHand(Card[] hand){
+	private Card[] sortHand(){
 		bool sorted = false;
 		int swaps;
 		if (hand.GetLength (0) < 2) {
@@ -300,7 +303,7 @@ public abstract class AbstractAI{
 		return submit;
 	}
 
-	private Card[] sortHandByType(Card[] hand){
+	private Card[] sortHandByType(){
 		Card[] submit = new Card[12];
 		int count = 0;
 		for (int i = 0; i < hand.Length; i++) {

@@ -287,7 +287,13 @@ public class GameManager : MonoBehaviour {
 		ui.showCard(activeQuest.getQuest());
 		activePlayerSub = nextPlayer(activePlayerSub);
 		log.log("Asking " + players[activePlayerSub].getName() + " if they want to join the quest");
-		ui.askYesOrNo(players[activePlayerSub], "Do you want to join this quest?", GameState.state.ASKINGFORPLAYERS);
+		if (players[activePlayerSub].isHuman ()) {
+			ui.askYesOrNo (players [activePlayerSub], "Do you want to join this quest?", GameState.state.ASKINGFORPLAYERS);
+		} else {
+			if (players [activePlayerSub].getAI ().doIParticipateInQuest ((QuestCard)activeQuest.getQuest ())) {
+				gotPlayer (players [activePlayerSub]);
+			}
+		}
 	}
 	public void gotPlayer(Player newPlayer){
 		counter ++;
