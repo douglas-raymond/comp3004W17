@@ -28,6 +28,7 @@ public class UI : MonoBehaviour {
 	
 	GameObject cardCenter;
 	GameObject enemyBP, playerBP, highestBid, currentBid;
+	GameObject otherPlayerHeader;
 
 	Vector2 canvasSize;
 	
@@ -38,7 +39,7 @@ public class UI : MonoBehaviour {
 	float panelWidth, panelHeight, panelPosX, panelPosY;
 	
 	ShowHandUI showHandUI;
-	
+	ShowOtherPlayerUI showOtherPlayerUI;
 	public UI(GameManager _gm) {
 		canvas = GameObject.Find("Canvas");
 		panelWidth = canvas.GetComponent<RectTransform>().rect.width * canvas.GetComponent<RectTransform>().localScale.x;
@@ -54,6 +55,9 @@ public class UI : MonoBehaviour {
 		
 		GameObject showHandUITemp = (GameObject)Instantiate(Resources.Load("UIShowHand"), new Vector2(panelPosX + panelWidth/3, panelPosY + panelHeight/4) , Quaternion.identity);
 		showHandUITemp.GetComponent<ShowHandUI>().init(this);
+		
+		GameObject showOtherPlayerUI = (GameObject)Instantiate(Resources.Load("UIShowOtherPlayer"), new Vector2(panelPosX + panelWidth/3, panelPosY + panelHeight/4 - panelHeight/20) , Quaternion.identity);
+		showOtherPlayerUI.GetComponent<ShowOtherPlayerUI>().init(this);
 	}
 	
 	//Prints out a given hand
@@ -710,7 +714,7 @@ public class UI : MonoBehaviour {
 
 			if(tempCardsInPlayToShow[i-n1] != null){
 				
-				Vector2 pos = new Vector2(panelPosX - panelPosX/3 + (i-n1) * cardWidth, panelPosY + panelHeight/3 + panelHeight/10);
+				Vector2 pos = new Vector2(panelPosX - panelPosX/3 + (i-n1) * cardWidth, panelPosY + panelHeight/3 - panelHeight/30);
 				
 				//Vector2 pos = new Vector2(panelPosX, panelPosY);
 				
@@ -734,4 +738,15 @@ public class UI : MonoBehaviour {
 		}
 	}
 	
+	public void mouseOverShowOtherPlayerIcon() {
+
+		otherPlayerHeader = createHeaderMessage(panelPosX + panelWidth/3, panelPosY - panelHeight/25, new Vector3(0,0,0), gm.getOtherPlayerInfo(gm.getCurrentPlayer()));
+	}
+	
+	public void mouseLeaveShowOtherPlayerIcon() {
+
+		if(otherPlayerHeader != null) {
+			Destroy(otherPlayerHeader);
+		}
+	}
 }

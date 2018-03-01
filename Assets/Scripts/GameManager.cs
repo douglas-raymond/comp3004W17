@@ -617,8 +617,17 @@ public class GameManager : MonoBehaviour {
 	}
 	public void gotCardLimitReached(Card [] cards) {
 		if(gameState == state.PROSPERITY){
-			players[activePlayerOther].discardCard(cards);
+			//players[activePlayerOther].discardCard(cards);
 			activePlayerMeta = nextPlayer(activePlayerMeta);
+			for(int i = 0; i < cards.Length; i++){
+				if(Object.ReferenceEquals(cards[i].GetType(), typeof(Amour))){
+					Debug.Log("Setting amour to inPlay");
+					players[activePlayerOther].addCard(new Card[]{cards[i]}, true);
+				}
+				
+				players[activePlayerOther].discardCard(new Card[]{cards[i]});
+				
+			}
 			advDeck.discardCard(cards);
 			drawXGeneralNumberOfCards(2);
 			
@@ -626,11 +635,28 @@ public class GameManager : MonoBehaviour {
 		else {
 			advDeck.discardCard(cards);
 			if(activePlayerOther == -1){
-				activeQuest.getSponsor().discardCard(cards);
+				//activeQuest.getSponsor().discardCard(cards);
+				for(int i = 0; i < cards.Length; i++){
+					if(Object.ReferenceEquals(cards[i].GetType(), typeof(Amour))){
+						Debug.Log("Setting amour to inPlay");
+						activeQuest.getSponsor().addCard(new Card[]{cards[i]}, true);
+					}
+					
+					activeQuest.getSponsor().discardCard(new Card[]{cards[i]});
+					
+				}
 			}
 			else {
-				activeQuest.getPlayer(activePlayerOther).discardCard(cards);
-				
+				//activeQuest.getPlayer(activePlayerOther).discardCard(cards);
+				for(int i = 0; i < cards.Length; i++){
+					if(Object.ReferenceEquals(cards[i].GetType(), typeof(Amour))){
+						Debug.Log("Setting amour to inPlay");
+						activeQuest.getPlayer(activePlayerOther).addCard(new Card[]{cards[i]}, true);
+					}
+					
+					activeQuest.getPlayer(activePlayerOther).discardCard(new Card[]{cards[i]});
+					
+				}
 			}
 			userInputState = state.STANDBY;
 			if(gameState == state.QUESTSTARTING){
@@ -929,5 +955,19 @@ public class GameManager : MonoBehaviour {
 	
 	public void setUserInputState(state newState){
 		userInputState = newState;
+	}
+	
+	public string getOtherPlayerInfo(Player currPlayer) {
+		string stringToReturn = "";
+		for(int i = 0 ;i < players.Length; i++){
+			if(!(currPlayer.getName().Equals(players[i].getName()))){
+				stringToReturn = stringToReturn + players[i].getName() + System.Environment.NewLine + 
+				"Rank: " + players[i].getRank() + System.Environment.NewLine + 
+				"Shields: " + players[i].getShields() + System.Environment.NewLine + 
+				"Hand size: " + players[i].getHand().Length + System.Environment.NewLine + System.Environment.NewLine;
+			}
+		}
+		
+		return stringToReturn;
 	}
 }
