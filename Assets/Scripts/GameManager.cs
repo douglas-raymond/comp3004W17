@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour {
 	UI ui;
 
 	//0 = no test, 1 = scenario 1, 2 = scenario 2
-	int testingScenario = 1;
+	int testingScenario = 0;
 	int playerCount = 3;
 	Player[] players;
 	
