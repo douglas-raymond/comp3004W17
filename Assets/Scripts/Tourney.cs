@@ -18,7 +18,6 @@ public class Tourney
 		bonusShields = T.getBonusShields();
 		totalShields=0;
 		players=null;
-		strongestPlayer = null;
 	}
 
 	public void addPlayer(Player newPlayer) {
@@ -115,10 +114,6 @@ public class Tourney
 		return playerNum;
 	}
 
-	public Player[] getPlayers(){
-		return players;
-	}
-
 	public void setStrongestPlayer(Player player,int BP){
 		strongestPlayer = player;
 		strongestPlayerBP = BP;
@@ -130,9 +125,6 @@ public class Tourney
 		return strongestPlayerBP;
 	}
 	public void awardShields(){
-		if (strongestPlayer == null) {
-			return;
-		}
 		strongestPlayer.addShields (bonusShields+getPlayerNum());
 	}
 	public int getAwardNum(){
