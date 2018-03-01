@@ -28,6 +28,7 @@ public class MainMenuUI : MonoBehaviour {
 
 	public void ExitGameBtnOnClick(){
 		Debug.Log ("Exit Game");
+		Application.Quit();
 	}
 
 	public void OptionsExitBtnOnClick ()
