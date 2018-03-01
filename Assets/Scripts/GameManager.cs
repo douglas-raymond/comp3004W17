@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour {
 	UI ui;
 
 	//0 = no test, 1 = scenario 1, 2 = scenario 2
-	int testingScenario = 0;
+	int testingScenario = 1;
 	int playerCount = 3;
 	Player[] players;
 	
@@ -93,9 +93,14 @@ public class GameManager : MonoBehaviour {
 				drawnCard = storyDeck.getCard("prosperity");
 				testScenario2step++;
 			}
+			else if(testScenario2step == 3){
+				Debug.Log("holygrail");
+				drawnCard = storyDeck.getCard("holygrail");
+				testScenario2step++;
+			}
 			else {
-				Debug.Log("chivdeed");
-				drawnCard = storyDeck.getCard("chivdeed");
+
+				drawnCard = storyDeck.getCard("boarhunt");
 				testScenario2step++;
 			}
 		}
@@ -106,7 +111,7 @@ public class GameManager : MonoBehaviour {
 				testScenario2step++;
 			}
 			else if(testScenario2step == 2){
-				drawnCard = drawnCard = storyDeck.drawCard();;
+				drawnCard = drawnCard = storyDeck.drawCard();
 				testScenario2step++;
 			}
 		}
@@ -643,7 +648,6 @@ public class GameManager : MonoBehaviour {
 					}
 					
 					activeQuest.getSponsor().discardCard(new Card[]{cards[i]});
-					
 				}
 			}
 			else {
