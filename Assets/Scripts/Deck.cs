@@ -87,6 +87,7 @@ public abstract class Deck  {
 	public void discardCard(Card [] discardedCard) {
 		if(discardedCard != null){
 			for(int i = 0; i < discardedCard.Length; i++) {
+
 				discardDeck.Push(discardedCard[i]);
 			}
 		}

@@ -12,7 +12,7 @@ public class UI : MonoBehaviour {
 	Player activePlayer;
 	//Cards to display
 	GameObject[] currButtons, cardsToShow, currIcons, currPlayerHand;
-	
+	GameObject[] stageWinners;
 	//public Card inputCard;
 	GameManager gm;
 	Logger log = new Logger("UI");
@@ -21,7 +21,7 @@ public class UI : MonoBehaviour {
 	// gameState = state.STANDBY;
 	
 	GameObject[] multipleCardInput;
-	GameObject[] stageWinners;
+	
 	GameObject instructionHeader;  //This gives th current instruction to the player
 	GameObject headerCurrPlayer; //This says which player's turn it is
 	GameObject messageHeader; //Gives any messages to the player
@@ -126,6 +126,9 @@ public class UI : MonoBehaviour {
 		else if (gm.getUserInputState() == state.ASKINGFORCARDSTODISCARD) {
 			gotCardToDiscardSelection(selected, selected.GetComponent<CardButtonUI>().getPos());
 		}
+		else if (gm.getUserInputState() == state.ASKINGFORCARDSINTOURNEY) {
+			gotTourneyCardSelection(selected, selected.GetComponent<CardButtonUI>().getPos());
+		}
 	}
 	
 	public void removeCardSelection(GameObject selected){
@@ -211,6 +214,21 @@ public class UI : MonoBehaviour {
 				gm.gotPlayer(null); //Other wise have GameManager call getSponsor for the next player.
 			}
 		}
+		else if(gm.getUserInputState() == state.ASKINGFORPLAYERSTOURNEY){
+			log.log ("currently asking for players for tournament");
+			if(input.Equals("Yes")) { //If the current player wants to be sponsor 
+				log.log("player clicked yes");
+				gm.setUserInputState(state.STANDBY); 
+				clearGameObjectArray(currButtons);
+				log.log ("telling GM we have an active player");
+				gm.gotPlayerTourney(activePlayer); //Tell GameManager to set the current player as sponsor
+			}
+			else {
+				clearGameObjectArray(currButtons);
+				log.log ("telling GM we don't have an active player");
+				gm.gotPlayerTourney(null); //Other wise have GameManager call getSponsor for the next player.
+			}
+		}
 		else if(gm.getUserInputState() == state.ASKINGFORCARDSINQUEST){
 			log.log ("asking for cards in quest");
 			if(input.Equals("FIGHT")) {
@@ -218,6 +236,14 @@ public class UI : MonoBehaviour {
 			}
 			else if(input.Equals("Give up")) {
 				gm.forfeitQuest();
+			}
+		}
+		else if(gm.getUserInputState() == state.ASKINGFORCARDSINTOURNEY){
+			log.log ("asking for cards in tournament");
+			if(input.Equals("ENTER TOURNAMENT!")) {
+				clearGameObjectArray(currButtons);
+				clearGameObjectArray(cardsToShow);
+				gm.gotTournamentCards(gameObjectArrayToCardArray(multipleCardInput));
 			}
 		}
 		else if(gm.getUserInputState() == state.ASKINGFORCARDSINBID){
@@ -236,6 +262,13 @@ public class UI : MonoBehaviour {
 			gm.endQuest("Quest forfeited");
 			displayAlert("Quest forfeited");
 		}
+		else if(gm.getUserInputState() == state.SHOWINGFOE) {
+			clearGameObjectArray(currButtons);
+			clearGameObjectArray(cardsToShow);
+			clearGameObjectArray(stageWinners);
+			Destroy(playerBP);
+			gm.endStage();
+		}
 		else if(gm.getUserInputState() == state.ASKINGFORSTAGEWEAPONS) {
 			clearGameObjectArray(currButtons);
 			clearGameObjectArray(cardsToShow);
@@ -247,20 +280,11 @@ public class UI : MonoBehaviour {
 				gm.endStageWeaponSetup(gameObjectArrayToCardArray(multipleCardInput));
 			}
 		}
-		else if(gm.getUserInputState() == state.SHOWINGFOE) {
-			clearGameObjectArray(currButtons);
-			clearGameObjectArray(cardsToShow);
-			clearGameObjectArray(stageWinners);
-			Destroy(playerBP);
-			gm.endStage();
-		}
 	}
-	
 	
 	public void askForCards(Player player, state newState, string instructions, string button1, string button2, bool getFoes, bool getWeap, bool getAlly, bool getAmour, bool getTest, int n = -1) {
 		clearGameObjectArray(cardsToShow);
 		clearGameObjectArray(currButtons);
-		clearGameObjectArray(currIcons);
 		multipleCardInputMaxNum = n;
 		activePlayer = player;
 		Card [] cards = getOnlyTypeFromDeck(player.getHand(), getFoes, getWeap, getAlly, getAmour, getTest);
@@ -292,7 +316,34 @@ public class UI : MonoBehaviour {
 		}
 	}
 	
+	private void gotTourneyCardSelection(GameObject selected, Vector2 pos){
+		//Card selected = selectedObj.GetComponent<CardButtonUI>().getCard();
+		if(!checkIfArrayContainsCard(multipleCardInput, selected)) {
+			addNewCardToMultipleCardArray(selected, pos);
+		}
+		else {
+			displayAlert("Cannot have two weapons of the same type!");
+			return;
+		}
+	}
 	
+	public void foeReveal(ActiveQuest activeQuest) {
+		if(enemyBP == null) { enemyBP = createHeaderMessage(panelPosX + panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}
+		Destroy(playerBP);
+		showCards(activeQuest.getStageWeapons(activeQuest.getCurrentStageNum()), new Vector2(panelPosX + panelWidth/10, panelPosY) , new Vector2(10,10));
+		showCard(activeQuest.getCurrentStage());
+		clearGameObjectArray(cardsToShow);
+		clearGameObjectArray(currButtons);
+		
+		
+		stageWinners = new GameObject[activeQuest.getPlayerNum()+1];
+		stageWinners[0] = createHeaderMessage(panelPosX - panelWidth/3, panelHeight/2, new Vector3(0,0,0), "Winners");
+		createButtonMessage(panelPosX, panelPosY - panelHeight/10, "OK");
+		for(int i = 1; i< activeQuest.getPlayerNum()+1; i++){
+			stageWinners[i] = createHeaderMessage(panelPosX - panelWidth/3, panelHeight/2 - i *(panelHeight/15), new Vector3(0,0,0), activeQuest.getPlayer(i-1).getName());
+		}
+		
+	}
 	private void gotBidCardSelection(GameObject selected, Vector2 pos) {
 
 		
@@ -364,7 +415,6 @@ public class UI : MonoBehaviour {
 		This method creates two buttons, yes or no. When one of these are clicked, gotButtonClick will be called and
 		will have the appropriate action done according to the current state.
 		*/
-		clearGameObjectArray(currIcons);
 		clearGameObjectArray(currButtons);
 		gm.setUserInputState(messageState);
 		activePlayer = player;
@@ -423,8 +473,8 @@ public class UI : MonoBehaviour {
 		changeHeaderMessage(input, header);
 		
 		Renderer tempRenderer = header.GetComponent<Renderer>();
-		//tempRenderer.sortingLayerID = 2;
-		tempRenderer.sortingOrder = 2;
+		
+			tempRenderer.sortingOrder = 2;
 		return header;
 	}
 	
@@ -441,23 +491,6 @@ public class UI : MonoBehaviour {
 		cardCenter.GetComponent<CardUI>().init(cardToShow, this, new Vector2(panelPosX, panelPosY + panelHeight/6), new Vector2(15, 15));
 	}
 
-	public void foeReveal(ActiveQuest activeQuest) {
-		if(enemyBP == null) { enemyBP = createHeaderMessage(panelPosX + panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}
-		Destroy(playerBP);
-		showCards(activeQuest.getStageWeapons(activeQuest.getCurrentStageNum()), new Vector2(panelPosX + panelWidth/10, panelPosY) , new Vector2(10,10));
-		showCard(activeQuest.getCurrentStage());
-		clearGameObjectArray(cardsToShow);
-		clearGameObjectArray(currButtons);
-		
-		
-		stageWinners = new GameObject[activeQuest.getPlayerNum()+1];
-		stageWinners[0] = createHeaderMessage(panelPosX - panelWidth/3, panelHeight/2, new Vector3(0,0,0), "Winners");
-		createButtonMessage(panelPosX, panelPosY - panelHeight/10, "OK");
-		for(int i = 1; i< activeQuest.getPlayerNum()+1; i++){
-			stageWinners[i] = createHeaderMessage(panelPosX - panelWidth/3, panelHeight/2 - i *(panelHeight/15), new Vector3(0,0,0), activeQuest.getPlayer(i-1).getName());
-		}
-		
-	}
 	public void showStage(ActiveQuest activeQuest){
 		clearGameObjectArray(cardsToShow);
 		clearGameObjectArray(currButtons);
@@ -656,7 +689,7 @@ public class UI : MonoBehaviour {
 				Vector2 pos = new Vector2(panelPosX - totalDeckWidth/4 + i*cardWidth + (i+1)*cardSpacing, panelPosY);
 				currPlayerHand[i] = (GameObject)Instantiate(Resources.Load("UICard"), pos , Quaternion.identity);			
 				currPlayerHand[i].GetComponent<CardUI>().init(tempCardsToShow[i], this, pos, new Vector2(15,15));
-				currPlayerHand[i].GetComponent<SpriteRenderer>().sortingLayerID  = blackScreenRenderer.sortingLayerID;				
+				//currPlayerHand[i].GetComponent<SpriteRenderer>().sortingLayerID  = blackScreenRenderer.sortingLayerID;				
 				currPlayerHand[i].GetComponent<SpriteRenderer>().sortingOrder  = blackScreenRenderer.sortingOrder+1;			
 			}
 		}

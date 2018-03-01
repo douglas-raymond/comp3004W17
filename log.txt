@@ -1,34 +1,6 @@
-[GameManager]: created UI
-[GameManager]: created player array
-[GameManager]: dealt cards
-[QuestCard]: creating card holygrail
-[QuestCard]: creating card enchantedforest
-[QuestCard]: creating card arthursenemies
-[QuestCard]: creating card saxonraiders
-[QuestCard]: creating card boarhunt
-[QuestCard]: creating card questingbeast
-[QuestCard]: creating card queenshonor
-[QuestCard]: creating card slaydragon
-[QuestCard]: creating card rescuemaiden
-[QuestCard]: creating card greenknighttest
-[TourneyCard]: creating card camelot
-[TourneyCard]: creating card orkney
-[TourneyCard]: creating card tintagel
-[TourneyCard]: creating card york
-[QuestCard]: creating card holygrail
-[QuestCard]: creating card enchantedforest
-[QuestCard]: creating card arthursenemies
-[QuestCard]: creating card saxonraiders
-[QuestCard]: creating card boarhunt
-[QuestCard]: creating card questingbeast
-[QuestCard]: creating card queenshonor
-[QuestCard]: creating card slaydragon
-[QuestCard]: creating card rescuemaiden
-[QuestCard]: creating card greenknighttest
-[TourneyCard]: creating card camelot
-[TourneyCard]: creating card orkney
-[TourneyCard]: creating card tintagel
-[TourneyCard]: creating card york
-[GameManager]: decks initialized
-[GameManager]: Dealing hands, drawing first quest
-[GameManager]: Getting sponsor
+INFO [GameManager]: created UI
+INFO [GameManager]: created player array
+INFO [GameManager]: dealt cards
+INFO [GameManager]: decks initialized
+INFO [GameManager]: Dealing hands, drawing first quest
+INFO [GameManager]: Getting sponsor

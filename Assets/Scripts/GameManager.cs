@@ -117,6 +117,7 @@ public class GameManager : MonoBehaviour {
 			activePlayerSub = activePlayerMeta;
 			userInputState = state.ASKINGFORPLAYERSTOURNEY;
 			break;
+			/*
 		case "event":
 			storyCard.runEvent(players, activePlayerMeta, playerCount, advDeck);
 			break;
@@ -320,6 +321,12 @@ public class GameManager : MonoBehaviour {
 				gotPlayer (null);
 			}
 		}
+	}
+	public void getPlayersTourney(){	
+		
+		log.log("Asking " + players[activePlayerSub].getName() + " if they want to join the tournament");
+		userInputState = state.ASKINGFORPLAYERSTOURNEY;
+		ui.askYesOrNo(players[activePlayerSub], "Do you want to join this tournament?", GameState.state.ASKINGFORPLAYERSTOURNEY);
 	}
 	public void getPlayersTourney(){	
 		
