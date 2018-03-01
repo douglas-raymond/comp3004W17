@@ -7,27 +7,28 @@ public class EventCard : StoryCard {
   
 	Logger log = new Logger("EventCard");
 
-	public EventCard(string _name, string _type)
+	public EventCard(string _name, string _type, Sprite _sprite)
 	{
 		name = _name;
 		type = _type;
 		log.log ("creating card " + name);
+		sprite = _sprite;
 	}
 
-	void runEvent(Player[] playerList, int activePlayer, int playerCount, AdvDeck advDeck)
+	public override void runEvent(Player[] playerList, int activePlayer, int playerCount, AdvDeck advDeck, GameManager gm)
 	{
 		int lowestShields = 50; //arbitrarily high count
 		int lowestRank = 10; //arbitrarily high count
 		Card[] draws = new Card[2];
 		Card[] empty = null;
 		switch (name) {
-		case "chivalrous deed":
+		case "chivdeed":
 			//player(s) in last receive 3 shields
 			for (int i = 0; i < playerCount; i++) {
 				if (playerList [i].getRank () < lowestRank) {
 					lowestRank = playerList [i].getRank ();
 				}
-				if (!(playerList [i].getRank () > lowestRank) && playerList [i].getShields () < lowestShields) {
+				if (playerList [i].getShields () < lowestShields) {
 					lowestShields = playerList [i].getShields ();
 				}
 			}
@@ -37,6 +38,7 @@ public class EventCard : StoryCard {
 				}
 			}
 			break;
+			/*
 		case "court called to camelot":
 			//all players discard all allies
 			for (int i = 0; i < playerCount; i++) {
@@ -63,15 +65,16 @@ public class EventCard : StoryCard {
 				}
 			}
 			break;
-		case "prosperity throughout the realm":
+			*/
+		case "prosperity":
 			//all players draw 2 adventure cards
 			for(int i=0; i<playerCount; i++){
-				draws[0] = advDeck.drawCard();
-				draws[1] = advDeck.drawCard();
-				playerList [i].getLogger ().log ("Player draws 2 adventure cards.");
-				playerList[i].addCard(draws, false);
+				log.log("prosperity through the kingdom called");
+				
+				gm.drawXGeneralNumberOfCards(2);
 			}
 			break;
+			/*
 		case "queen's favor":
 			//player(s) in last draw 2 adventure cards
 			for (int i = 0; i < playerCount; i++) {
@@ -91,6 +94,7 @@ public class EventCard : StoryCard {
 				}
 			}
 			break;
+			*/
 		}
 		return;
 	}

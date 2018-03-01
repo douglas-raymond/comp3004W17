@@ -65,6 +65,9 @@ public class CardLibrary {
 	TourneyCard tintagel;
 	TourneyCard york;
 	
+	EventCard chivdeed;
+	EventCard prosperity;
+	
 	private Sprite getCardImage(string cardTitle) {
 		if(cardTitle.Equals("excalibur")){ return Resources.Load<Sprite>("Cards/W Excalibur");}
 		if(cardTitle.Equals("lance")){ return Resources.Load<Sprite>("Cards/W Lance");}
@@ -113,6 +116,9 @@ public class CardLibrary {
 		if(cardTitle.Equals("orkney")){ return Resources.Load<Sprite>("Cards/To Orkney");}
 		if(cardTitle.Equals("tintagel")){ return Resources.Load<Sprite>("Cards/To Tintagel");}
 		if(cardTitle.Equals("york")){ return Resources.Load<Sprite>("Cards/To York");}
+		
+		if(cardTitle.Equals("chivdeed")){ return Resources.Load<Sprite>("Cards/E Chivalrous Deed");}
+		if(cardTitle.Equals("prosperity")){ return Resources.Load<Sprite>("Cards/E Prosperity Throughout the Realm");}
 
 		else return null;
 	}
@@ -165,6 +171,9 @@ public class CardLibrary {
 		if(cardTitle.Equals("orkney")){ return orkney;}
 		if(cardTitle.Equals("tintagel")){ return tintagel;}
 		if(cardTitle.Equals("york")){ return york;}
+		
+		if(cardTitle.Equals("chivdeed")){ return chivdeed;}
+		if(cardTitle.Equals("prosperity")){ return prosperity;}
 
 		else return null;
 	}
@@ -229,5 +238,10 @@ public class CardLibrary {
 		orkney = new TourneyCard("orkney", "tourney", 2, getCardImage("orkney"));
 		tintagel = new TourneyCard("tintagel", "tourney", 1, getCardImage("tintagel"));
 		york = new TourneyCard("york", "tourney", 0, getCardImage("york"));
+		
+		//Events
+		chivdeed = new EventCard("chivdeed", "event", getCardImage("chivdeed"));
+		prosperity = new EventCard("prosperity", "event", getCardImage("prosperity"));
+
 	}
 }
