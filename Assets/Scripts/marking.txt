@@ -1,0 +1,39 @@
+Comp 3007 W2018 - A2
+
+Q1 - [2/15 marks] 
+	a) 1/5 - Incorrect implementation and no substitution model
+	b) 1/10 - Incorrect implementation and no subsitution model
+
+Q2 - [5/5 marks]
+
+Q3 - [5/5 marks]
+	a) 3/3
+	b) 2/2
+
+
+Q4 - [0/10 marks] - Missing
+	0/3 tail-recursive game loop with score parameter
+	0/1 display of score and input prompt
+	0/1 user input is read and used correctly
+	0/1 computer generated throw
+	0/2 comparison of 'throws' (score update calculation)
+	0/1 public method takes zero arguments
+	0/1 score is updated every iteration
+
+Q5 - [2.5/5 marks] - sum_int does not use inc and identity functions provided by the professor
+
+Q6 - [8/10 marks]
+	a) 5/5 
+	b) 3/3
+	c) 0/2 - Missing
+
+Q7 - [0/5 marks] - Missing
+
+Doc&Testing - [1/10 marks] - Question-6 not labeled properly
+			   - None of the functions were commented i.e purpose, input and output
+			   - Failure to follow assignment instructions, used #lang racket instead of R5RS
+			   - q6-a not implemented separately which makes it unable to test the procedure, or nothing specified
+			     whether q6-a and q6-b was implemented together
+			   - No tests provided for q6-a
+
+Total: 23.5/65

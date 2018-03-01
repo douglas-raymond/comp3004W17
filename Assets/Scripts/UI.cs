@@ -211,6 +211,21 @@ public class UI : MonoBehaviour {
 				gm.gotPlayer(null); //Other wise have GameManager call getSponsor for the next player.
 			}
 		}
+		else if(gm.getUserInputState() == state.ASKINGFORPLAYERSTOURNEY){
+			log.log ("currently asking for players for tournament");
+			if(input.Equals("Yes")) { //If the current player wants to be sponsor 
+				log.log("player clicked yes");
+				gm.setUserInputState(state.STANDBY); 
+				clearGameObjectArray(currButtons);
+				log.log ("telling GM we have an active player");
+				gm.gotPlayerTourney(activePlayer); //Tell GameManager to set the current player as sponsor
+			}
+			else {
+				clearGameObjectArray(currButtons);
+				log.log ("telling GM we don't have an active player");
+				gm.gotPlayer(null); //Other wise have GameManager call getSponsor for the next player.
+			}
+		}
 		else if(gm.getUserInputState() == state.ASKINGFORCARDSINQUEST){
 			log.log ("asking for cards in quest");
 			if(input.Equals("FIGHT")) {
@@ -218,6 +233,12 @@ public class UI : MonoBehaviour {
 			}
 			else if(input.Equals("Give up")) {
 				gm.forfeitQuest();
+			}
+		}
+		else if(gm.getUserInputState() == state.ASKINGFORCARDSINTOURNEY){
+			log.log ("asking for cards in tournament");
+			if(input.Equals("ENTER TOURNAMENT!")) {
+				gm.gotTournamentCards(gameObjectArrayToCardArray(multipleCardInput));
 			}
 		}
 		else if(gm.getUserInputState() == state.ASKINGFORCARDSINBID){

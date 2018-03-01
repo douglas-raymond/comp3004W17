@@ -14,4 +14,8 @@ public class TourneyCard : StoryCard {
 		shields = _shields;
 		sprite = _sprite;
 	}
+
+	public int getBonusShields(){
+		return shields;
+	}
 }
