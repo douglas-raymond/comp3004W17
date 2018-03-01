@@ -5,7 +5,6 @@ using GameState;
 public class GameManager : MonoBehaviour {
 	//Initialize logging functionality
 	Logger log = new Logger("GameManager");
-	
 	//Initialize the two decks
 	//DiscardDeck advDiscard = new DiscardDeck();
 	//DiscardDeck storyDiscard = new DiscardDeck();
@@ -33,7 +32,7 @@ public class GameManager : MonoBehaviour {
 	bool cyclingThroughPlayers;
 	// Use this for initialization
 	void Start () {
-		
+
 		if(testingScenario == 1) {
 			playerCount = 4;
 		}
@@ -105,14 +104,14 @@ public class GameManager : MonoBehaviour {
 			getSponsor();
 			
 			break;
-			/*block these out until we can get the tourneys and events sorted
+			/*block these out until we can get the tourneys sorted
 		case "tourney":
 			createTourney (storyCard);
-			break;
+			break;*/
 		case "event":
 			//Event handling. Pretty much done because events are handled in the cards themselves.
-			storyCard.runEvent (players, activePlayer);
-			break; */
+			storyCard.runEvent() (players, activePlayerMeta);
+			break;
 		default:
 			drawQuestCard ();
 			break;

@@ -10,6 +10,7 @@ public class Player {
 	public int rank;
 	private string name;
 	private int BP; 
+	private bool human = true;
 	Logger log = new Logger("PlayerNull");
 
 	public Player(Card[] _hand, int _shields, int _rank, string _name){
@@ -128,7 +129,15 @@ public class Player {
 		return BP;
 		
 	}
-	
+
+	public bool isHuman(){
+		return human;
+	}
+
+	public void assumingDirectControl(){
+		human = false;
+	}
+
 	public int getShields() { return shields; }
 	public int getRank() { 
 		return rank;

@@ -12,5 +12,6 @@ public class AIController : AbstractAI {
 		player = _player;
 		strategy = _strategy;
 		log.setSource("AIController: " + player.getName());
+		player.assumingDirectControl ();
 	}
 }
