@@ -5,8 +5,11 @@ using UnityEngine;
 public abstract class AbstractAI{
 
 	int strategy;
+	Player player;
 
-	protected AbstractAI(){
+	protected AbstractAI(Player _player, int _strategy){
+		player = _player;
+		strategy = _strategy;
 	}
 
 	//When tournament is played, this is called so AI decides whether/what to submit. Returns the cards it wants to play. If empty array, AI refuses to play.
@@ -14,7 +17,7 @@ public abstract class AbstractAI{
 		int BPtotal = 0;
 		Card[] submit = new Card[12];
 		int count = 0;
-		sortHand (hand);
+		hand = sortHand (hand);
 		switch (strategy) {
 		case 1:
 			break;
@@ -34,6 +37,7 @@ public abstract class AbstractAI{
 			}
 			break;
 		}
+		player.discardCard (submit);
 		return submit;
 	}
 
@@ -41,7 +45,7 @@ public abstract class AbstractAI{
 		int hasTest = 0; //either 0 or 1, and we use int rather than bool to use it in quest stage calculations
 		int lowestBP = 0;
 		int totalFoes = 0;
-		sortHand (hand);
+		hand = sortHand (hand);
 		for (int i = 0; i < players.GetLength (0); i++) {
 			switch (players [i].getRank ()) {
 			case 0:
@@ -84,7 +88,7 @@ public abstract class AbstractAI{
 		bool c2 = false;
 		int lowestBP = 0;
 		int count = 0;
-		sortHand (hand);
+		hand = sortHand (hand);
 		switch (strategy) {
 		case 1:
 			return false;
@@ -116,30 +120,153 @@ public abstract class AbstractAI{
 		}
 		return false;
 	}
-	/*
+
 	public Card[] nextBid(){
+		Card[] submit = new Card[12];
+		switch (strategy) {
+		case 1:
+			break;
+
+		case 2:
+			break;
+		}
+		return submit;
+	}
+
+	public void discardAfterWinningTest(Card[] hand, ActiveQuest quest){
+		Card[] disco = new Card[1];
+		switch (strategy) {
+		case 1:
+			break;
+
+		case 2:
+			if (quest.getCurrentStageNum () == 0) {
+				for (int i = 0; i < hand.Length; i++) {
+					if (hand [i].getType () == "foe" && hand [i].getBP () < 25) {
+						disco [0] = hand [i];
+						player.discardCard (disco);
+					}
+				}
+			} else {
+				for (int i = 0; i < hand.Length; i++) {
+					for (int j = 0; j < hand.Length; j++) {
+						if (i == j) {
+							continue;
+						}
+						if (hand [i].getName () == hand [j].getName ()) {
+							disco [0] = hand [j];
+							player.discardCard (disco);
+							hand [j] = new AdvCard (null, -1);
+						}
+					}
+				}
+			}
+			break;
+		}
 
 	}
 
-	public Card[] discardAfterWinningTest(){
+	//AI submits cards for current quest stage (as a sponsor).
+	public void sponsorQuestSetup(Card[] hand, ActiveQuest quest){
+		Card[] submit = new Card[quest.getStageNum()];
+		Card[] submitWeapons = new Card[10];
+		hand = sortHand (hand);
+		int BPtotal = 0;
+		int count = 0;
+		switch (strategy) {
+		case 1:
+			break;
 
+		case 2:
+			for (int i = 0; i < quest.getStageNum (); i++) {
+				for (int j = 0; j < hand.Length; j++) {
+					if (i == (quest.getStageNum () - 2)) {
+						if (hand [j].getType () == "test") {
+							submit [i] = hand [j];
+							hand [j] = new AdvCard (null, -1);
+							break;
+						}
+					}
+					if (hand [j].getType () == "foe") {
+						submit [i] = hand [j];
+						hand [j] = new AdvCard (null, -1);
+						break;
+					}
+				}
+			}
+			if (submit [quest.getStageNum () - 1].getBP () < 40) {
+				BPtotal = submit [quest.getStageNum () - 1].getBP ();
+				for (int i = 0; i < hand.Length; i++) {
+					if (hand [i].getType () != "weapon") {
+						continue;
+					}
+					submitWeapons [count] = hand [i];
+					count++;
+					BPtotal = BPtotal + hand [i].getBP;
+					if (BPtotal >= 40) {
+						break;
+					}
+				}
+			}
+			quest.setStages (submit);
+			quest.setStage (quest.getStageNum () - 1);
+			quest.setStageWeapons (submitWeapons);
+			quest.setStage (0);
+			player.discardCard (submit);
+			player.discardCard (submitWeapons);
+			break;
+		}
 	}
 
-	public Card[] sponsorQuestSetup(QuestCard quest){
+	//AI submits cards for current quest stage (as a player).
+	public Card[] playQuestStage(Card[] hand, ActiveQuest quest){
+		if (quest.getCurrentStage ().getType () == "test") {
+			return nextBid ();
+		}
+		Card[] submit = new Card[12];
+		int BPhurdle = 0;
+		int count = 0;
+		hand = sortHandByType(sortHand (hand));
+		switch (strategy) {
+		case 1:
+			break;
 
-	}
+		case 2:
+			if (quest.getCurrentStageNum () == quest.getStageNum ()) {
+				for (int i = 0; i < hand.Length; i++) {
+					if (hand [i].getType () == "foe" || hand [i].getType () == "test") {
+						continue;
+					} else {
+						submit [count] = hand [i];
+						count++;
+					}
+				}
+			}else {
+				BPhurdle = (quest.getCurrentStageNum () + 1) * 10;
 
-	public Card[] playQuestStage(QuestCard quest){
-		
+				for (int i = 0; i < hand.Length; i++) {
+					if (hand [i].getType () == "foe" || hand [i].getType () == "test") {
+						continue;
+					} else if (player.getBP () + hand [i].getBP () > BPhurdle) {
+						submit [count] = hand [i];
+						count++;
+					}
+				}
+			}
+			break;
+		}
+		player.discardCard (submit);
+		return submit;
 	}
-*/
-	private void sortHand(Card[] hand){
+	
+	private Card[] sortHand(Card[] hand){
 		bool sorted = false;
 		int swaps;
 		if (hand.GetLength (0) < 2) {
-			return;
+			return hand;
 		}
 		Card temp;
+		Card[] submit = new Card[hand.Length];
 		while(!sorted){
 			swaps = 0;
 			for(int i=0; i<hand.GetLength(0)-1; i++){
@@ -154,6 +281,43 @@ public abstract class AbstractAI{
 				sorted = true;
 			}
 		}
+		return submit;
+	}
+
+	private Card[] sortHandByType(Card[] hand){
+		Card[] submit = new Card[12];
+		int count = 0;
+		for (int i = 0; i < hand.Length; i++) {
+			if (hand [i].getType () == "amour") {
+				submit [count] = hand [i];
+				count++;
+			}
+		}
+		for (int i = 0; i < hand.Length; i++) {
+			if (hand [i].getType () == "ally") {
+				submit [count] = hand [i];
+				count++;
+			}
+		}
+		for (int i = 0; i < hand.Length; i++) {
+			if (hand [i].getType () == "weapon") {
+				submit [count] = hand [i];
+				count++;
+			}
+		}
+		for (int i = 0; i < hand.Length; i++) {
+			if (hand [i].getType () == "foe") {
+				submit [count] = hand [i];
+				count++;
+			}
+		}
+		for (int i = 0; i < hand.Length; i++) {
+			if (hand [i].getType () == "test") {
+				submit [count] = hand [i];
+				count++;
+			}
+		}
+		return submit;
 	}
 }
 
