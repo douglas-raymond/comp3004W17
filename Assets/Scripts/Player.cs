@@ -130,20 +130,7 @@ public class Player {
 		return BP;
 		
 	}
-
-	public bool isHuman(){
-		return human;
-	}
-
-	public void assumingDirectControl(AIController _AI){
-		human = false;
-		AI = _AI;
-	}
-
-	public AIController getAI(){
-		return AI;
-	}
-
+	
 	public int getShields() { return shields; }
 	public int getRank() { 
 		return rank;
@@ -236,6 +223,20 @@ public class Player {
 			log.log (name + " is eligible for victory!");
 		}
 			
+	}
+
+
+	public bool isHuman(){
+		return human;
+	}
+
+	public void assumingDirectControl(AIController _AI){
+		human = false;
+		AI = _AI;
+	}
+
+	public AIController getAI(){
+		return AI;
 	}
 
 }

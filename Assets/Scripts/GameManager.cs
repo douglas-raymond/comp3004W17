@@ -5,6 +5,7 @@ using GameState;
 public class GameManager : MonoBehaviour {
 	//Initialize logging functionality
 	Logger log = new Logger("GameManager");
+	
 	//Initialize the two decks
 	//DiscardDeck advDiscard = new DiscardDeck();
 	//DiscardDeck storyDiscard = new DiscardDeck();
@@ -13,8 +14,9 @@ public class GameManager : MonoBehaviour {
 	UI ui;
 
 	//0 = no test, 1 = scenario 1, 2 = scenario 2
-	int testingScenario = 0;
-	int playerCount = 3;
+	int testingScenario = PlayerPrefs.GetInt("testScenario", 0);
+	int playerCount = PlayerPrefs.GetInt("humanPlayersNum",0)+PlayerPrefs.GetInt("aiPlayersNum",0);
+	int aiplayers = PlayerPrefs.GetInt("aiPlayersNum",0);
 	
 	Player[] players;
 	
@@ -28,12 +30,12 @@ public class GameManager : MonoBehaviour {
 	public int activePlayerOther; 
 	
 	ActiveQuest activeQuest;
-	
+	Tourney tourney;
 	bool cyclingThroughPlayers;
 	// Use this for initialization
 	void Start () {
-
-		if(testingScenario == 1) {
+		
+		if (testingScenario == 1) {
 			playerCount = 4;
 		}
 		advDeck = new AdvDeck();
@@ -47,6 +49,7 @@ public class GameManager : MonoBehaviour {
 		
 		for(int i = 0; i < playerCount; i++){
 			players[i] = new Player(new Card[12], 0, 0, "Player " + (i));
+
 		}
 		log.log ("dealt cards");
 			
@@ -94,22 +97,27 @@ public class GameManager : MonoBehaviour {
 
 	//Track splitter that evaluates based on card type.
 	public void evaluateStory(Card storyCard){
+		log.log("Drew a " + storyCard.getName());
+		counter = 0;
 		switch (storyCard.getType()) {
+			
 		case "quest":
 			
 			activeQuest = new ActiveQuest((QuestCard)storyCard);
 			activePlayerSub = activePlayerMeta;
 			cyclingThroughPlayers = false;
 			userInputState = state.ASKINGFORSPONSORS;
+			
 			getSponsor();
 			
 			break;
-			/*block these out until we can get the tourneys sorted
+			
 		case "tourney":
 			createTourney (storyCard);
-			break;*/
+			activePlayerSub = activePlayerMeta;
+			userInputState = state.ASKINGFORPLAYERSTOURNEY;
+			break;
 		case "event":
-			//Event handling. Pretty much done because events are handled in the cards themselves.
 			storyCard.runEvent(players, activePlayerMeta, playerCount, advDeck);
 			break;
 		default:
@@ -299,7 +307,6 @@ public class GameManager : MonoBehaviour {
 		}
 	}	
 	public void getPlayers(){	
-		ui.showCard(activeQuest.getQuest());
 		activePlayerSub = nextPlayer(activePlayerSub);
 		log.log("Asking " + players[activePlayerSub].getName() + " if they want to join the quest");
 		if (players[activePlayerSub].isHuman ()) {
@@ -313,6 +320,12 @@ public class GameManager : MonoBehaviour {
 				gotPlayer (null);
 			}
 		}
+	}
+	public void getPlayersTourney(){	
+		
+		log.log("Asking " + players[activePlayerSub].getName() + " if they want to join the tournament");
+		userInputState = state.ASKINGFORPLAYERSTOURNEY;
+		ui.askYesOrNo(players[activePlayerSub], "Do you want to join this tournament?", GameState.state.ASKINGFORPLAYERSTOURNEY);
 	}
 	public void gotPlayer(Player newPlayer){
 		counter ++;
@@ -329,6 +342,25 @@ public class GameManager : MonoBehaviour {
 		else
 		{
 			getPlayers();
+		}
+	}
+	public void gotPlayerTourney(Player newPlayer){
+		counter ++;
+		if(newPlayer != null) {
+			log.log("Player " + newPlayer.getName() + " joined Tournament.");
+			tourney.addPlayer(newPlayer);
+			log.log(newPlayer.getName() + " has join the tournament");
+		}
+		if(counter == players.Length)
+		{
+			log.log("Done looking for tournament players.");
+			startTourney();
+			counter = 0;
+		}
+		else
+		{
+			activePlayerSub = nextPlayer(activePlayerSub);
+			getPlayersTourney();
 		}
 	}
 	/*Gets a selected card and does something with it
@@ -396,6 +428,53 @@ public class GameManager : MonoBehaviour {
 			gameState = state.QUESTINPROGRESS;
 			activeQuest.setQuestAsInProgress();
 			startStage();		
+		}
+	}
+	public void startTourney(){
+		if (tourney.getPlayerNum () == 0) {
+			endTourney ();
+			return;
+		}
+		drawXNumberOfCardsTourney (1);
+		ui.askForCards (
+						tourney.getCurrentPlayer (),
+						state.ASKINGFORCARDSINTOURNEY,
+						"Select Ally, Weapon or Amour cards to play",
+						"ENTER TOURNAMENT!",
+						"null",
+						false,
+						true,
+						true,
+						true,
+						false);
+		//Ask players for cards
+		return;
+	}
+
+	public void gotTournamentCards(Card[] selection){
+		int totalBP =0;
+		string cardsBeingPlayed = tourney.getCurrentPlayer().getName() + " has selected ";
+		if(selection != null) {
+			for(int i = 0; i < selection.Length; i++) {
+				cardsBeingPlayed =  cardsBeingPlayed + ", " + selection[i].getName() + " ("+ selection[i].getBP()+")";
+				totalBP = totalBP + selection[i].getBP();
+			}
+		}
+		log.log(cardsBeingPlayed);
+		totalBP += tourney.getCurrentPlayer ().getBP ();
+
+		if (totalBP > tourney.getStrongestBP ()){
+			tourney.setStrongestPlayer (tourney.getCurrentPlayer(), totalBP);
+			log.log(tourney.getCurrentPlayer().getName() + "is currently the strongest in the tournament");
+		}
+		
+		
+
+		if (tourney.getPlayerInt(tourney.getCurrentPlayer()) == tourney.getPlayerNum ()-1) {
+			endTourney ();
+		} else {
+			tourney.nextPlayer ();
+			startTourney ();
 		}
 	}
 	public void startStage() {
@@ -467,6 +546,16 @@ public class GameManager : MonoBehaviour {
 				activePlayerMeta = nextPlayer(activePlayerMeta);
 			}
 	}
+
+	public void endTourney(){
+		gameState = state.TOURNEYWRAPUP;
+		tourney.awardShields();
+		log.log(tourney.getStrongestPlayer().getName() + " won the tournament and is awarded " + tourney.getAwardNum() + " shields");
+		ui.displayAlert(tourney.getStrongestPlayer().getName() + " won the tournament and is awarded " + tourney.getAwardNum() + " shields");
+		tourney = null;
+		drawQuestCard ();
+	}
+
 	public void bidPhase(Card [] selection) {	
 		Debug.Log("Free bids: " + activeQuest.getCurrentPlayer().getFreeBids());
 		if(activeQuest.placeBid(selection, activeQuest.getCurrentPlayer().getFreeBids())) {
@@ -637,31 +726,20 @@ public class GameManager : MonoBehaviour {
 				activeQuest.nextStage();
 				startStage();
 			}
-			else{
+			else {
 				endQuest();
 			}
 		}
 	}
-	public void createTourney(TourneyCard tourneyCard){
-		getPlayers ();
 
-		switch (tourneyCard.getName ()) {
-
-		case "camelot":
-			break;
-
-		case "orkney":
-			break;
-
-		case "tintagel":
-			break;
-
-		case "york":
-			break;
-
-		}
-			
+	public void createTourney(Card tourneyCard){
+		log.log("Tournament at " + tourneyCard.getName() + " has begun");
+		tourney = new Tourney(tourneyCard);
+		ui.showCard(tourneyCard);
+		activePlayerSub = activePlayerMeta;
+		getPlayersTourney();
 	}
+
 	public void forfeitQuest() {
 		//log.log(activeQuest.getCurrentPlayer().getName() + " has forfeited quest");
 		activeQuest.deletePlayer(activeQuest.getCurrentPlayer());
@@ -684,7 +762,7 @@ public class GameManager : MonoBehaviour {
 		if(activeQuest != null && activeQuest.isInProgress()) {
 			return activeQuest.getCurrentPlayer();
 		}
-		else if(userInputState == state.ASKINGFORPLAYERS || userInputState == state.ASKINGFORSPONSORS) {
+		else if(userInputState == state.ASKINGFORPLAYERS || userInputState == state.ASKINGFORSPONSORS || userInputState == state.ASKINGFORPLAYERSTOURNEY) {
 			Debug.Log(userInputState);
 			return players[activePlayerSub];
 		}
@@ -695,6 +773,10 @@ public class GameManager : MonoBehaviour {
 		else if(userInputState == state.ASKINGFORCARDSTODISCARD) {
 			Debug.Log(userInputState);
 			return activeQuest.getPlayer(activePlayerOther);
+		}
+		else if(userInputState == state.ASKINGFORCARDSINTOURNEY) {
+			Debug.Log(userInputState);
+			return tourney.getCurrentPlayer();
 		}
 		else {
 			return players[activePlayerMeta];
@@ -721,8 +803,7 @@ public class GameManager : MonoBehaviour {
 		
 	}
 
-	private void drawXNumberOfCards(int numOfCardsToDraw, Player player = null) {	
-		activePlayerOther = -1;
+	private void drawXNumberOfCards(int numOfCardsToDraw, Player player = null) {		
 		if(player == null) {
 			for(int i = 0 ; i< activeQuest.getPlayerNum(); i ++){
 				log.log("Drawing " + numOfCardsToDraw + " cards for " + activeQuest.getPlayer(i).getName());
@@ -747,6 +828,42 @@ public class GameManager : MonoBehaviour {
 				userInputState = state.ASKINGFORCARDSTODISCARD;
 				askForCardLimitReached(player, (player.getHand().Length + numOfCardsToDraw) - 12);
 				activePlayerOther = activeQuest.getPlayerInt(player);
+				return;
+			}		
+
+			for(int j = 0; j < numOfCardsToDraw; j++) {
+				Card newCard = advDeck.drawCard();
+				log.log("Giving " + player.getName() + " a " + newCard.getName() + " card");
+				player.addCard(new Card[]{newCard});
+			}	
+		}
+	}
+
+	private void drawXNumberOfCardsTourney(int numOfCardsToDraw, Player player = null) {		
+		if(player == null) {
+			for(int i = 0 ; i< tourney.getPlayerNum(); i ++){
+				log.log("Drawing " + numOfCardsToDraw + " cards for " + tourney.getPlayer(i).getName());
+				if(tourney.getPlayer(i).getHand().Length + numOfCardsToDraw > 12){
+					userInputState = state.ASKINGFORCARDSTODISCARD;
+					askForCardLimitReached(tourney.getPlayer(i), (tourney.getPlayer(i).getHand().Length + numOfCardsToDraw) - 12);
+					activePlayerOther = i;
+					return;
+				}
+			}
+
+			for(int i = 0 ; i< tourney.getPlayerNum(); i ++){
+				for(int j = 0; j < numOfCardsToDraw; j++) {
+					tourney.getPlayer(i).addCard(new Card[]{advDeck.drawCard()});
+				}
+			}
+		}
+		else {
+			log.log("Drawing " + numOfCardsToDraw + " cards for " + player.getName());
+			if(player.getHand().Length + numOfCardsToDraw > 12){
+				log.log(player.getName() + "'s hand exceeds the 12 card limit. Asking to discard.");
+				userInputState = state.ASKINGFORCARDSTODISCARD;
+				askForCardLimitReached(player, (player.getHand().Length + numOfCardsToDraw) - 12);
+				activePlayerOther = tourney.getPlayerInt(player);
 				return;
 			}		
 
