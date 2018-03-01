@@ -18,6 +18,8 @@ public class ActiveQuest{
 	Card [] tentativeBet;
 	int totalCardsUsed;
 	
+	Player[] playersCompletedStage;
+	
 	bool inProgress;
 	public ActiveQuest(QuestCard _quest) {
 		quest = _quest;
@@ -33,6 +35,7 @@ public class ActiveQuest{
 	public void addPlayer(Player newPlayer) {
 		int n = playerNum;
 		Player[] temp = new Player[playerNum+1];
+		playersCompletedStage = new Player[playerNum+1];
 		for(int i = 0; i < playerNum; i++)
 		{
 			temp[i] = players[i];
@@ -42,6 +45,18 @@ public class ActiveQuest{
 		players = temp;
 		playerNum ++;
 		currentPlayer = players[0];
+	}
+	
+	public void addPlayerToStageCompleteArray(Player newPlayer) {
+		int n = playerNum;
+		Player[] temp = new Player[playerNum+1];
+		for(int i = 0; i < playerNum; i++)
+		{
+			temp[i] = players[i];
+		}
+		temp[playerNum] = newPlayer;
+		
+		playersCompletedStage = temp;
 	}
 	
 	public void deletePlayer(Player player) {
@@ -100,12 +115,17 @@ public class ActiveQuest{
 			Debug.Log("Quest lost, No players left");
 			quest = null;
 		}
+		
 		int currentPlayerIndex = getPlayerInt(currentPlayer);
-
+		addPlayerToStageCompleteArray(currentPlayer);
+		if(players == null) {
+			nextStage();
+			return;
+		}
 		if(currentPlayerIndex == players.Length-1){
 			
 			currentPlayer = players[0];
-			nextStage();
+			//nextStage();
 
 		}
 		else {
@@ -117,17 +137,24 @@ public class ActiveQuest{
 	public void nextStage() {
 		
 		if(Object.ReferenceEquals(stages[currentStage].GetType(), typeof(Test))) {
+			if(highestBidder != null){
+				highestBidder.discardCard(tentativeBet);
+
 			
-			highestBidder.discardCard(tentativeBet);
 			players = new Player[1]; 
 			players[0] = highestBidder;
 			currentPlayer = highestBidder;
 			playerNum = 1;
 			highestBidder = null;
 			highestBid = -1;
+			}
+			else{
+				resetQuest();
+				return;
+			}
 		}
 		
-		if(currentStage + 1 == stageNum){
+		if(currentStage + 1 == stages.Length){
 			quest = null;
 			finishQuest();
 			return;
@@ -145,12 +172,14 @@ public class ActiveQuest{
 	//Getters and setters
 	public int getPlayerInt(Player player) {
 		int index = -1;
-		for(int i = 0; i < players.Length; i++)
-		{
-			if(players[i] == currentPlayer)
+		if(players != null) {
+			for(int i = 0; i < players.Length; i++)
 			{
-				index = i;
-				break;
+				if(players[i] == currentPlayer)
+				{
+					index = i;
+					break;
+				}
 			}
 		}
 		return index;

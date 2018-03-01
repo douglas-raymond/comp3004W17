@@ -12,7 +12,7 @@ public class UI : MonoBehaviour {
 	Player activePlayer;
 	//Cards to display
 	GameObject[] currButtons, cardsToShow, currIcons, currPlayerHand;
-	
+	GameObject[] stageWinners;
 	//public Card inputCard;
 	GameManager gm;
 	Logger log = new Logger("UI");
@@ -262,6 +262,13 @@ public class UI : MonoBehaviour {
 			gm.endQuest("Quest forfeited");
 			displayAlert("Quest forfeited");
 		}
+		else if(gm.getUserInputState() == state.SHOWINGFOE) {
+			clearGameObjectArray(currButtons);
+			clearGameObjectArray(cardsToShow);
+			clearGameObjectArray(stageWinners);
+			Destroy(playerBP);
+			gm.endStage();
+		}
 		else if(gm.getUserInputState() == state.ASKINGFORSTAGEWEAPONS) {
 			clearGameObjectArray(currButtons);
 			clearGameObjectArray(cardsToShow);
@@ -320,7 +327,23 @@ public class UI : MonoBehaviour {
 		}
 	}
 	
-	
+	public void foeReveal(ActiveQuest activeQuest) {
+		if(enemyBP == null) { enemyBP = createHeaderMessage(panelPosX + panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}
+		Destroy(playerBP);
+		showCards(activeQuest.getStageWeapons(activeQuest.getCurrentStageNum()), new Vector2(panelPosX + panelWidth/10, panelPosY) , new Vector2(10,10));
+		showCard(activeQuest.getCurrentStage());
+		clearGameObjectArray(cardsToShow);
+		clearGameObjectArray(currButtons);
+		
+		
+		stageWinners = new GameObject[activeQuest.getPlayerNum()+1];
+		stageWinners[0] = createHeaderMessage(panelPosX - panelWidth/3, panelHeight/2, new Vector3(0,0,0), "Winners");
+		createButtonMessage(panelPosX, panelPosY - panelHeight/10, "OK");
+		for(int i = 1; i< activeQuest.getPlayerNum()+1; i++){
+			stageWinners[i] = createHeaderMessage(panelPosX - panelWidth/3, panelHeight/2 - i *(panelHeight/15), new Vector3(0,0,0), activeQuest.getPlayer(i-1).getName());
+		}
+		
+	}
 	private void gotBidCardSelection(GameObject selected, Vector2 pos) {
 
 		
@@ -450,7 +473,7 @@ public class UI : MonoBehaviour {
 		changeHeaderMessage(input, header);
 		
 		Renderer tempRenderer = header.GetComponent<Renderer>();
-		tempRenderer.sortingLayerID = 2;
+		
 			tempRenderer.sortingOrder = 2;
 		return header;
 	}
@@ -478,26 +501,23 @@ public class UI : MonoBehaviour {
 		}
 			
 		
-		
-		showCard(activeQuest.getCurrentStage());
-		activePlayer = activeQuest.getCurrentPlayer();
 		changeHeaderMessage(activePlayer.getName() + "'s turn", headerCurrPlayer);	
 		if(Object.ReferenceEquals(activeQuest.getCurrentStage().GetType(), typeof(Foe))) {
+			showCard(activeQuest.getQuest());
 			Destroy(currentBid);
-			Destroy(highestBid);
-			
-			if(playerBP == null) { playerBP = createHeaderMessage(panelPosX - panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}
-			if(enemyBP == null) { enemyBP = createHeaderMessage(panelPosX + panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}
-			showCards(activeQuest.getStageWeapons(activeQuest.getCurrentStageNum()), new Vector2(panelPosX + panelWidth/10, panelPosY) , new Vector2(10,10));
+			Destroy(highestBid);			
+			if(playerBP == null){playerBP = createHeaderMessage(panelPosX - panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}
+
 			changeHeaderMessage("Player BP: " + activePlayer.getBP(), playerBP);
-			changeHeaderMessage("Enemy BP: " + activeQuest.getStageBP(activeQuest.getCurrentStageNum()), enemyBP);
-			changeHeaderMessage("Select the cards you wish to play to defeat this foe.", instructionHeader);	
+
+
+			changeHeaderMessage("Select the cards you wish to play in this stage", instructionHeader);	
 			//createButtonMessage(panelPosX, panelPosY - panelHeight/10, "FIGHT");
 			gm.setUserInputState(state.ASKINGFORCARDSINQUEST);
 		}
 		else if(Object.ReferenceEquals(activeQuest.getCurrentStage().GetType(), typeof(Test))) {
-			Destroy(enemyBP);
-			Destroy(playerBP);
+			showCard(activeQuest.getCurrentStage());
+
 			
 			if(currentBid == null) { currentBid = createHeaderMessage(panelPosX - panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}
 			if(highestBid == null) { highestBid = createHeaderMessage(panelPosX + panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}
@@ -669,7 +689,7 @@ public class UI : MonoBehaviour {
 				Vector2 pos = new Vector2(panelPosX - totalDeckWidth/4 + i*cardWidth + (i+1)*cardSpacing, panelPosY);
 				currPlayerHand[i] = (GameObject)Instantiate(Resources.Load("UICard"), pos , Quaternion.identity);			
 				currPlayerHand[i].GetComponent<CardUI>().init(tempCardsToShow[i], this, pos, new Vector2(15,15));
-				currPlayerHand[i].GetComponent<SpriteRenderer>().sortingLayerID  = blackScreenRenderer.sortingLayerID;				
+				//currPlayerHand[i].GetComponent<SpriteRenderer>().sortingLayerID  = blackScreenRenderer.sortingLayerID;				
 				currPlayerHand[i].GetComponent<SpriteRenderer>().sortingOrder  = blackScreenRenderer.sortingOrder+1;			
 			}
 		}

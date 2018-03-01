@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour {
 	UI ui;
 
 	//0 = no test, 1 = scenario 1, 2 = scenario 2
-	int testingScenario = 0;
+	int testingScenario = 1;
 	int playerCount = 3;
 	
 	Player[] players;
@@ -650,8 +650,9 @@ public class GameManager : MonoBehaviour {
 			if(toKeepInPlay != null) {
 				activeQuest.getCurrentPlayer().discardCard(toKeepInPlay);
 			}
-			if(activeQuest.isStageDone()) {
-				endStage();
+			if(activeQuest.getPlayerInt(activeQuest.getCurrentPlayer()) == activeQuest.getPlayerNum()-1) {
+				userInputState = state.SHOWINGFOE;
+				ui.foeReveal(activeQuest);
 			}
 			else {
 				activeQuest.nextPlayer();
@@ -661,27 +662,37 @@ public class GameManager : MonoBehaviour {
 		}
 		else
 		{
-			ui.displayAlert("Too weak to defeat foe!");
-			ui.askForCards(
-							activeQuest.getCurrentPlayer(), 
-							GameState.state.ASKINGFORCARDSINQUEST, 
-							"Select cards to play, then press FIGHT", 
-							"FIGHT",
-							"Give up", 
-							false, 
-							true, 
-							true,
-							true,
-							false
-							);
+			log.log("With a total BP of " + (activeQuest.getCurrentPlayer().getBP() + extraBP) + " " + activeQuest.getCurrentPlayer().getName() + " fell to " + activeQuest.getCurrentStage().getName());
+			
+			if(activeQuest.getPlayerInt(activeQuest.getCurrentPlayer()) == activeQuest.getPlayerNum()-1)  {
+				
+				userInputState = state.SHOWINGFOE;
+				forfeitQuest();
+				ui.foeReveal(activeQuest);
+				
+			}
+			else {
+				forfeitQuest();
+				startStage();
+			}
 		}
 	}
-	private void endStage() {
+	public void endStage() {
 		log.log("Stage is over.");
 		drawXNumberOfCards(1);
+		if(activeQuest.getPlayerNum() == 0) {
+			endQuest("All players dead");
+			return;
+		}
 		if(userInputState != state.ASKINGFORCARDSTODISCARD) {
-			activeQuest.nextPlayer();
-			startStage();
+			if(activeQuest.getCurrentStageNum() != activeQuest.getStageNum()){
+				activeQuest.nextPlayer();
+				activeQuest.nextStage();
+				startStage();
+			}
+			else {
+				endQuest();
+			}
 		}
 	}
 
@@ -694,9 +705,13 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void forfeitQuest() {
-		log.log(activeQuest.getCurrentPlayer().getName() + " has forfeited quest");
+		//log.log(activeQuest.getCurrentPlayer().getName() + " has forfeited quest");
 		activeQuest.deletePlayer(activeQuest.getCurrentPlayer());
-		startStage();
+		if(userInputState == state.ASKINGFORCARDSINBID){
+			activeQuest.nextPlayer();
+			startStage();
+		}
+		//
 	}
 	
 	private int nextPlayer(int activePlayer) {
