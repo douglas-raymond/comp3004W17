@@ -14,8 +14,9 @@ public class GameManager : MonoBehaviour {
 	UI ui;
 
 	//0 = no test, 1 = scenario 1, 2 = scenario 2
-	int testingScenario = 0;
-	int playerCount = 3;
+	int testingScenario;
+	int playerCount;
+	int aiplayers;
 	
 	Player[] players;
 	
@@ -35,13 +36,24 @@ public class GameManager : MonoBehaviour {
 	bool cyclingThroughPlayers;
 	// Use this for initialization
 	void Start () {
-		
+
+		testingScenario = 0;
+		playerCount = 4;
+		aiplayers = 2;
 		if(testingScenario == 1 || testingScenario == 2|| testingScenario == 3) {
 			playerCount = 4;
+			aiplayers = 0;
 		}
 		advDeck = new AdvDeck();
 		storyDeck = new StoryDeck();
 		log.Init ();
+		log.log ("Player count is "+playerCount.ToString ());
+		log.log ("AI count is " + aiplayers.ToString ());
+		log.log ("Test scenario is "+testingScenario.ToString());
+		if(playerCount<2){
+			playerCount = 2;
+			log.log("Player count too low. Setting to 2.");
+		}
 		ui = new UI(this);
 		log.log ("created UI");
 		//Create all the players and add it to the players array
@@ -58,6 +70,13 @@ public class GameManager : MonoBehaviour {
 		storyDeck.initDeck();
 		log.log ("decks initialized");
 
+		if(aiplayers!=0){
+			for (int i = 0; i < aiplayers; i++) {
+				log.log ("Generating AI players.");
+				players [playerCount - i - 1].assumingDirectControl (new AIController (players [playerCount - i - 1], 2));
+				players [playerCount - i - 1].getAI ().getLogger ().log ("AI controllers active!");
+			}
+		}
 		gameStart();
 	}
 	private void gameStart(){
@@ -156,6 +175,7 @@ public class GameManager : MonoBehaviour {
 			
 		case "event":
 			//Event handling. Pretty much done because events are handled in the cards themselves.
+			log.log ("Evaluating quest...");
 			storyCard.runEvent (players, activePlayerMeta, players.Length, advDeck, this);
 			break;
 		default:
@@ -184,9 +204,17 @@ public class GameManager : MonoBehaviour {
 			ui.showCard(activeQuest.getQuest());
 			
 			log.log ("Getting sponsor");
-			
-			ui.askYesOrNo(players[activePlayerSub], "Do you want to sponsor this quest?", GameState.state.ASKINGFORSPONSORS);	
-			
+			if (players [activePlayerSub].isHuman()) {
+				ui.askYesOrNo (players [activePlayerSub], "Do you want to sponsor this quest?", GameState.state.ASKINGFORSPONSORS);	
+			} else {
+				if (players [activePlayerSub].getAI ().doISponsorAQuest (players, players[activePlayerSub], (QuestCard)activeQuest.getQuest ())) {
+					players [activePlayerSub].getAI ().getLogger ().log ("Will sponsor quest.");
+					startQuestSetup ();
+				} else {
+					players [activePlayerSub].getAI ().getLogger ().log ("Will not sponsor quest.");
+					getSponsor ();
+				}
+			}
 			
 		}
 	}
@@ -195,19 +223,25 @@ public class GameManager : MonoBehaviour {
 		//activePlayerSub = activePlayerMeta;
 		activeQuest.setSponsor(players[activePlayerSub]);
 		//ui.askForStageSelection(activeQuest.getSponsor(), activeQuest.getStageNum());
-		ui.askForCards(
-			activeQuest.getSponsor(), 
-			GameState.state.ASKINGFORSTAGES, 
-			"Select up to " + activeQuest.getStageNum() + " stages", 
-			"null",
-			"Forfeit", 
-			true, 
-			false, 
-			false,
-			false,
-			true,
-			activeQuest.getStageNum()
+		if (players [activePlayerSub].isHuman ()) {
+			ui.askForCards (
+				activeQuest.getSponsor (), 
+				GameState.state.ASKINGFORSTAGES, 
+				"Select up to " + activeQuest.getStageNum () + " stages", 
+				"null",
+				"Forfeit", 
+				true, 
+				false, 
+				false,
+				false,
+				true,
+				activeQuest.getStageNum ()
 			);
+		} else {
+			players [activePlayerSub].getAI ().getLogger ().log ("Setting up stage.");
+			players [activePlayerSub].getAI ().sponsorQuestSetup (players[activePlayerSub], activeQuest);
+			getPlayers ();
+		}
 	}	
 	public void endQuestSetup(Card[] stages){
 		log.log("Quest setup over");
@@ -334,13 +368,35 @@ public class GameManager : MonoBehaviour {
 	public void getPlayers(){	
 		activePlayerSub = nextPlayer(activePlayerSub);
 		log.log("Asking " + players[activePlayerSub].getName() + " if they want to join the quest");
-		ui.askYesOrNo(players[activePlayerSub], "Do you want to join this quest?", GameState.state.ASKINGFORPLAYERS);
+		if (players[activePlayerSub].isHuman ()) {
+			ui.askYesOrNo (players [activePlayerSub], "Do you want to join this quest?", GameState.state.ASKINGFORPLAYERS);
+		} else {
+			if (players [activePlayerSub].getAI ().doIParticipateInQuest (players[activePlayerSub], (QuestCard)activeQuest.getQuest ())) {
+				players [activePlayerSub].getAI ().getLogger ().log ("Will participate.");
+				gotPlayer (players [activePlayerSub]);
+			} else {
+				players [activePlayerSub].getAI ().getLogger ().log ("Will not participate.");
+				gotPlayer (null);
+			}
+		}
 	}
 	public void getPlayersTourney(){	
 		
 		log.log("Asking " + players[activePlayerSub].getName() + " if they want to join the tournament");
 		userInputState = state.ASKINGFORPLAYERSTOURNEY;
-		ui.askYesOrNo(players[activePlayerSub], "Do you want to join this tournament?", GameState.state.ASKINGFORPLAYERSTOURNEY);
+
+		if (players [activePlayerSub].isHuman ()) {
+			ui.askYesOrNo (players [activePlayerSub], "Do you want to join this tournament?", GameState.state.ASKINGFORPLAYERSTOURNEY);
+		} else {
+			if (players [activePlayerSub].getAI ().doIParticipateInTournament (players, players[activePlayerSub]) == null) {
+				players [activePlayerSub].getAI ().getLogger ().log ("Player declines.");
+				gotPlayerTourney (null);
+				return;
+			} else {
+				players [activePlayerSub].getAI ().getLogger ().log ("Player joins!");
+				gotPlayerTourney (players [activePlayerSub]);
+			}
+		}
 	}
 	public void gotPlayer(Player newPlayer){
 		counter ++;
@@ -369,6 +425,11 @@ public class GameManager : MonoBehaviour {
 		if(counter == players.Length)
 		{
 			log.log("Done looking for tournament players.");
+			if (tourney.getPlayers () == null) {
+				tourney = null;
+				drawQuestCard ();
+				return;
+			}
 			startTourney();
 			counter = 0;
 		}
@@ -451,17 +512,23 @@ public class GameManager : MonoBehaviour {
 			return;
 		}
 		drawXNumberOfCardsTourney (1);
-		ui.askForCards (
-						tourney.getCurrentPlayer (),
-						state.ASKINGFORCARDSINTOURNEY,
-						"Select Ally, Weapon or Amour cards to play",
-						"ENTER TOURNAMENT!",
-						"null",
-						false,
-						true,
-						true,
-						true,
-						false);
+
+		if (players [activePlayerSub].isHuman ()) {
+			ui.askForCards (
+				tourney.getCurrentPlayer (),
+				state.ASKINGFORCARDSINTOURNEY,
+				"Select Ally, Weapon or Amour cards to play",
+				"ENTER TOURNAMENT!",
+				"null",
+				false,
+				true,
+				true,
+				true,
+				false);
+		} else {
+			players [activePlayerSub].getAI ().getLogger ().log ("Submitting tournament cards.");
+			gotTournamentCards (players [activePlayerSub].getAI ().doIParticipateInTournament (players, players[activePlayerSub]));
+		}
 		//Ask players for cards
 		return;
 	}
@@ -505,32 +572,42 @@ public class GameManager : MonoBehaviour {
 			ui.showStage(activeQuest);
 			if(Object.ReferenceEquals(activeQuest.getCurrentStage().GetType(), typeof(Foe))) {
 				log.log(activeQuest.getCurrentPlayer().getName() + " is now facing a foe of type " + activeQuest.getCurrentStage().getName() + " enhanced with " + activeQuest.getStageWeaponString());
-				
-				ui.askForCards(
-								activeQuest.getCurrentPlayer(), 
-								GameState.state.ASKINGFORCARDSINQUEST, 
-								"Select cards to play, then press FIGHT", 
-								"FIGHT",
-								"Give up", 
-								false, 
-								true, 
-								true,
-								true,
-								false);
+
+				if (players [activePlayerSub].isHuman ()) {
+					ui.askForCards (
+						activeQuest.getCurrentPlayer (), 
+						GameState.state.ASKINGFORCARDSINQUEST, 
+						"Select cards to play, then press FIGHT", 
+						"FIGHT",
+						"null", 
+						false, 
+						true, 
+						true,
+						true,
+						false);
+				} else {
+					players [activePlayerSub].getAI ().getLogger ().log ("Playing stage.");
+					questAttack(players [activePlayerSub].getAI ().playQuestStage(players[activePlayerSub], activeQuest));
+				}
 			}
 			if(Object.ReferenceEquals(activeQuest.getCurrentStage().GetType(), typeof(Test))) {
-				log.log(activeQuest.getCurrentPlayer().getName() + " is now bidding in the " + activeQuest.getCurrentStage().getName() + " test");				
-				ui.askForCards(
-								activeQuest.getCurrentPlayer(),  
-								GameState.state.ASKINGFORCARDSINBID, 
-								"Select cards to bit, then press BID", 
-								"BID",
-								"Give up", 
-								true, 
-								true, 
-								true,
-								true,
-								true);
+				log.log(activeQuest.getCurrentPlayer().getName() + " is now bidding in the " + activeQuest.getCurrentStage().getName() + " test");
+				if (players [activePlayerSub].isHuman ()) {
+					ui.askForCards (
+						activeQuest.getCurrentPlayer (),  
+						GameState.state.ASKINGFORCARDSINBID, 
+						"Select cards to bit, then press BID", 
+						"BID",
+						"Give up", 
+						true, 
+						true, 
+						true,
+						true,
+						true);
+				} else {
+					players [activePlayerSub].getAI ().getLogger ().log ("Initiating bid.");
+					bidPhase (players [activePlayerSub].getAI ().nextBid (players[activePlayerSub], activeQuest));
+				}
 			}
 		}
 		return;
@@ -589,18 +666,23 @@ public class GameManager : MonoBehaviour {
 	}
 	public void askForCardLimitReached(Player player, int cardsToDeleteNum) {
 		Debug.Log(player.getName() + "'s card limit reached. Asking to discard " + cardsToDeleteNum + " cards.");
-		ui.askForCards(
-			player, 
-			GameState.state.ASKINGFORCARDSTODISCARD, 
-								"Card limit reached. Please select "+ cardsToDeleteNum + " cards to discard.", 
-								"null",
-								"null", 
-								true, 
-								true, 
-								true,
-								true,
-								true,
-								cardsToDeleteNum);
+		if (player.isHuman ()) {
+			ui.askForCards (
+				player, 
+				GameState.state.ASKINGFORCARDSTODISCARD, 
+				"Card limit reached. Please select " + cardsToDeleteNum + " cards to discard.", 
+				"null",
+				"null", 
+				true, 
+				true, 
+				true,
+				true,
+				true,
+				cardsToDeleteNum);
+		} else {
+			player.getAI ().getLogger ().log ("Discarding weakest cards...");
+			player.getAI ().discardExtraCards (players[activePlayerSub], cardsToDeleteNum);
+		}
 								
 		return;
 			

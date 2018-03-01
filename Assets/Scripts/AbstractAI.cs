@@ -74,14 +74,14 @@ public abstract class AbstractAI{
 				return false;
 			}
 		}
-		for (int i = 0; i < hand.GetLength (0); i++) {
-			if (hand [i].getType() == "test") {
+		for (int i = 0; i < player.getHand().GetLength (0); i++) {
+			if (player.getHand() [i].getType() == "test") {
 				hasTest = 1;
 				break;
 			}
-			if (hand [i].getType() == "foe" && hand[i].getBP()>lowestBP) {
+			if (player.getHand() [i].getType() == "foe" && player.getHand() [i].getBP()>lowestBP) {
 				totalFoes++;
-				lowestBP = hand [i].getBP ();
+				lowestBP = player.getHand() [i].getBP ();
 			}
 		}
 		if (quest.getStages () > totalFoes + hasTest) {
