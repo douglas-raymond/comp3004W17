@@ -292,6 +292,7 @@ public class GameManager : MonoBehaviour {
 		}
 	}	
 	public void getPlayers(){	
+		ui.showCard(activeQuest.getQuest());
 		activePlayerSub = nextPlayer(activePlayerSub);
 		log.log("Asking " + players[activePlayerSub].getName() + " if they want to join the quest");
 		ui.askYesOrNo(players[activePlayerSub], "Do you want to join this quest?", GameState.state.ASKINGFORPLAYERS);
@@ -471,7 +472,7 @@ public class GameManager : MonoBehaviour {
 								GameState.state.ASKINGFORCARDSINQUEST, 
 								"Select cards to play, then press FIGHT", 
 								"FIGHT",
-								"Give up", 
+								"null", 
 								false, 
 								true, 
 								true,
@@ -690,7 +691,8 @@ public class GameManager : MonoBehaviour {
 				activeQuest.nextStage();
 				startStage();
 			}
-			else {
+
+			else{
 				endQuest();
 			}
 		}
@@ -767,7 +769,8 @@ public class GameManager : MonoBehaviour {
 		
 	}
 
-	private void drawXNumberOfCards(int numOfCardsToDraw, Player player = null) {		
+	private void drawXNumberOfCards(int numOfCardsToDraw, Player player = null) {	
+		activePlayerOther = -1;
 		if(player == null) {
 			for(int i = 0 ; i< activeQuest.getPlayerNum(); i ++){
 				log.log("Drawing " + numOfCardsToDraw + " cards for " + activeQuest.getPlayer(i).getName());
