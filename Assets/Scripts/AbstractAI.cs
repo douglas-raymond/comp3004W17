@@ -7,6 +7,9 @@ public abstract class AbstractAI{
 	int strategy;
 	Player player;
 
+	protected AbstractAI(){
+	}
+
 	protected AbstractAI(Player _player, int _strategy){
 		player = _player;
 		strategy = _strategy;
@@ -215,7 +218,7 @@ public abstract class AbstractAI{
 					}
 					submitWeapons [count] = hand [i];
 					count++;
-					BPtotal = BPtotal + hand [i].getBP;
+					BPtotal = BPtotal + hand [i].getBP();
 					if (BPtotal >= 40) {
 						break;
 					}
@@ -234,7 +237,7 @@ public abstract class AbstractAI{
 	//AI submits cards for current quest stage (as a player).
 	public Card[] playQuestStage(Card[] hand, ActiveQuest quest){
 		if (quest.getCurrentStage ().getType () == "test") {
-			return nextBid ();
+			return nextBid (hand, quest);
 		}
 		Card[] submit = new Card[12];
 		int BPhurdle = 0;

@@ -110,7 +110,7 @@ public class GameManager : MonoBehaviour {
 			break;*/
 		case "event":
 			//Event handling. Pretty much done because events are handled in the cards themselves.
-			storyCard.runEvent() (players, activePlayerMeta);
+			storyCard.runEvent(players, activePlayerMeta, playerCount, advDeck);
 			break;
 		default:
 			drawQuestCard ();
