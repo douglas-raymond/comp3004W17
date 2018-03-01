@@ -100,7 +100,7 @@ public class ActiveQuest{
 		
 		players = newArr;
 	}
-	private void finishQuest() {
+	public void finishQuest() {
 		if(playerNum == 0) { return;}
 		for(int i = 0; i< players.Length; i ++)
 		{
@@ -156,7 +156,7 @@ public class ActiveQuest{
 		
 		if(currentStage + 1 == stages.Length){
 			quest = null;
-			finishQuest();
+			//finishQuest();
 			return;
 		}
 		else {

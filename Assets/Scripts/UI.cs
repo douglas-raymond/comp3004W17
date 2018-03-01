@@ -285,6 +285,7 @@ public class UI : MonoBehaviour {
 	public void askForCards(Player player, state newState, string instructions, string button1, string button2, bool getFoes, bool getWeap, bool getAlly, bool getAmour, bool getTest, int n = -1) {
 		clearGameObjectArray(cardsToShow);
 		clearGameObjectArray(currButtons);
+		if(gm.getUserInputState() == state.ASKINGFORCARDSTODISCARD){clearGameObjectArray(currIcons);}
 		multipleCardInputMaxNum = n;
 		activePlayer = player;
 		Card [] cards = getOnlyTypeFromDeck(player.getHand(), getFoes, getWeap, getAlly, getAmour, getTest);
@@ -416,6 +417,8 @@ public class UI : MonoBehaviour {
 		will have the appropriate action done according to the current state.
 		*/
 		clearGameObjectArray(currButtons);
+		clearGameObjectArray(currIcons);
+		clearGameObjectArray(cardsToShow);
 		gm.setUserInputState(messageState);
 		activePlayer = player;
 		
@@ -627,7 +630,7 @@ public class UI : MonoBehaviour {
 	private bool checkIfArrayContainsCard(GameObject[] arr, GameObject cardToFind) {
 		if(arr == null) { return false;}
 		for(int i = 0; i < arr.Length; i++){
-			if(arr[i] == cardToFind){
+			if(arr[i].GetComponent<CardButtonUI>().getCard().getName().Equals(cardToFind.GetComponent<CardButtonUI>().getCard().getName())){
 				return true;
 			}
 		}

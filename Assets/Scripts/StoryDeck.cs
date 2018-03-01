@@ -13,7 +13,7 @@ public class StoryDeck : Deck  {
 	public void initDeck(){
 		CardLibrary lib = new CardLibrary();
 		lib.init();
-		Card[] tempCardArr = new Card[17];	
+		Card[] tempCardArr = new Card[19];	
 		//Story deck
 		
 		for(int i = 0; i < 1; i ++) { tempCardArr[i] = lib.getCard("holygrail"); }
@@ -31,10 +31,10 @@ public class StoryDeck : Deck  {
 		for(int i = 14; i < 15; i ++){ tempCardArr[i] = lib.getCard("orkney"); }
 		for(int i = 15; i < 16; i ++){ tempCardArr[i] = lib.getCard("tintagel"); }
 		for(int i = 16; i < 17; i ++){ tempCardArr[i] = lib.getCard("york"); }
+		for(int i = 17; i < 18; i ++){ tempCardArr[i] = lib.getCard("prosperity"); }
+		for(int i = 18; i < 19; i ++){  tempCardArr[i] = lib.getCard("chivdeed"); }
 		
-		
-		
-		for(int i = 0; i< 16; i++)
+		for(int i = 0; i< 19; i++)
 		{
 			deck.Push(tempCardArr[i]);
 		}
