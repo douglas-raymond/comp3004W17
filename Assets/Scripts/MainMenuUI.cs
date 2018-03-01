@@ -16,7 +16,7 @@ public class MainMenuUI : MonoBehaviour {
 		PlayerPrefs.SetInt("aiPlayersNum",ai_DropdownVal);
 		PlayerPrefs.SetInt ("humanPlayersNum", human_DropdownVal);
 		PlayerPrefs.SetInt ("testScenario", test_DropdownVal);
-		SceneManager.LoadScene ("inGame");
+		SceneManager.LoadScene ("COMP3004");
 
 	}
 

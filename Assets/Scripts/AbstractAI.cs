@@ -5,24 +5,24 @@ using UnityEngine;
 public abstract class AbstractAI{
 
 	int strategy;
-	Player player;
 	Card[] hand;
 
 	protected AbstractAI(){
 	}
 
 	protected AbstractAI(Player _player, int _strategy){
-		player = _player;
 		strategy = _strategy;
-		hand = player.getHand ();
 	}
 
+
 	//When tournament is played, this is called so AI decides whether/what to submit. Returns the cards it wants to play. If empty array, AI refuses to play.
-	public Card[] doIParticipateInTournament(Player[] players){
+	public Card[] doIParticipateInTournament(Player[] players, Player player){
+		player.getLogger ().log ("Refreshing hand for AI.");
+		hand = player.getHand (false);
 		int BPtotal = 0;
 		Card[] submit = new Card[12];
 		int count = 0;
-		hand = sortHand ();
+		hand = sortHand (player);
 		switch (strategy) {
 		case 1:
 			break;
@@ -46,11 +46,13 @@ public abstract class AbstractAI{
 		return submit;
 	}
 
-	public bool doISponsorAQuest (Player[] players, QuestCard quest){ //strategy 1 and 2 run this the exact same way, so no switch statement needed... yet
+	public bool doISponsorAQuest (Player[] players, Player player, QuestCard quest){ //strategy 1 and 2 run this the exact same way, so no switch statement needed... yet
 		int hasTest = 0; //either 0 or 1, and we use int rather than bool to use it in quest stage calculations
+		player.getLogger ().log ("Refreshing hand for AI.");
+		hand = player.getHand (false);
 		int lowestBP = 0;
 		int totalFoes = 0;
-		hand = sortHand ();
+		hand = sortHand (player);
 		for (int i = 0; i < players.GetLength (0); i++) {
 			switch (players [i].getRank ()) {
 			case 0:
@@ -88,12 +90,14 @@ public abstract class AbstractAI{
 		return true;
 	}
 
-	public bool doIParticipateInQuest (QuestCard quest){
+	public bool doIParticipateInQuest (Player player, QuestCard quest){
+		player.getLogger ().log ("Refreshing hand for AI.");
+		hand = player.getHand (false);
 		bool c1 = false;
 		bool c2 = false;
 		int lowestBP = 0;
 		int count = 0;
-		hand = sortHand ();
+		hand = sortHand (player);
 		switch (strategy) {
 		case 1:
 			return false;
@@ -127,7 +131,9 @@ public abstract class AbstractAI{
 	}
 
 	//
-	public Card[] nextBid(ActiveQuest quest){
+	public Card[] nextBid(Player player, ActiveQuest quest){
+		player.getLogger ().log ("Refreshing hand for AI.");
+		hand = player.getHand (false);
 		Card[] submit = new Card[12];
 		if (quest.getHighestBid () > hand.Length) {
 			return submit;
@@ -185,10 +191,12 @@ public abstract class AbstractAI{
 	}
 	*/
 	//AI submits cards for current quest stage (as a sponsor).
-	public void sponsorQuestSetup(ActiveQuest quest){
+	public void sponsorQuestSetup(Player player, ActiveQuest quest){
+		player.getLogger ().log ("Refreshing hand for AI.");
+		hand = player.getHand (false);
 		Card[] submit = new Card[quest.getStageNum()];
 		Card[] submitWeapons = new Card[10];
-		hand = sortHand ();
+		hand = sortHand (player);
 		int BPtotal = 0;
 		int count = 0;
 		switch (strategy) {
@@ -237,15 +245,17 @@ public abstract class AbstractAI{
 	}
 
 	//AI submits cards for current quest stage (as a player).
-	public Card[] playQuestStage(ActiveQuest quest){
+	public Card[] playQuestStage(Player player, ActiveQuest quest){
+		player.getLogger ().log ("Refreshing hand for AI.");
+		hand = player.getHand (false);
 		if (quest.getCurrentStage ().getType () == "test") {
-			return nextBid (quest);
+			return nextBid (player, quest);
 		}
 		Card[] submit = new Card[12];
 		int BPhurdle = 0;
 		int count = 0;
-		hand = sortHand ();
-		hand = sortHandByType ();
+		hand = sortHand (player);
+		hand = sortHandByType (player);
 		switch (strategy) {
 		case 1:
 			break;
@@ -278,7 +288,9 @@ public abstract class AbstractAI{
 		return submit;
 	}
 	
-	private Card[] sortHand(){
+	private Card[] sortHand(Player player){
+		player.getLogger ().log ("Refreshing hand for AI.");
+		hand = player.getHand (false);
 		bool sorted = false;
 		int swaps;
 		if (hand.GetLength (0) < 2) {
@@ -303,7 +315,9 @@ public abstract class AbstractAI{
 		return submit;
 	}
 
-	private Card[] sortHandByType(){
+	private Card[] sortHandByType(Player player){
+		player.getLogger ().log ("Refreshing hand for AI.");
+		hand = player.getHand (false);
 		Card[] submit = new Card[12];
 		int count = 0;
 		for (int i = 0; i < hand.Length; i++) {
@@ -337,6 +351,17 @@ public abstract class AbstractAI{
 			}
 		}
 		return submit;
+	}
+
+	public void discardExtraCards(Player player, int discards){
+		player.getLogger ().log ("Refreshing hand for AI.");
+		hand = player.getHand (false);
+		hand = sortHand (player);
+		Card[] temp = new Card[12];
+		for (int i = 0; i < 12; i++) {
+			temp [i] = hand [hand.Length - i - 1];
+		}
+		player.setHand (temp);
 	}
 }
 
