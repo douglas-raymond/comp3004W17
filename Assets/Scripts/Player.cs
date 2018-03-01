@@ -10,6 +10,8 @@ public class Player {
 	public int rank;
 	private string name;
 	private int BP; 
+	private bool human = true;
+	private AIController AI = null;
 	Logger log = new Logger("PlayerNull");
 
 	public Player(Card[] _hand, int _shields, int _rank, string _name){
@@ -221,6 +223,20 @@ public class Player {
 			log.log (name + " is eligible for victory!");
 		}
 			
+	}
+
+
+	public bool isHuman(){
+		return human;
+	}
+
+	public void assumingDirectControl(AIController _AI){
+		human = false;
+		AI = _AI;
+	}
+
+	public AIController getAI(){
+		return AI;
 	}
 
 }

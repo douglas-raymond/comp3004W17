@@ -14,8 +14,9 @@ public class GameManager : MonoBehaviour {
 	UI ui;
 
 	//0 = no test, 1 = scenario 1, 2 = scenario 2
-	int testingScenario = 1;
-	int playerCount = 3;
+	int testingScenario = PlayerPrefs.GetInt("testScenario", 0);
+	int playerCount = PlayerPrefs.GetInt("humanPlayersNum",0)+PlayerPrefs.GetInt("aiPlayersNum",0);
+	int aiplayers = PlayerPrefs.GetInt("aiPlayersNum",0);
 	
 	Player[] players;
 	
@@ -34,7 +35,7 @@ public class GameManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		
-		if(testingScenario == 1) {
+		if (testingScenario == 1) {
 			playerCount = 4;
 		}
 		advDeck = new AdvDeck();
@@ -48,6 +49,7 @@ public class GameManager : MonoBehaviour {
 		
 		for(int i = 0; i < playerCount; i++){
 			players[i] = new Player(new Card[12], 0, 0, "Player " + (i));
+
 		}
 		log.log ("dealt cards");
 			
@@ -117,9 +119,8 @@ public class GameManager : MonoBehaviour {
 			break;
 			/*
 		case "event":
-			//Event handling. Pretty much done because events are handled in the cards themselves.
-			storyCard.runEvent (players, activePlayer);
-			break; */
+			storyCard.runEvent(players, activePlayerMeta, playerCount, advDeck);
+			break;
 		default:
 			drawQuestCard ();
 			break;
@@ -146,9 +147,18 @@ public class GameManager : MonoBehaviour {
 			ui.showCard(activeQuest.getQuest());
 			
 			log.log ("Getting sponsor");
-			
-			ui.askYesOrNo(players[activePlayerSub], "Do you want to sponsor this quest?", GameState.state.ASKINGFORSPONSORS);	
-			
+
+			if (players [activePlayerSub].isHuman()) {
+				ui.askYesOrNo (players [activePlayerSub], "Do you want to sponsor this quest?", GameState.state.ASKINGFORSPONSORS);	
+			} else {
+				if (players [activePlayerSub].getAI ().doISponsorAQuest (players, (QuestCard)activeQuest.getQuest ())) {
+					players [activePlayerSub].getAI ().getLogger ().log ("Will sponsor quest.");
+					startQuestSetup ();
+				} else {
+					players [activePlayerSub].getAI ().getLogger ().log ("Will not sponsor quest.");
+					getSponsor ();
+				}
+			}
 			
 		}
 	}
@@ -157,19 +167,25 @@ public class GameManager : MonoBehaviour {
 		//activePlayerSub = activePlayerMeta;
 		activeQuest.setSponsor(players[activePlayerSub]);
 		//ui.askForStageSelection(activeQuest.getSponsor(), activeQuest.getStageNum());
-		ui.askForCards(
-			activeQuest.getSponsor(), 
-			GameState.state.ASKINGFORSTAGES, 
-			"Select up to " + activeQuest.getStageNum() + " stages", 
-			"null",
-			"Forfeit", 
-			true, 
-			false, 
-			false,
-			false,
-			true,
-			activeQuest.getStageNum()
+		if (players [activePlayerSub].isHuman ()) {
+			ui.askForCards (
+				activeQuest.getSponsor (), 
+				GameState.state.ASKINGFORSTAGES, 
+				"Select up to " + activeQuest.getStageNum () + " stages", 
+				"null",
+				"Forfeit", 
+				true, 
+				false, 
+				false,
+				false,
+				true,
+				activeQuest.getStageNum ()
 			);
+		} else {
+			players [activePlayerSub].getAI ().getLogger ().log ("Setting up stage.");
+			players [activePlayerSub].getAI ().sponsorQuestSetup (activeQuest);
+			getPlayers ();
+		}
 	}	
 	public void endQuestSetup(Card[] stages){
 		log.log("Quest setup over");
@@ -294,7 +310,23 @@ public class GameManager : MonoBehaviour {
 	public void getPlayers(){	
 		activePlayerSub = nextPlayer(activePlayerSub);
 		log.log("Asking " + players[activePlayerSub].getName() + " if they want to join the quest");
-		ui.askYesOrNo(players[activePlayerSub], "Do you want to join this quest?", GameState.state.ASKINGFORPLAYERS);
+		if (players[activePlayerSub].isHuman ()) {
+			ui.askYesOrNo (players [activePlayerSub], "Do you want to join this quest?", GameState.state.ASKINGFORPLAYERS);
+		} else {
+			if (players [activePlayerSub].getAI ().doIParticipateInQuest ((QuestCard)activeQuest.getQuest ())) {
+				players [activePlayerSub].getAI ().getLogger ().log ("Will participate.");
+				gotPlayer (players [activePlayerSub]);
+			} else {
+				players [activePlayerSub].getAI ().getLogger ().log ("Will not participate.");
+				gotPlayer (null);
+			}
+		}
+	}
+	public void getPlayersTourney(){	
+		
+		log.log("Asking " + players[activePlayerSub].getName() + " if they want to join the tournament");
+		userInputState = state.ASKINGFORPLAYERSTOURNEY;
+		ui.askYesOrNo(players[activePlayerSub], "Do you want to join this tournament?", GameState.state.ASKINGFORPLAYERSTOURNEY);
 	}
 	public void getPlayersTourney(){	
 		
@@ -465,32 +497,43 @@ public class GameManager : MonoBehaviour {
 			ui.showStage(activeQuest);
 			if(Object.ReferenceEquals(activeQuest.getCurrentStage().GetType(), typeof(Foe))) {
 				log.log(activeQuest.getCurrentPlayer().getName() + " is now facing a foe of type " + activeQuest.getCurrentStage().getName() + " enhanced with " + activeQuest.getStageWeaponString());
-				
-				ui.askForCards(
-								activeQuest.getCurrentPlayer(), 
-								GameState.state.ASKINGFORCARDSINQUEST, 
-								"Select cards to play, then press FIGHT", 
-								"FIGHT",
-								"Give up", 
-								false, 
-								true, 
-								true,
-								true,
-								false);
+
+				if (players [activePlayerSub].isHuman ()) {
+					ui.askForCards (
+						activeQuest.getCurrentPlayer (), 
+						GameState.state.ASKINGFORCARDSINQUEST, 
+						"Select cards to play, then press FIGHT", 
+						"FIGHT",
+						"null", 
+						false, 
+						true, 
+						true,
+						true,
+						false);
+				} else {
+					players [activePlayerSub].getAI ().getLogger ().log ("Playing stage.");
+					questAttack(players [activePlayerSub].getAI ().playQuestStage(activeQuest));
+				}
 			}
 			if(Object.ReferenceEquals(activeQuest.getCurrentStage().GetType(), typeof(Test))) {
 				log.log(activeQuest.getCurrentPlayer().getName() + " is now bidding in the " + activeQuest.getCurrentStage().getName() + " test");				
-				ui.askForCards(
-								activeQuest.getCurrentPlayer(),  
-								GameState.state.ASKINGFORCARDSINBID, 
-								"Select cards to bit, then press BID", 
-								"BID",
-								"Give up", 
-								true, 
-								true, 
-								true,
-								true,
-								true);
+
+				if (players [activePlayerSub].isHuman ()) {
+					ui.askForCards (
+						activeQuest.getCurrentPlayer (),  
+						GameState.state.ASKINGFORCARDSINBID, 
+						"Select cards to bit, then press BID", 
+						"BID",
+						"Give up", 
+						true, 
+						true, 
+						true,
+						true,
+						true);
+				} else {
+					players [activePlayerSub].getAI ().getLogger ().log ("Initiating bid.");
+					bidPhase (players [activePlayerSub].getAI ().nextBid (activeQuest));
+				}
 			}
 		}
 		return;

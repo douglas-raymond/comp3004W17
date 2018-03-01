@@ -32,4 +32,7 @@ public abstract class Card {
 	public virtual int getBonusShields() {return -1;}
 
 
+	public virtual void runEvent(Player[] playerList, int activePlayer, int playerCount, AdvDeck advDeck){
+	}
+
 }
