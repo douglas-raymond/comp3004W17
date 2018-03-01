@@ -11,7 +11,7 @@ public class Tourney
 	Player currentPlayer;
 	Player strongestPlayer;
 	Player[] players;
-	public Tourney (TourneyCard T)
+	public Tourney (Card T)
 	{
 		strongestPlayerBP = 0;
 		playerNum = 0;
@@ -118,13 +118,17 @@ public class Tourney
 		strongestPlayer = player;
 		strongestPlayerBP = BP;
 	}
-
+	public Player getStrongestPlayer(){
+		return strongestPlayer;
+	}
 	public int getStrongestBP(){
 		return strongestPlayerBP;
 	}
-
 	public void awardShields(){
 		strongestPlayer.addShields (bonusShields+getPlayerNum());
+	}
+	public int getAwardNum(){
+		return bonusShields + getPlayerNum();
 	}
 }
 

@@ -15,7 +15,7 @@ public class TourneyCard : StoryCard {
 		sprite = _sprite;
 	}
 
-	public int getBonusShields(){
+	public override int getBonusShields(){
 		return shields;
 	}
 }

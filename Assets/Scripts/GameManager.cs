@@ -95,20 +95,27 @@ public class GameManager : MonoBehaviour {
 
 	//Track splitter that evaluates based on card type.
 	public void evaluateStory(Card storyCard){
+		log.log("Drew a " + storyCard.getName());
+		counter = 0;
 		switch (storyCard.getType()) {
+			
 		case "quest":
 			
 			activeQuest = new ActiveQuest((QuestCard)storyCard);
 			activePlayerSub = activePlayerMeta;
 			cyclingThroughPlayers = false;
 			userInputState = state.ASKINGFORSPONSORS;
+			
 			getSponsor();
 			
 			break;
-			/*block these out until we can get the tourneys and events sorted
+			
 		case "tourney":
 			createTourney (storyCard);
+			activePlayerSub = activePlayerMeta;
+			userInputState = state.ASKINGFORPLAYERSTOURNEY;
 			break;
+			/*
 		case "event":
 			//Event handling. Pretty much done because events are handled in the cards themselves.
 			storyCard.runEvent (players, activePlayer);
@@ -290,8 +297,9 @@ public class GameManager : MonoBehaviour {
 		ui.askYesOrNo(players[activePlayerSub], "Do you want to join this quest?", GameState.state.ASKINGFORPLAYERS);
 	}
 	public void getPlayersTourney(){	
-		activePlayerSub = activePlayerMeta;
+		
 		log.log("Asking " + players[activePlayerSub].getName() + " if they want to join the tournament");
+		userInputState = state.ASKINGFORPLAYERSTOURNEY;
 		ui.askYesOrNo(players[activePlayerSub], "Do you want to join this tournament?", GameState.state.ASKINGFORPLAYERSTOURNEY);
 	}
 	public void gotPlayer(Player newPlayer){
@@ -316,15 +324,17 @@ public class GameManager : MonoBehaviour {
 		if(newPlayer != null) {
 			log.log("Player " + newPlayer.getName() + " joined Tournament.");
 			tourney.addPlayer(newPlayer);
+			log.log(newPlayer.getName() + " has join the tournament");
 		}
 		if(counter == players.Length)
 		{
-			log.log("Done looking for players.");
+			log.log("Done looking for tournament players.");
 			startTourney();
 			counter = 0;
 		}
 		else
 		{
+			activePlayerSub = nextPlayer(activePlayerSub);
 			getPlayersTourney();
 		}
 	}
@@ -418,8 +428,8 @@ public class GameManager : MonoBehaviour {
 
 	public void gotTournamentCards(Card[] selection){
 		int totalBP =0;
-		string cardsBeingPlayed = activeQuest.getCurrentPlayer().getName() + " has selected ";
-		if(selection.Length > 0) {
+		string cardsBeingPlayed = tourney.getCurrentPlayer().getName() + " has selected ";
+		if(selection != null) {
 			for(int i = 0; i < selection.Length; i++) {
 				cardsBeingPlayed =  cardsBeingPlayed + ", " + selection[i].getName() + " ("+ selection[i].getBP()+")";
 				totalBP = totalBP + selection[i].getBP();
@@ -428,8 +438,10 @@ public class GameManager : MonoBehaviour {
 		log.log(cardsBeingPlayed);
 		totalBP += tourney.getCurrentPlayer ().getBP ();
 
-		if (totalBP > tourney.getStrongestBP ())
+		if (totalBP > tourney.getStrongestBP ()){
 			tourney.setStrongestPlayer (tourney.getCurrentPlayer(), totalBP);
+			log.log(tourney.getCurrentPlayer().getName() + "is currently the strongest in the tournament");
+		}
 		
 		
 
@@ -501,7 +513,9 @@ public class GameManager : MonoBehaviour {
 
 	public void endTourney(){
 		gameState = state.TOURNEYWRAPUP;
-		tourney.awardShields ();
+		tourney.awardShields();
+		log.log(tourney.getStrongestPlayer().getName() + " won the tournament and is awarded " + tourney.getAwardNum() + " shields");
+		ui.displayAlert(tourney.getStrongestPlayer().getName() + " won the tournament and is awarded " + tourney.getAwardNum() + " shields");
 		tourney = null;
 		drawQuestCard ();
 	}
@@ -672,6 +686,10 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void createTourney(Card tourneyCard){
+		log.log("Tournament at " + tourneyCard.getName() + " has begun");
+		tourney = new Tourney(tourneyCard);
+		ui.showCard(tourneyCard);
+		activePlayerSub = activePlayerMeta;
 		getPlayersTourney();
 	}
 
@@ -693,7 +711,7 @@ public class GameManager : MonoBehaviour {
 		if(activeQuest != null && activeQuest.isInProgress()) {
 			return activeQuest.getCurrentPlayer();
 		}
-		else if(userInputState == state.ASKINGFORPLAYERS || userInputState == state.ASKINGFORSPONSORS) {
+		else if(userInputState == state.ASKINGFORPLAYERS || userInputState == state.ASKINGFORSPONSORS || userInputState == state.ASKINGFORPLAYERSTOURNEY) {
 			Debug.Log(userInputState);
 			return players[activePlayerSub];
 		}
@@ -705,9 +723,9 @@ public class GameManager : MonoBehaviour {
 			Debug.Log(userInputState);
 			return activeQuest.getPlayer(activePlayerOther);
 		}
-		else if(userInputState == state.ASKINGFORPLAYERSTOURNEY) {
+		else if(userInputState == state.ASKINGFORCARDSINTOURNEY) {
 			Debug.Log(userInputState);
-			return activeQuest.getPlayer(activePlayerOther);
+			return tourney.getCurrentPlayer();
 		}
 		else {
 			return players[activePlayerMeta];

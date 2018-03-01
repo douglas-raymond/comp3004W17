@@ -126,6 +126,9 @@ public class UI : MonoBehaviour {
 		else if (gm.getUserInputState() == state.ASKINGFORCARDSTODISCARD) {
 			gotCardToDiscardSelection(selected, selected.GetComponent<CardButtonUI>().getPos());
 		}
+		else if (gm.getUserInputState() == state.ASKINGFORCARDSINTOURNEY) {
+			gotTourneyCardSelection(selected, selected.GetComponent<CardButtonUI>().getPos());
+		}
 	}
 	
 	public void removeCardSelection(GameObject selected){
@@ -223,7 +226,7 @@ public class UI : MonoBehaviour {
 			else {
 				clearGameObjectArray(currButtons);
 				log.log ("telling GM we don't have an active player");
-				gm.gotPlayer(null); //Other wise have GameManager call getSponsor for the next player.
+				gm.gotPlayerTourney(null); //Other wise have GameManager call getSponsor for the next player.
 			}
 		}
 		else if(gm.getUserInputState() == state.ASKINGFORCARDSINQUEST){
@@ -238,6 +241,8 @@ public class UI : MonoBehaviour {
 		else if(gm.getUserInputState() == state.ASKINGFORCARDSINTOURNEY){
 			log.log ("asking for cards in tournament");
 			if(input.Equals("ENTER TOURNAMENT!")) {
+				clearGameObjectArray(currButtons);
+				clearGameObjectArray(cardsToShow);
 				gm.gotTournamentCards(gameObjectArrayToCardArray(multipleCardInput));
 			}
 		}
@@ -297,6 +302,17 @@ public class UI : MonoBehaviour {
 		if(!checkIfArrayContainsCard(multipleCardInput, selected)) {
 			addNewCardToMultipleCardArray(selected, pos);
 			changeHeaderMessage("Player BP: " + getPlayersBP(), playerBP);
+		}
+		else {
+			displayAlert("Cannot have two weapons of the same type!");
+			return;
+		}
+	}
+	
+	private void gotTourneyCardSelection(GameObject selected, Vector2 pos){
+		//Card selected = selectedObj.GetComponent<CardButtonUI>().getCard();
+		if(!checkIfArrayContainsCard(multipleCardInput, selected)) {
+			addNewCardToMultipleCardArray(selected, pos);
 		}
 		else {
 			displayAlert("Cannot have two weapons of the same type!");
