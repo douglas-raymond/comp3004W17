@@ -740,7 +740,7 @@ public class UI : MonoBehaviour {
 	
 	public void mouseOverShowOtherPlayerIcon() {
 
-		otherPlayerHeader = createHeaderMessage(panelPosX + panelWidth/3, panelPosY - panelHeight/25, new Vector3(0,0,0), gm.getOtherPlayerInfo(gm.getCurrentPlayer()));
+		otherPlayerHeader = createHeaderMessage(panelPosX - panelWidth/3, panelPosY + panelHeight/25, new Vector3(0,0,0), gm.getOtherPlayerInfo(gm.getCurrentPlayer()));
 	}
 	
 	public void mouseLeaveShowOtherPlayerIcon() {

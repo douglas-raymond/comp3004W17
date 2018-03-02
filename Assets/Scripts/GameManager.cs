@@ -36,16 +36,16 @@ public class GameManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		testingScenario = PlayerPrefs.GetInt("testScenario");
-		playerCount = PlayerPrefs.GetInt("humanPlayersNum")+PlayerPrefs.GetInt("aiPlayersNum");
+		playerCount = PlayerPrefs.GetInt("humanPlayerNum") + PlayerPrefs.GetInt("aiPlayerNum");
 		aiStrat=PlayerPrefs.GetInt("aiStrategy");
-		Debug.Log ("AI Strat is" + aiStrat);
-		Debug.Log(playerCount);
+		Debug.Log ("AI Strat is " + aiStrat);
+		Debug.Log("player count: " + playerCount);
 		if(testingScenario == 1 || testingScenario == 2|| testingScenario == 3) {
 			playerCount = 4;
 		}
 		Debug.Log ("Testing scenario is " + testingScenario);
-		Debug.Log ("There are " + PlayerPrefs.GetInt ("aiPlayerNum") + "AI players.");
-		Debug.Log ("There are " + PlayerPrefs.GetInt ("humanPlayerNum") + "Human players.");
+		Debug.Log ("There are " + PlayerPrefs.GetInt ("aiPlayerNum") + " AI players.");
+		Debug.Log ("There are " + PlayerPrefs.GetInt ("humanPlayerNum") + " Human players.");
 		Debug.Log ("Current test scenario is " + PlayerPrefs.GetInt ("testScenario"));
 
 		advDeck = new AdvDeck();
@@ -73,8 +73,9 @@ public class GameManager : MonoBehaviour {
 		activePlayerMeta = -1;
 		dealHands(playerCount);
 		log.log ("Dealing hands, drawing first quest");
-		drawQuestCard();
 		activePlayerSub = activePlayerMeta;
+		drawQuestCard();
+		
 		//activePlayerSub = activePlayerMeta;
 	}
 	private void drawQuestCard(){
