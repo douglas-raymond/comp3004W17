@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour {
 	//0 = no test, 1 = scenario 1, 2 = scenario 2
 	int testingScenario = 0;
 	int playerCount = 3;
+	int aiStrat=0;
 	Player[] players;
 	
 	//Game states. There will eventually be many possible states, but for right now these two exist.
@@ -36,7 +37,8 @@ public class GameManager : MonoBehaviour {
 	void Start () {
 		testingScenario = PlayerPrefs.GetInt("testScenario");
 		playerCount = PlayerPrefs.GetInt("humanPlayersNum")+PlayerPrefs.GetInt("aiPlayersNum");
-		
+		aiStrat=PlayerPrefs.GetInt("aiStrategy");
+		Debug.Log ("AI Strat is" + aiStrat);
 		Debug.Log(playerCount);
 		if(testingScenario == 1 || testingScenario == 2|| testingScenario == 3) {
 			playerCount = 4;

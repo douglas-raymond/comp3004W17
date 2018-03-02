@@ -7,9 +7,9 @@ using UnityEngine.UI;
 public class MainMenuUI : MonoBehaviour {
 
 	public Button NewGameBtn, OptionsBtn, ExitGameBtn;
-	public Dropdown DropdownAI, DropdownHuman, DropdownTestScenario;
+	public Dropdown DropdownAI, DropdownHuman, DropdownTestScenario, DropdownAIStrategy;
 	public GameObject PanelOptions; 
-	int ai_DropdownVal,human_DropdownVal,test_DropdownVal;
+	int ai_DropdownVal,human_DropdownVal,test_DropdownVal,aistrat_DropdownVal;
 
 	public void NewGameBtnOnClick(){
 		Debug.Log ("New Game");
@@ -17,6 +17,7 @@ public class MainMenuUI : MonoBehaviour {
 		PlayerPrefs.SetInt("aiPlayerNum",ai_DropdownVal);
 		PlayerPrefs.SetInt ("humanPlayerNum", human_DropdownVal);
 		PlayerPrefs.SetInt ("testScenario", test_DropdownVal);
+		PlayerPrefs.SetInt ("aiStrategy", aistrat_DropdownVal);
 		SceneManager.LoadScene ("inGame");
 
 	}
@@ -50,6 +51,9 @@ public class MainMenuUI : MonoBehaviour {
 		if (test_DropdownVal == null) {
 			DropdownTestScenario = PanelOptions.GetComponent<Dropdown> ();		
 		}
+		if (aistrat_DropdownVal == null) {
+			DropdownAIStrategy = PanelOptions.GetComponent<Dropdown> ();		
+		}
 	}
 
 	void Update()
@@ -65,6 +69,10 @@ public class MainMenuUI : MonoBehaviour {
 		if (DropdownTestScenario != null) {
 			test_DropdownVal = DropdownTestScenario.value;
 			PlayerPrefs.SetInt ("testScenario", test_DropdownVal);
+		}
+		if (DropdownAIStrategy != null) {
+			aistrat_DropdownVal = DropdownAIStrategy.value;
+			PlayerPrefs.SetInt ("aiStrategy",  aistrat_DropdownVal);
 		}
 		PlayerPrefs.Save ();
 	}
