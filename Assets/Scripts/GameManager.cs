@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		testingScenario = PlayerPrefs.GetInt("testScenario");
-		playerCount = PlayerPrefs.GetInt("humanPlayerNum") + PlayerPrefs.GetInt("aiPlayerNum");
+		playerCount = PlayerPrefs.GetInt("humanPlayerNum")  + 1 ;
 		aiStrat=PlayerPrefs.GetInt("aiStrategy");
 		Debug.Log ("AI Strat is " + aiStrat);
 		Debug.Log("player count: " + playerCount);
