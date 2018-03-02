@@ -14,8 +14,8 @@ public class MainMenuUI : MonoBehaviour {
 	public void NewGameBtnOnClick(){
 		Debug.Log ("New Game");
 		Debug.Log(human_DropdownVal);
-		PlayerPrefs.SetInt("aiPlayersNum",ai_DropdownVal);
-		PlayerPrefs.SetInt ("humanPlayersNum", human_DropdownVal);
+		PlayerPrefs.SetInt("aiPlayerNum",ai_DropdownVal);
+		PlayerPrefs.SetInt ("humanPlayerNum", human_DropdownVal);
 		PlayerPrefs.SetInt ("testScenario", test_DropdownVal);
 		SceneManager.LoadScene ("inGame");
 
@@ -54,12 +54,19 @@ public class MainMenuUI : MonoBehaviour {
 
 	void Update()
 	{
-		if(DropdownAI!=null)
-		ai_DropdownVal = DropdownAI.value;
-		if(DropdownHuman!=null)
-		human_DropdownVal = DropdownHuman.value;
-		if (DropdownTestScenario != null)
-		test_DropdownVal = DropdownTestScenario.value;
+		if (DropdownAI != null) {
+			ai_DropdownVal = DropdownAI.value;
+			PlayerPrefs.SetInt("aiPlayerNum",ai_DropdownVal);
+		}
+		if (DropdownHuman != null) {
+			human_DropdownVal = DropdownHuman.value;
+			PlayerPrefs.SetInt ("humanPlayerNum", human_DropdownVal);
+		}
+		if (DropdownTestScenario != null) {
+			test_DropdownVal = DropdownTestScenario.value;
+			PlayerPrefs.SetInt ("testScenario", test_DropdownVal);
+		}
+		PlayerPrefs.Save ();
 	}
 
 }

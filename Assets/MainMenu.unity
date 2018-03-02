@@ -2466,6 +2466,7 @@ GameObject:
   - component: {fileID: 839119182}
   - component: {fileID: 839119181}
   - component: {fileID: 839119180}
+  - component: {fileID: 839119183}
   m_Layer: 5
   m_Name: DropdownTestScenario
   m_TagString: Untagged
@@ -2585,6 +2586,24 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 839119178}
+--- !u!114 &839119183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 839119178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c83ac255e2644e40ae23d9aa72c8567, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  NewGameBtn: {fileID: 952673356}
+  OptionsBtn: {fileID: 1955522478}
+  ExitGameBtn: {fileID: 1569067975}
+  DropdownAI: {fileID: 1920004518}
+  DropdownHuman: {fileID: 1536482744}
+  DropdownTestScenario: {fileID: 839119180}
+  PanelOptions: {fileID: 1280125608}
 --- !u!1 &844747296
 GameObject:
   m_ObjectHideFlags: 0
@@ -4889,9 +4908,9 @@ MonoBehaviour:
   NewGameBtn: {fileID: 952673356}
   OptionsBtn: {fileID: 1955522478}
   ExitGameBtn: {fileID: 1569067975}
-  DropdownAI: {fileID: 0}
-  DropdownHuman: {fileID: 0}
-  DropdownTestScenario: {fileID: 0}
+  DropdownAI: {fileID: 1920004518}
+  DropdownHuman: {fileID: 1536482744}
+  DropdownTestScenario: {fileID: 839119180}
   PanelOptions: {fileID: 1280125608}
 --- !u!1 &1444029614
 GameObject:
@@ -5121,6 +5140,7 @@ GameObject:
   - component: {fileID: 1536482746}
   - component: {fileID: 1536482745}
   - component: {fileID: 1536482744}
+  - component: {fileID: 1536482747}
   m_Layer: 5
   m_Name: DropdownHuman
   m_TagString: Untagged
@@ -5194,11 +5214,11 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
+    - m_Text: 0
+      m_Image: {fileID: 0}
     - m_Text: 1
       m_Image: {fileID: 0}
     - m_Text: 2
-      m_Image: {fileID: 0}
-    - m_Text: 3
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -5238,6 +5258,24 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1536482742}
+--- !u!114 &1536482747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1536482742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c83ac255e2644e40ae23d9aa72c8567, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  NewGameBtn: {fileID: 952673356}
+  OptionsBtn: {fileID: 1955522478}
+  ExitGameBtn: {fileID: 1569067975}
+  DropdownAI: {fileID: 1920004518}
+  DropdownHuman: {fileID: 1536482744}
+  DropdownTestScenario: {fileID: 839119180}
+  PanelOptions: {fileID: 1280125608}
 --- !u!1 &1545268825
 GameObject:
   m_ObjectHideFlags: 0
@@ -6412,6 +6450,7 @@ GameObject:
   - component: {fileID: 1920004520}
   - component: {fileID: 1920004519}
   - component: {fileID: 1920004518}
+  - component: {fileID: 1920004521}
   m_Layer: 5
   m_Name: DropdownAI
   m_TagString: Untagged
@@ -6485,11 +6524,11 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
+    - m_Text: 0
+      m_Image: {fileID: 0}
     - m_Text: 1
       m_Image: {fileID: 0}
     - m_Text: 2
-      m_Image: {fileID: 0}
-    - m_Text: 3
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -6529,6 +6568,24 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1920004516}
+--- !u!114 &1920004521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1920004516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c83ac255e2644e40ae23d9aa72c8567, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  NewGameBtn: {fileID: 952673356}
+  OptionsBtn: {fileID: 1955522478}
+  ExitGameBtn: {fileID: 1569067975}
+  DropdownAI: {fileID: 1920004518}
+  DropdownHuman: {fileID: 1536482744}
+  DropdownTestScenario: {fileID: 839119180}
+  PanelOptions: {fileID: 1280125608}
 --- !u!1 &1953179088
 GameObject:
   m_ObjectHideFlags: 0

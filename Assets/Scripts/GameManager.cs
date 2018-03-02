@@ -34,13 +34,18 @@ public class GameManager : MonoBehaviour {
 	bool cyclingThroughPlayers;
 	// Use this for initialization
 	void Start () {
-		//testingScenario = PlayerPrefs.GetInt("testScenario", 0);
-		//playerCount = PlayerPrefs.GetInt("humanPlayersNum", 0);
+		testingScenario = PlayerPrefs.GetInt("testScenario");
+		playerCount = PlayerPrefs.GetInt("humanPlayersNum")+PlayerPrefs.GetInt("aiPlayersNum");
 		
 		Debug.Log(playerCount);
 		if(testingScenario == 1 || testingScenario == 2|| testingScenario == 3) {
 			playerCount = 4;
 		}
+		Debug.Log ("Testing scenario is " + testingScenario);
+		Debug.Log ("There are " + PlayerPrefs.GetInt ("aiPlayerNum") + "AI players.");
+		Debug.Log ("There are " + PlayerPrefs.GetInt ("humanPlayerNum") + "Human players.");
+		Debug.Log ("Current test scenario is " + PlayerPrefs.GetInt ("testScenario"));
+
 		advDeck = new AdvDeck();
 		storyDeck = new StoryDeck();
 		log.Init ();

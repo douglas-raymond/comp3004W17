@@ -51,9 +51,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\AbstractAI.cs" />
      <Compile Include="Assets\Scripts\ActiveQuest.cs" />
      <Compile Include="Assets\Scripts\AdvCard.cs" />
      <Compile Include="Assets\Scripts\AdvDeck.cs" />
+     <Compile Include="Assets\Scripts\AIController.cs" />
      <Compile Include="Assets\Scripts\Ally.cs" />
      <Compile Include="Assets\Scripts\Amour.cs" />
      <Compile Include="Assets\Scripts\ButtonUI.cs" />
@@ -74,6 +76,7 @@
      <Compile Include="Assets\Scripts\Player.cs" />
      <Compile Include="Assets\Scripts\QuestCard.cs" />
      <Compile Include="Assets\Scripts\ShowHandUI.cs" />
+     <Compile Include="Assets\Scripts\ShowOtherPlayerUI.cs" />
      <Compile Include="Assets\Scripts\StoryCard.cs" />
      <Compile Include="Assets\Scripts\StoryDeck.cs" />
      <Compile Include="Assets\Scripts\Test.cs" />
@@ -82,7 +85,6 @@
      <Compile Include="Assets\Scripts\UI.cs" />
      <Compile Include="Assets\Scripts\UITransparentBlackScreen.cs" />
      <Compile Include="Assets\Scripts\Weapon.cs" />
-     <None Include="Assets\Scripts\marking.txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
