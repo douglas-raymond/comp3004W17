@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour {
 	UI ui;
 
 	//0 = no test, 1 = scenario 1, 2 = scenario 2
-	int testingScenario = 0;
+	int testingScenario = 3;
 	int playerCount = 3;
 	int aiStrat=0;
 	Player[] players;
@@ -28,20 +28,25 @@ public class GameManager : MonoBehaviour {
 	public int activePlayerSub;
 	public int activePlayerOther; 
 	
-	int testScenario2step = 1;
+	int testScenarioStep = 1;
 	
 	ActiveQuest activeQuest;
 	Tourney tourney;
 	bool cyclingThroughPlayers;
+	
+	Card[] tempCardSelection;
 	// Use this for initialization
 	void Start () {
-		testingScenario = PlayerPrefs.GetInt("testScenario");
-		playerCount = PlayerPrefs.GetInt("humanPlayerNum")  + 1 ;
+		//testingScenario = PlayerPrefs.GetInt("testScenario");
+		//playerCount = PlayerPrefs.GetInt("humanPlayerNum")  + 1 ;
 		aiStrat=PlayerPrefs.GetInt("aiStrategy");
 		Debug.Log ("AI Strat is " + aiStrat);
 		Debug.Log("player count: " + playerCount);
 		if(testingScenario == 1 || testingScenario == 2|| testingScenario == 3) {
 			playerCount = 4;
+		}
+		else if(testingScenario == 4){
+			playerCount = 3;
 		}
 		Debug.Log ("Testing scenario is " + testingScenario);
 		Debug.Log ("There are " + PlayerPrefs.GetInt ("aiPlayerNum") + " AI players.");
@@ -93,44 +98,53 @@ public class GameManager : MonoBehaviour {
 		}
 		else if(testingScenario == 1) {
 			Debug.Log(testingScenario);
-			if(testScenario2step == 1){
+			if(testScenarioStep == 1){
 				drawnCard = storyDeck.getCard("boarhunt");
-				testScenario2step++;
+				testScenarioStep++;
 			}
-			else if(testScenario2step == 2){
+			else if(testScenarioStep == 2){
 				drawnCard = storyDeck.getCard("prosperity");
-				testScenario2step++;
+				testScenarioStep++;
 			}
-			else if(testScenario2step == 3){
-				Debug.Log("holygrail");
+			else if(testScenarioStep == 3){
 				drawnCard = storyDeck.getCard("holygrail");
-				testScenario2step++;
+				testScenarioStep++;
 			}
 			else {
 
 				drawnCard = storyDeck.getCard("boarhunt");
-				testScenario2step++;
+				testScenarioStep++;
 			}
 		}
 		else if(testingScenario == 2) {
 			Debug.Log(testingScenario);
-			if(testScenario2step == 1){
+			if(testScenarioStep == 1){
 				drawnCard = storyDeck.getCard("boarhunt");
-				testScenario2step++;
+				testScenarioStep++;
 			}
-			else if(testScenario2step == 2){
-				drawnCard = drawnCard = storyDeck.drawCard();
-				testScenario2step++;
+			else if(testScenarioStep == 2){
+				drawnCard = storyDeck.getCard("holygrail");
+				testScenarioStep++;
 			}
 		}
 		else if(testingScenario == 3){
-			if(testScenario2step == 1){
+			if(testScenarioStep == 1){
 				drawnCard = storyDeck.getCard("camelot");
-				testScenario2step++;
+				testScenarioStep++;
 			}
-			else if(testScenario2step == 2){
+			else if(testScenarioStep == 2){
 				drawnCard = storyDeck.getCard("boarhunt");
-				testScenario2step++;
+				testScenarioStep++;
+			}
+		}
+		else if(testingScenario == 4){
+			if(testScenarioStep == 1){
+				drawnCard = storyDeck.getCard("boarhunt");
+				testScenarioStep++;
+			}
+			else if(testScenarioStep == 2){
+				drawnCard = storyDeck.getCard("holygrail");
+				testScenarioStep++;
 			}
 		}
 		else {
@@ -221,6 +235,7 @@ public class GameManager : MonoBehaviour {
 			false,
 			false,
 			true,
+			true,
 			activeQuest.getStageNum()
 			);
 	}	
@@ -258,6 +273,7 @@ public class GameManager : MonoBehaviour {
 			"null",
 			false, 
 			true, 
+			false,
 			false,
 			false,
 			false
@@ -330,6 +346,7 @@ public class GameManager : MonoBehaviour {
 					false,
 					false,
 					true,
+					false,
 					activeQuest.getStageNum()
 					);
 				return;
@@ -407,6 +424,30 @@ public class GameManager : MonoBehaviour {
 				players[i].setHand(newHand);
 			}
 		}
+		else if(testingScenario == 4) {
+			Card[] player1NewHand = new Card[12];
+			player1NewHand[0] = advDeck.getCard("saxons");
+			player1NewHand[1] = advDeck.getCard("tovalor");
+			for(int i = 2; i < player1NewHand.Length; i++){
+				player1NewHand[i] = advDeck.drawCard();
+			}
+			
+			Card[] player2NewHand = new Card[12];
+			player2NewHand[0] = advDeck.getCard("amour");
+			player2NewHand[1] = advDeck.getCard("amour");
+			for(int i = 2; i < player2NewHand.Length; i++){
+				player2NewHand[i] = advDeck.drawCard();
+			}
+			
+			Card[] player3NewHand = new Card[12];
+			player3NewHand[0] = advDeck.getCard("mordred");
+			for(int i = 1; i < player3NewHand.Length; i++){
+				player3NewHand[i] = advDeck.drawCard();
+			}
+			players[0].setHand(player1NewHand);
+			players[1].setHand(player2NewHand);
+			players[2].setHand(player3NewHand);
+		}
 		else {
 			Card[] player1NewHand = new Card[12];
 			player1NewHand[0] = advDeck.getCard("saxons");
@@ -476,12 +517,17 @@ public class GameManager : MonoBehaviour {
 						true,
 						true,
 						true,
-						false);
+						false,
+						true);
 		//Ask players for cards
 		return;
 	}
 
 	public void gotTournamentCards(Card[] selection){
+		if(containsMordred(selection) != null) {
+			askForMordredTarget(selection, containsMordred(selection));
+			return;
+		}	
 		int totalBP =0;
 		string cardsBeingPlayed = tourney.getCurrentPlayer().getName() + " has selected ";
 		if(selection != null) {
@@ -491,15 +537,10 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 		log.log(cardsBeingPlayed);
-		totalBP += tourney.getCurrentPlayer ().getBP ();
+		totalBP += tourney.getCurrentPlayer().getBP();
 
-		if (totalBP > tourney.getStrongestBP ()){
-			tourney.setStrongestPlayer (tourney.getCurrentPlayer(), totalBP);
-			log.log(tourney.getCurrentPlayer().getName() + "is currently the strongest in the tournament");
-		}
+		tourney.setPlayerBP(totalBP);
 		
-		
-
 		if (tourney.getPlayerInt(tourney.getCurrentPlayer()) == tourney.getPlayerNum ()-1) {
 			endTourney ();
 		} else {
@@ -531,7 +572,8 @@ public class GameManager : MonoBehaviour {
 								true, 
 								true,
 								true,
-								false);
+								false,
+								true);
 			}
 			if(Object.ReferenceEquals(activeQuest.getCurrentStage().GetType(), typeof(Test))) {
 				log.log(activeQuest.getCurrentPlayer().getName() + " is now bidding in the " + activeQuest.getCurrentStage().getName() + " test");				
@@ -543,6 +585,7 @@ public class GameManager : MonoBehaviour {
 								"Give up", 
 								true, 
 								true, 
+								true,
 								true,
 								true,
 								true);
@@ -573,15 +616,25 @@ public class GameManager : MonoBehaviour {
 			return;
 		}
 		tourney.awardShields();
-		log.log(tourney.getStrongestPlayer().getName() + " won the tournament and is awarded " + tourney.getAwardNum() + " shields");
-		ui.displayAlert(tourney.getStrongestPlayer().getName() + " won the tournament and is awarded " + tourney.getAwardNum() + " shields");
+		log.log(tourney.getWinner().getName() + " won the tournament and is awarded " + tourney.getAwardNum() + " shields");
+		ui.displayAlert(tourney.getWinner().getName() + " won the tournament and is awarded " + tourney.getAwardNum() + " shields");
 		tourney = null;
 		drawQuestCard();
 	}
 
 	public void bidPhase(Card [] selection) {	
+		if(containsMordred(selection) != null) {
+			askForMordredTarget(selection, containsMordred(selection));
+			return;
+		}	
+	
 		log.log("Free bids: " + activeQuest.getCurrentPlayer().getFreeBids());
-		log.log("placeing a bid of: "  + selection.Length);
+		if(selection == null) {
+			log.log("placing a bid of: 0");
+		}
+		else {
+			log.log("placing a bid of: "  + selection.Length);
+		}
 		if(activeQuest.placeBid(selection, activeQuest.getCurrentPlayer().getFreeBids())) {
 			activeQuest.setTentativeBet(selection);
 			if(activeQuest.isStageDone()) {
@@ -600,11 +653,12 @@ public class GameManager : MonoBehaviour {
 			ui.askForCards(
 							activeQuest.getCurrentPlayer(), 
 							GameState.state.ASKINGFORCARDSINBID, 
-							"Select cards to bit, then press BID", 
+							"Select cards to bid, then press BID", 
 							"BID",
 							"Give up", 
 							true, 
 							true, 
+							true,
 							true,
 							true,
 							true);
@@ -620,6 +674,7 @@ public class GameManager : MonoBehaviour {
 								"null", 
 								true, 
 								true, 
+								true,
 								true,
 								true,
 								true,
@@ -682,7 +737,59 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 	}
+	
+	public Card containsMordred(Card[] selection) {
+		if(selection == null) {
+			return null;
+		}
+		for(int i = 0; i < selection.Length; i++) {
+			if(selection[i].getName().Equals("mordred")) {return selection[i];}
+		}
+		return null;
+	}
+	
+	private void askForMordredTarget(Card[] selection, Card mordredCard){
+		advDeck.discardCard(new Card[]{mordredCard});
+		tempCardSelection = getAllOtherCards(selection, mordredCard);
+		if(activeQuest != null){
+			ui.askForPlayerChoice(activeQuest.getCurrentPlayer(), state.ASKINGFORMORDREDTARGET, "Select player you wish to remove an ally from", activeQuest.getAllOtherPlayers(activeQuest.getCurrentPlayer())); 	
+		}
+		else if(tourney != null) {
+			ui.askForPlayerChoice(tourney.getCurrentPlayer(), state.ASKINGFORMORDREDTARGET, "Select player you wish to remove an ally from", tourney.getAllOtherPlayers(tourney.getCurrentPlayer())); 
+		}
+	}
+	public void gotMordredTarget(string target) {
+		bool mordredResult = false;
+		if(activeQuest != null){
+			mordredResult =  activeQuest.mordredSpecialAbility(activeQuest.findPlayer(target));
+			ui.showStage(activeQuest);
+		}
+		else if(tourney != null) {
+			mordredResult =  tourney.mordredSpecialAbility(tourney.findPlayer(target));
+		}
+		
+		if(!mordredResult){
+			ui.displayAlert("This player has no allies in play! Mordred discarded");
+		}
+		Card [] temp = tempCardSelection;
+		tempCardSelection = null;
+		if(activeQuest != null){
+			if(Object.ReferenceEquals(activeQuest.getCurrentStage().GetType(), typeof(Test))){
+				bidPhase(temp);
+			}
+			else {
+				questAttack(temp);
+			}
+		}
+		else if(tourney != null){
+			gotTournamentCards(temp);
+		}
+	}
 	public void questAttack(Card [] selection) {
+		if(containsMordred(selection) != null) {
+			askForMordredTarget(selection, containsMordred(selection));
+			return;
+		}
 		log.log(activeQuest.getCurrentPlayer().getName() + " is attempting to over come the foe");
 		Card[] toDispose;
 		Card[] toKeepInPlay;
@@ -776,6 +883,7 @@ public class GameManager : MonoBehaviour {
 	}
 	public void endStage() {
 		log.log("Stage is over.");
+		activeQuest.endBidding();
 		drawXNumberOfCards(1);
 		if(activeQuest.getPlayerNum() == 0) {
 			endQuest("All players dead");
@@ -867,7 +975,7 @@ public class GameManager : MonoBehaviour {
 	private void drawXNumberOfCards(int numOfCardsToDraw, Player player = null) {		
 		if(player == null) {
 			for(int i = 0 ; i< activeQuest.getPlayerNum(); i ++){
-				log.log("Drawing " + numOfCardsToDraw + " cards for " + activeQuest.getPlayer(i).getName());
+				//log.log("Drawing " + numOfCardsToDraw + " cards for " + activeQuest.getPlayer(i).getName());
 				if(activeQuest.getPlayer(i).getHand().Length + numOfCardsToDraw > 12){
 					userInputState = state.ASKINGFORCARDSTODISCARD;
 					askForCardLimitReached(activeQuest.getPlayer(i), (activeQuest.getPlayer(i).getHand().Length + numOfCardsToDraw) - 12);
@@ -981,5 +1089,42 @@ public class GameManager : MonoBehaviour {
 		}
 		
 		return stringToReturn;
+	}
+	
+	//This is begging to be abstracted, to do later
+	public Card[] getAllOtherCards(Card [] cards, Card card) {
+		Card[] temp = new Card[cards.Length-1];
+		string cardsToKeep = "";
+		int cardIndex = -1;
+		
+		for(int i = 0; i < cards.Length; i++) {
+			if(cards[i].getName().Equals(card.getName())){
+				cardIndex = i;
+				break;
+			}
+		}
+		if(cardIndex == -1) {
+			return null;
+		}
+		if(cardIndex == 0) {
+			for(int i = 1; i < cards.Length; i++){
+				temp[i-1] = cards[i];
+			}
+		}
+		else if(cardIndex+1 == cards.Length){
+			for(int i = 0; i < cards.Length-1; i++) {
+				temp[i] = cards[i];
+			}
+		}
+		else{
+			for(int i = 0; i< cardIndex; i++ ){
+				temp[i] = cards[i];
+			}
+			for(int i = cardIndex+1; i< cards.Length; i++ ){
+				temp[i-1] = cards[i];
+			}
+		}
+		
+		return temp;
 	}
 }

@@ -238,5 +238,24 @@ public class Player {
 	public AIController getAI(){
 		return AI;
 	}
+	
+	public int removeAlly(){
+		if(inPlay == null){
+			return -1;
+		}
+		int returnValue = inPlay[0].getFreeBid();
+		if(inPlay.Length == 1) {
+			inPlay = null;
+			return returnValue;
+		}
+		Card [] temp = new Card[inPlay.Length-1];
+		
+		for(int i = 1; i < inPlay.Length; i++){
+			temp[i-1] = inPlay[i];
+		}
+		setInPlayHand(temp);
+		
+		return returnValue;
+	}
 
 }

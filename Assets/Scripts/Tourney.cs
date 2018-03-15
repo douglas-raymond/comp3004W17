@@ -5,19 +5,20 @@ using UnityEngine;
 public class Tourney
 {
 	int playerNum;
-	int strongestPlayerBP;
 	int bonusShields;
 	int totalShields;
 	Player currentPlayer;
-	Player strongestPlayer;
+
 	Player[] players;
+	int [] bps;
+	Player winner;
 	public Tourney (Card T)
 	{
-		strongestPlayerBP = 0;
 		playerNum = 0;
 		bonusShields = T.getBonusShields();
 		totalShields=0;
 		players=null;
+		winner = null;
 	}
 
 	public void addPlayer(Player newPlayer) {
@@ -32,6 +33,7 @@ public class Tourney
 		players = temp;
 		playerNum ++;
 		currentPlayer = players[0];
+		bps = new int [players.Length];
 	}
 
 	public void deletePlayer(Player player) {
@@ -98,7 +100,7 @@ public class Tourney
 		int index = -1;
 		for(int i = 0; i < players.Length; i++)
 		{
-			if(players[i] == player)
+			if(players[i].getName().Equals(player.getName()))
 			{
 				index = i;
 				break;
@@ -113,22 +115,78 @@ public class Tourney
 	public int getPlayerNum() {
 		return playerNum;
 	}
-
-	public void setStrongestPlayer(Player player,int BP){
-		strongestPlayer = player;
-		strongestPlayerBP = BP;
+	public void setPlayerBP(int BP){
+		bps[getPlayerInt(getCurrentPlayer())] = BP;
 	}
-	public Player getStrongestPlayer(){
-		return strongestPlayer;
-	}
-	public int getStrongestBP(){
-		return strongestPlayerBP;
-	}
+	
 	public void awardShields(){
+		Player strongestPlayer = null;
+		int strongestPlayerBP = -1;
+		
+		for(int i = 0; i <players.Length; i++){
+			if(bps[i] > strongestPlayerBP){
+				strongestPlayer = players[i];
+				strongestPlayerBP = bps[i];
+			}
+		}
+		winner = strongestPlayer;
 		strongestPlayer.addShields (bonusShields+getPlayerNum());
+	}
+	
+	public Player getWinner(){
+			return winner;
 	}
 	public int getAwardNum(){
 		return bonusShields + getPlayerNum();
+	}
+	
+	public bool mordredSpecialAbility(Player target){
+		
+		int targetIndex = getPlayerInt(target);
+		target.removeAlly();
+		Debug.Log(target.getName() + "'s bp was " + bps[targetIndex]);
+		bps[targetIndex] = target.getBP();
+		
+		Debug.Log(target.getName() + "'s bp is now " + bps[targetIndex]);
+		
+		
+
+		return true;
+	}
+	
+	public Player[] getAllOtherPlayers(Player player) {
+		Player[] temp = new Player[players.Length-1];
+		int playerIndex = getPlayerInt(player);
+		
+		if(players[0].getName().Equals(player.getName())) {
+			for(int i = 1; i < players.Length; i++){
+				temp[i-1] = players[i];
+			}
+		}
+		else if(players[temp.Length].getName().Equals(player.getName())){
+			for(int i = 0; i < players.Length-1; i++) {
+				temp[i] = players[i];
+			}
+		}
+		else{
+			for(int i = 0; i< playerIndex; i++ ){
+				temp[i] = players[i];
+			}
+			for(int i = playerIndex+1; i< players.Length; i++ ){
+				temp[i-1] = players[i];
+			}
+		}
+		
+		return temp;
+	}
+	
+	public Player findPlayer(string target) {
+		for(int i = 0; i < players.Length; i++) {
+			if(players[i].getName().Equals(target)) {
+				return players[i];
+			}
+		}
+		return null;
 	}
 }
 
