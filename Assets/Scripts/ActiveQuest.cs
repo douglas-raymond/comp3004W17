@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ActiveQuest{
+public class ActiveQuest : ActiveStory{
 
 	QuestCard quest;
 	Card [] stages;
 	Card [][] stageWeapons;
-	Player [] players;
-	int playerNum;
+
+
 	int stageNum;
 	Player sponsor;
 	int currentStage;
@@ -25,7 +25,7 @@ public class ActiveQuest{
 	public ActiveQuest(QuestCard _quest) {
 		quest = _quest;
 		stageNum = _quest.getStages();
-		playerNum = 0;
+
 		currentStage = 0;
 		highestBid = -1;
 		inProgress = false;
@@ -34,37 +34,35 @@ public class ActiveQuest{
 	}
 	
 	public void addPlayer(Player newPlayer) {
-		int n = playerNum;
-		Player[] temp = new Player[playerNum+1];
-		playersCompletedStage = new Player[playerNum+1];
-		for(int i = 0; i < playerNum; i++)
+		int n = players.Length;
+		Player[] temp = new Player[players.Length+1];
+		playersCompletedStage = new Player[players.Length+1];
+		for(int i = 0; i < players.Length; i++)
 		{
 			temp[i] = players[i];
 		}
-		temp[playerNum] = newPlayer;
+		temp[players.Length] = newPlayer;
 		
 		players = temp;
-		playerNum ++;
 		currentPlayer = players[0];
 		bids = new int[players.Length];
 		tentativeBet = new Card[players.Length][];
 	}
 	
 	public void addPlayerToStageCompleteArray(Player newPlayer) {
-		int n = playerNum;
-		Player[] temp = new Player[playerNum+1];
-		for(int i = 0; i < playerNum; i++)
+		int n = players.Length;
+		Player[] temp = new Player[players.Length+1];
+		for(int i = 0; i < players.Length; i++)
 		{
 			temp[i] = players[i];
 		}
-		temp[playerNum] = newPlayer;
+		temp[players.Length] = newPlayer;
 		
 		playersCompletedStage = temp;
 	}
 	
 	public void deletePlayer(Player player) {
-		if(playerNum == 1) {
-			playerNum = 0;
+		if(players.Length == 1) {
 			currentPlayer = null;
 			players = null;
 			quest = null;
@@ -77,7 +75,6 @@ public class ActiveQuest{
 		}
 		
 		Player [] newArr = new Player[players.Length-1];
-		playerNum --;
 		if(indexToDelete == players.Length-1) {
 			for(int i = 0; i < newArr.Length; i++) {
 				newArr[i] = players[i];	
@@ -104,7 +101,7 @@ public class ActiveQuest{
 		players = newArr;
 	}
 	public void finishQuest() {
-		if(playerNum == 0) { return;}
+		if(players.Length == 0) { return;}
 		for(int i = 0; i< players.Length; i ++)
 		{
 			players[i].addShields(stageNum);
@@ -113,6 +110,7 @@ public class ActiveQuest{
 		inProgress = false;
 	}
 
+	/*
 	public void nextPlayer() {
 		if(playerNum == 0) {
 			Debug.Log("Quest lost, No players left");
@@ -135,7 +133,8 @@ public class ActiveQuest{
 			currentPlayer = players[currentPlayerIndex+1];
 		}
 		
-	}
+	}]
+	*/
 	private Player calculateHighestBidder(){
 		int temp = -1;
 		Player tempPlayer;
@@ -157,39 +156,8 @@ public class ActiveQuest{
 		
 		return highestBidder;
 	}
-	public Player[] getAllOtherPlayers(Player player) {
-		Player[] temp = new Player[players.Length-1];
-		int playerIndex = getPlayerInt(player);
-		
-		if(players[0].getName().Equals(player.getName())) {
-			for(int i = 1; i < players.Length; i++){
-				temp[i-1] = players[i];
-			}
-		}
-		else if(players[temp.Length].getName().Equals(player.getName())){
-			for(int i = 0; i < players.Length-1; i++) {
-				temp[i] = players[i];
-			}
-		}
-		else{
-			for(int i = 0; i< playerIndex; i++ ){
-				temp[i] = players[i];
-			}
-			for(int i = playerIndex+1; i< players.Length; i++ ){
-				temp[i-1] = players[i];
-			}
-		}
-		
-		return temp;
-	}
-	public Player findPlayer(string target) {
-		for(int i = 0; i < players.Length; i++) {
-			if(players[i].getName().Equals(target)) {
-				return players[i];
-			}
-		}
-		return null;
-	}
+
+
 	public void endBidding() {
 				if(Object.ReferenceEquals(stages[currentStage].GetType(), typeof(Test))) {
 			if(calculateHighestBidder() != null){
@@ -199,7 +167,6 @@ public class ActiveQuest{
 				players = new Player[] {winningPlayer};
 				bids = new int[] {winningBid};
 				currentPlayer = players[0];
-				playerNum = 1;
 				Debug.Log("highest bidder is " + calculateHighestBidder().getName());
 			}
 			else{
@@ -225,24 +192,9 @@ public class ActiveQuest{
 		}
 	}
 	//Getters and setters
-	public int getPlayerInt(Player player) {
-		int index = -1;
-		if(players != null) {
-			for(int i = 0; i < players.Length; i++)
-			{
-				if(players[i].getName().Equals(player.getName()))
-				{
-					index = i;
-					break;
-				}
-			}
-		}
-		return index;
-	}
+
 	
-	public Player getPlayer(int i) {
-		return players[i];
-	}
+
 	public void resetQuest() {
 		currentStage = 0;
 		stageWeapons = null;
@@ -251,7 +203,6 @@ public class ActiveQuest{
 		stages = new Card[stageNum];
 		inProgress = false;
 		totalCardsUsed = 0;
-		playerNum = 0;
 	}
 	public void setSponsor(Player player){
 		sponsor = player;
@@ -276,9 +227,7 @@ public class ActiveQuest{
 		tentativeBet[getPlayerInt(getCurrentPlayer())] = bet;
 
 	}
-	public Player getCurrentPlayer() {
-		return currentPlayer;
-	}
+
 	
 	public bool placeBid(Card [] bid, int freeBids) {
 		int totalBet = 0;
@@ -304,9 +253,7 @@ public class ActiveQuest{
 	public int getStageNum() {
 		return stageNum;
 	}
-	public int getPlayerNum() {
-		return playerNum;
-	}
+	
 	public Player getSponsor() {
 		return sponsor;
 	}

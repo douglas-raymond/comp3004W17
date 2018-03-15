@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour {
 	StoryDeck storyDeck;
 	UI ui;
 
+	HelperFunctions hp;
 	//0 = no test, 1 = scenario 1, 2 = scenario 2
 	int testingScenario = 3;
 	int playerCount = 3;
@@ -31,7 +32,7 @@ public class GameManager : MonoBehaviour {
 	int testScenarioStep = 1;
 	
 	ActiveQuest activeQuest;
-	Tourney tourney;
+	ActiveTourney tourney;
 	bool cyclingThroughPlayers;
 	
 	Card[] tempCardSelection;
@@ -40,6 +41,8 @@ public class GameManager : MonoBehaviour {
 		//testingScenario = PlayerPrefs.GetInt("testScenario");
 		//playerCount = PlayerPrefs.GetInt("humanPlayerNum")  + 1 ;
 		aiStrat=PlayerPrefs.GetInt("aiStrategy");
+		
+		hp = new HelperFunctions();
 		Debug.Log ("AI Strat is " + aiStrat);
 		Debug.Log("player count: " + playerCount);
 		if(testingScenario == 1 || testingScenario == 2|| testingScenario == 3) {
@@ -750,12 +753,12 @@ public class GameManager : MonoBehaviour {
 	
 	private void askForMordredTarget(Card[] selection, Card mordredCard){
 		advDeck.discardCard(new Card[]{mordredCard});
-		tempCardSelection = getAllOtherCards(selection, mordredCard);
+		tempCardSelection = hp.removeCard(selection, mordredCard);
 		if(activeQuest != null){
-			ui.askForPlayerChoice(activeQuest.getCurrentPlayer(), state.ASKINGFORMORDREDTARGET, "Select player you wish to remove an ally from", activeQuest.getAllOtherPlayers(activeQuest.getCurrentPlayer())); 	
+			ui.askForPlayerChoice(activeQuest.getCurrentPlayer(), state.ASKINGFORMORDREDTARGET, "Select player you wish to remove an ally from", hp.removePlayers(activeQuest.getPlayerArr(), activeQuest.getPlayerInt(activeQuest.getCurrentPlayer()))); 	
 		}
 		else if(tourney != null) {
-			ui.askForPlayerChoice(tourney.getCurrentPlayer(), state.ASKINGFORMORDREDTARGET, "Select player you wish to remove an ally from", tourney.getAllOtherPlayers(tourney.getCurrentPlayer())); 
+			ui.askForPlayerChoice(tourney.getCurrentPlayer(), state.ASKINGFORMORDREDTARGET, "Select player you wish to remove an ally from", hp.removePlayers(tourney.getPlayerArr(), tourney.getPlayerInt(tourney.getCurrentPlayer()))); 
 		}
 	}
 	public void gotMordredTarget(string target) {
@@ -903,7 +906,7 @@ public class GameManager : MonoBehaviour {
 
 	public void createTourney(Card tourneyCard){
 		log.log("Tournament at " + tourneyCard.getName() + " has begun");
-		tourney = new Tourney(tourneyCard);
+		tourney = new ActiveTourney(tourneyCard);
 		ui.showCard(tourneyCard);
 		activePlayerSub = activePlayerMeta;
 		getPlayersTourney();
@@ -1092,39 +1095,5 @@ public class GameManager : MonoBehaviour {
 	}
 	
 	//This is begging to be abstracted, to do later
-	public Card[] getAllOtherCards(Card [] cards, Card card) {
-		Card[] temp = new Card[cards.Length-1];
-		string cardsToKeep = "";
-		int cardIndex = -1;
-		
-		for(int i = 0; i < cards.Length; i++) {
-			if(cards[i].getName().Equals(card.getName())){
-				cardIndex = i;
-				break;
-			}
-		}
-		if(cardIndex == -1) {
-			return null;
-		}
-		if(cardIndex == 0) {
-			for(int i = 1; i < cards.Length; i++){
-				temp[i-1] = cards[i];
-			}
-		}
-		else if(cardIndex+1 == cards.Length){
-			for(int i = 0; i < cards.Length-1; i++) {
-				temp[i] = cards[i];
-			}
-		}
-		else{
-			for(int i = 0; i< cardIndex; i++ ){
-				temp[i] = cards[i];
-			}
-			for(int i = cardIndex+1; i< cards.Length; i++ ){
-				temp[i-1] = cards[i];
-			}
-		}
-		
-		return temp;
-	}
+
 }
