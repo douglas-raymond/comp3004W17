@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour {
 
 	HelperFunctions hp;
 	//0 = no test, 1 = scenario 1, 2 = scenario 2
-	int testingScenario = 3;
+	int testingScenario = 5;
 	int playerCount = 3;
 	int aiStrat=0;
 	Player[] players;
@@ -97,7 +97,6 @@ public class GameManager : MonoBehaviour {
 		Card drawnCard = null;
 		if(testingScenario == 0) {
 			drawnCard = storyDeck.drawCard();
-			
 		}
 		else if(testingScenario == 1) {
 			Debug.Log(testingScenario);
@@ -143,6 +142,16 @@ public class GameManager : MonoBehaviour {
 		else if(testingScenario == 4){
 			if(testScenarioStep == 1){
 				drawnCard = storyDeck.getCard("boarhunt");
+				testScenarioStep++;
+			}
+			else if(testScenarioStep == 2){
+				drawnCard = storyDeck.getCard("holygrail");
+				testScenarioStep++;
+			}
+		}
+		else if(testingScenario == 5){
+			if(testScenarioStep == 1){
+				drawnCard = storyDeck.getCard("greenknighttest");
 				testScenarioStep++;
 			}
 			else if(testScenarioStep == 2){
@@ -229,6 +238,7 @@ public class GameManager : MonoBehaviour {
 		//ui.askForStageSelection(activeQuest.getSponsor(), activeQuest.getStageNum());
 		ui.askForCards(
 			activeQuest.getSponsor(), 
+			activeQuest,
 			GameState.state.ASKINGFORSTAGES, 
 			"Select up to " + activeQuest.getStageNum() + " stages", 
 			"null",
@@ -270,6 +280,7 @@ public class GameManager : MonoBehaviour {
 			userInputState = state.ASKINGFORSTAGEWEAPONS;
 		ui.askForCards(
 			activeQuest.getSponsor(), 
+			activeQuest,
 			GameState.state.ASKINGFORSTAGEWEAPONS, 
 			"Select weapons to enhance this stage", 
 			"Done", 
@@ -340,6 +351,7 @@ public class GameManager : MonoBehaviour {
 				activeQuest.resetQuest();
 				ui.askForCards(
 					activeQuest.getSponsor(),  
+					activeQuest,
 					GameState.state.ASKINGFORSTAGES, 
 					"Select up to " + activeQuest.getStageNum() + " stages", 
 					"Forfeit", 
@@ -379,6 +391,7 @@ public class GameManager : MonoBehaviour {
 	}
 	public void gotPlayer(Player newPlayer){
 		counter ++;
+		
 		if(newPlayer != null) {
 			log.log("Player " + newPlayer.getName() + " joined quest.");
 			activeQuest.addPlayer(newPlayer);
@@ -422,7 +435,7 @@ public class GameManager : MonoBehaviour {
 				Card[] newHand = new Card[12];
 				for(int j = 0; j < newHand.Length; j++){
 					newHand[j] = advDeck.drawCard();
-					//log.log("Gave " + players[i].getName() + " a " + newHand[j].getName() + " card");
+					log.log("Gave " + players[i].getName() + " a " + newHand[j].getName() + " card");
 				}
 				players[i].setHand(newHand);
 			}
@@ -439,6 +452,37 @@ public class GameManager : MonoBehaviour {
 			player2NewHand[0] = advDeck.getCard("amour");
 			player2NewHand[1] = advDeck.getCard("amour");
 			for(int i = 2; i < player2NewHand.Length; i++){
+				player2NewHand[i] = advDeck.drawCard();
+			}
+			
+			Card[] player3NewHand = new Card[12];
+			player3NewHand[0] = advDeck.getCard("mordred");
+			for(int i = 1; i < player3NewHand.Length; i++){
+				player3NewHand[i] = advDeck.drawCard();
+			}
+			players[0].setHand(player1NewHand);
+			players[1].setHand(player2NewHand);
+			players[2].setHand(player3NewHand);
+		}
+		else if(testingScenario == 5) {
+			Card[] player1NewHand = new Card[12];
+			player1NewHand[0] = advDeck.getCard("gawain");
+			player1NewHand[1] = advDeck.getCard("percival");
+			for(int i = 2; i < player1NewHand.Length; i++){
+				player1NewHand[i] = advDeck.drawCard();
+			}
+			
+			Card[] player2NewHand = new Card[12];
+			player2NewHand[0] = advDeck.getCard("thieves");
+			player2NewHand[1] = advDeck.getCard("thieves");
+			player2NewHand[2] = advDeck.getCard("thieves");
+			player2NewHand[3] = advDeck.getCard("saxons");
+			player2NewHand[4] = advDeck.getCard("saxons");
+			player2NewHand[5] = advDeck.getCard("saxons");
+			player2NewHand[6] = advDeck.getCard("robberknight");
+			player2NewHand[7] = advDeck.getCard("robberknight");
+			player2NewHand[8] = advDeck.getCard("mordred");
+			for(int i = 9; i < player2NewHand.Length; i++){
 				player2NewHand[i] = advDeck.drawCard();
 			}
 			
@@ -512,6 +556,7 @@ public class GameManager : MonoBehaviour {
 		drawXNumberOfCardsTourney (1);
 		ui.askForCards (
 						tourney.getCurrentPlayer (),
+						activeQuest,
 						state.ASKINGFORCARDSINTOURNEY,
 						"Select Ally, Weapon or Amour cards to play",
 						"ENTER TOURNAMENT!",
@@ -540,7 +585,7 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 		log.log(cardsBeingPlayed);
-		totalBP += tourney.getCurrentPlayer().getBP();
+		totalBP += tourney.getCurrentPlayer().getBP("null");
 
 		tourney.setPlayerBP(totalBP);
 		
@@ -563,10 +608,11 @@ public class GameManager : MonoBehaviour {
 		else{
 			ui.showStage(activeQuest);
 			if(Object.ReferenceEquals(activeQuest.getCurrentStage().GetType(), typeof(Foe))) {
-				log.log(activeQuest.getCurrentPlayer().getName() + " is now facing a foe of type " + activeQuest.getCurrentStage().getName() + " enhanced with " + activeQuest.getStageWeaponString());
-				
+				//log.log(activeQuest.getCurrentPlayer().getName() + " is now facing a foe of type " + activeQuest.getCurrentStage().getName() + " enhanced with " + activeQuest.getStageWeaponString());
+				Debug.Log(activeQuest.getCurrentPlayer().getName());
 				ui.askForCards(
 								activeQuest.getCurrentPlayer(), 
+								activeQuest,
 								GameState.state.ASKINGFORCARDSINQUEST, 
 								"Select cards to play, then press FIGHT", 
 								"FIGHT",
@@ -581,7 +627,8 @@ public class GameManager : MonoBehaviour {
 			if(Object.ReferenceEquals(activeQuest.getCurrentStage().GetType(), typeof(Test))) {
 				log.log(activeQuest.getCurrentPlayer().getName() + " is now bidding in the " + activeQuest.getCurrentStage().getName() + " test");				
 				ui.askForCards(
-								activeQuest.getCurrentPlayer(),  
+								activeQuest.getCurrentPlayer(),
+								activeQuest,								
 								GameState.state.ASKINGFORCARDSINBID, 
 								"Select cards to bit, then press BID", 
 								"BID",
@@ -631,14 +678,14 @@ public class GameManager : MonoBehaviour {
 			return;
 		}	
 	
-		log.log("Free bids: " + activeQuest.getCurrentPlayer().getFreeBids());
+		log.log("Free bids: " + activeQuest.getCurrentPlayerFreeBids());
 		if(selection == null) {
 			log.log("placing a bid of: 0");
 		}
 		else {
 			log.log("placing a bid of: "  + selection.Length);
 		}
-		if(activeQuest.placeBid(selection, activeQuest.getCurrentPlayer().getFreeBids())) {
+		if(activeQuest.placeBid(selection, activeQuest.getCurrentPlayerFreeBids())) {
 			activeQuest.setTentativeBet(selection);
 			if(activeQuest.isStageDone()) {
 				log.log("Stage is over.");
@@ -655,6 +702,7 @@ public class GameManager : MonoBehaviour {
 			ui.displayAlert("Bid too low. Bid more cards of forfeit the quest.");
 			ui.askForCards(
 							activeQuest.getCurrentPlayer(), 
+							activeQuest,
 							GameState.state.ASKINGFORCARDSINBID, 
 							"Select cards to bid, then press BID", 
 							"BID",
@@ -671,6 +719,7 @@ public class GameManager : MonoBehaviour {
 		log.log(player.getName() + "'s card limit reached. Asking to discard " + cardsToDeleteNum + " cards.");
 		ui.askForCards(
 			player, 
+			activeQuest,
 			GameState.state.ASKINGFORCARDSTODISCARD, 
 								"Card limit reached. Please select "+ cardsToDeleteNum + " cards to discard.", 
 								"null",
@@ -844,8 +893,8 @@ public class GameManager : MonoBehaviour {
 		
 		}
 		
-		if(activeQuest.getStageBP(activeQuest.getCurrentStageNum()) <= activeQuest.getCurrentPlayer().getBP() + extraBP) {
-			log.log("With a total BP of " + (activeQuest.getCurrentPlayer().getBP() + extraBP) + " " + activeQuest.getCurrentPlayer().getName() + " overcame " + activeQuest.getCurrentStage().getName());
+		if(activeQuest.getStageBP(activeQuest.getCurrentStageNum()) <= activeQuest.getCurrentPlayer().getBP(activeQuest.getQuest().getName()) + extraBP) {
+			log.log("With a total BP of " + (activeQuest.getCurrentPlayer().getBP(activeQuest.getQuest().getName()) + extraBP) + " " + activeQuest.getCurrentPlayer().getName() + " overcame " + activeQuest.getCurrentStage().getName());
 			if(toDispose != null) {
 				if(toDispose.Length > 0) {
 					activeQuest.getCurrentPlayer().discardCard(toDispose);
@@ -869,7 +918,7 @@ public class GameManager : MonoBehaviour {
 		}
 		else
 		{
-			log.log("With a total BP of " + (activeQuest.getCurrentPlayer().getBP() + extraBP) + " " + activeQuest.getCurrentPlayer().getName() + " fell to " + activeQuest.getCurrentStage().getName());
+			log.log("With a total BP of " + (activeQuest.getCurrentPlayer().getBP(activeQuest.getQuest().getName()) + extraBP) + " " + activeQuest.getCurrentPlayer().getName() + " fell to " + activeQuest.getCurrentStage().getName());
 			
 			if(activeQuest.getPlayerInt(activeQuest.getCurrentPlayer()) == activeQuest.getPlayerNum()-1)  {
 				
@@ -1068,10 +1117,6 @@ public class GameManager : MonoBehaviour {
 			}	
 		}
 	}
-	
-	
-	
-	
 	public state getUserInputState(){
 		return userInputState;
 	}

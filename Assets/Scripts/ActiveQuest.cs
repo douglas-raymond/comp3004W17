@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ActiveQuest : ActiveStory{
+public class ActiveQuest {
 
 	QuestCard quest;
 	Card [] stages;
 	Card [][] stageWeapons;
 
+	Player[] players;
+	
 
 	int stageNum;
 	Player sponsor;
@@ -25,7 +27,7 @@ public class ActiveQuest : ActiveStory{
 	public ActiveQuest(QuestCard _quest) {
 		quest = _quest;
 		stageNum = _quest.getStages();
-
+		players = null;
 		currentStage = 0;
 		highestBid = -1;
 		inProgress = false;
@@ -34,19 +36,23 @@ public class ActiveQuest : ActiveStory{
 	}
 	
 	public void addPlayer(Player newPlayer) {
-		int n = players.Length;
-		Player[] temp = new Player[players.Length+1];
-		playersCompletedStage = new Player[players.Length+1];
-		for(int i = 0; i < players.Length; i++)
+
+		int n = 0;
+
+		if(players != null){n = players.Length;}
+		Player[] temp = new Player[n+1];
+		playersCompletedStage = new Player[n+1];
+		for(int i = 0; i < n; i++)
 		{
 			temp[i] = players[i];
 		}
-		temp[players.Length] = newPlayer;
+		temp[n] = newPlayer;
 		
 		players = temp;
 		currentPlayer = players[0];
-		bids = new int[players.Length];
-		tentativeBet = new Card[players.Length][];
+
+		bids = new int[n+1];
+		tentativeBet = new Card[n+1][];
 	}
 	
 	public void addPlayerToStageCompleteArray(Player newPlayer) {
@@ -101,7 +107,7 @@ public class ActiveQuest : ActiveStory{
 		players = newArr;
 	}
 	public void finishQuest() {
-		if(players.Length == 0) { return;}
+		if(players == null) { return;}
 		for(int i = 0; i< players.Length; i ++)
 		{
 			players[i].addShields(stageNum);
@@ -110,8 +116,12 @@ public class ActiveQuest : ActiveStory{
 		inProgress = false;
 	}
 
-	/*
+	
 	public void nextPlayer() {
+		int playerNum = 0;
+		if(players != null){
+			playerNum = players.Length;
+		}
 		if(playerNum == 0) {
 			Debug.Log("Quest lost, No players left");
 			quest = null;
@@ -133,8 +143,7 @@ public class ActiveQuest : ActiveStory{
 			currentPlayer = players[currentPlayerIndex+1];
 		}
 		
-	}]
-	*/
+	}
 	private Player calculateHighestBidder(){
 		int temp = -1;
 		Player tempPlayer;
@@ -215,7 +224,7 @@ public class ActiveQuest : ActiveStory{
 	}
 	public void setStageWeapons(Card[] newStageWeapons){
 		stageWeapons[currentStage] = newStageWeapons;
-		if(newStageWeapons[0] != null){
+		if(newStageWeapons != null){
 			totalCardsUsed = totalCardsUsed + newStageWeapons.Length;
 		}
 		return;
@@ -360,7 +369,7 @@ public class ActiveQuest : ActiveStory{
 	public bool mordredSpecialAbility(Player target){
 		
 		int targetIndex = getPlayerInt(target);
-		int freeBidsToRemove = target.removeAlly();
+		int freeBidsToRemove = target.removeAlly(quest.getName());
 		Debug.Log("freeBidsToRemove: " + freeBidsToRemove);
 		if(freeBidsToRemove == -1) {
 			return false;
@@ -372,6 +381,53 @@ public class ActiveQuest : ActiveStory{
 		}
 		
 		return true;
+	}
+	
+	public int getCurrentPlayerFreeBids(){
+		return currentPlayer.getFreeBids(quest.getName());
+	}
+	public Player getCurrentPlayer() {
+		Debug.Log(currentPlayer);
+		return currentPlayer;
+	}
+	
+		public Player findPlayer(string target) {
+		for(int i = 0; i < players.Length; i++) {
+			if(players[i].getName().Equals(target)) {
+				return players[i];
+			}
+		}
+		return null;
+	}
+	
+	public int getPlayerInt(Player player) {
+		int index = -1;
+		for(int i = 0; i < players.Length; i++)
+		{
+			if(players[i].getName().Equals(player.getName()))
+			{
+				index = i;
+				break;
+			}
+		}
+		return index;
+	}
+	
+	public Player getPlayer(int i) {
+		return players[i];
+	}
+	
+
+	public Player[] getPlayerArr(){
+		return players;
+	}
+
+	
+	public int getPlayerNum() {
+		if(players == null) {
+			return 0;
+		}
+		return players.Length;
 	}
 	
 }

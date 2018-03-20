@@ -106,24 +106,25 @@ public class Player {
 		return name;
 	}
 	//Deletes a card from a hand.
-	public int getFreeBids() {
+	public int getFreeBids(string quest) {
 		int freeBids = 0;
 		if(inPlay != null) {
 			for(int i = 0; i< inPlay.Length; i++) {
-				if(inPlay[i].getFreeBid() != -1){
+				if(inPlay[i].getFreeBid(quest) != -1){
 					Debug.Log("free bid found");
-					freeBids = freeBids + inPlay[i].getFreeBid();
+					freeBids = freeBids + inPlay[i].getFreeBid(quest);
 				}
 			}
 		}
 		
 		return freeBids;
 	}
-	public int getBP(){
+	public int getBP(string quest){
 		int extraBP = 0;
+		
 		if(inPlay != null){
 			for(int i = 0; i < inPlay.Length; i++) {
-				extraBP = extraBP + inPlay[i].getBP();
+				extraBP = extraBP + inPlay[i].getBP(quest);
 			}
 			return BP + extraBP;
 		}
@@ -239,11 +240,11 @@ public class Player {
 		return AI;
 	}
 	
-	public int removeAlly(){
+	public int removeAlly(string quest){
 		if(inPlay == null){
 			return -1;
 		}
-		int returnValue = inPlay[0].getFreeBid();
+		int returnValue = inPlay[0].getFreeBid(quest);
 		if(inPlay.Length == 1) {
 			inPlay = null;
 			return returnValue;

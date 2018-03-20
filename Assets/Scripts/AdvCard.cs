@@ -15,5 +15,5 @@ public class AdvCard : Card {
 		BP = _BP;
 	}
 	
-	public override int getBP(){return BP;}
+	public override int getBP(string quest="null"){return BP;}
 }

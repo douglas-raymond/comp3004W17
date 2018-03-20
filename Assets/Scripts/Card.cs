@@ -25,12 +25,12 @@ public abstract class Card {
 	{
 		return sprite;
 	}
-	public virtual int getBP() {return -1;}
+	public virtual int getBP(string quest="null") {return -1;}
 	public virtual int getAltBP() {return -1;}
 	public virtual int getMinBid() {return -1;}
-	public virtual int getFreeBid() {return -1;}
+	public virtual int getFreeBid(string quest) {return -1;}
 	public virtual int getBonusShields() {return -1;}
-public virtual void runEvent(Player[] playerList, int activePlayer, int playerCount, AdvDeck advDeck, GameManager gm){return;}
+	public virtual void runEvent(Player[] playerList, int activePlayer, int playerCount, AdvDeck advDeck, GameManager gm){return;}
 
 
 }

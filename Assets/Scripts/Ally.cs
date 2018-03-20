@@ -17,5 +17,32 @@ public class Ally : AdvCard {
 		
 	}
 	
-	public override int getFreeBid() {return freeBids;}
+	public override int getFreeBid(string quest) {
+		if(quest.Equals("questingbeast") && name.Equals("pellinore")){
+			return freeBids;
+		}
+		else if(!quest.Equals("questingbeast") && name.Equals("pellinore")){
+			return 0;
+		}
+		
+		return freeBids;
+	}
+	public override int getBP(string quest) {		
+		Debug.Log("name: " + name + ", quest: " + quest);
+		if(quest.Equals("holygrail") && name.Equals("percival")){
+			return altBP;
+		}
+		else if(!quest.Equals("holygrail") && name.Equals("percival")){
+			return BP;
+		}
+		
+		if(quest.Equals("greenknighttest") && name.Equals("gawain")){
+			return altBP;
+		}
+		else if(!quest.Equals("greenknighttest") && name.Equals("gawain")){
+			return BP;
+		}
+		
+		return BP;
+	}
 }
