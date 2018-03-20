@@ -17,7 +17,7 @@ public class UI : MonoBehaviour {
 	GameManager gm;
 	Logger log = new Logger("UI");
 	
-
+	ActiveQuest activeQuest;
 	// gameState = state.STANDBY;
 	
 	GameObject[] multipleCardInput;
@@ -182,7 +182,7 @@ public class UI : MonoBehaviour {
 			if(multipleCardInput.Length == null){currentBidCounter = 0;}
 			else{currentBidCounter = multipleCardInput.Length;}
 			
-			currentBidCounter = currentBidCounter + activePlayer.getFreeBids();
+			currentBidCounter = currentBidCounter + activeQuest.getCurrentPlayerFreeBids();
 			changeHeaderMessage("Current bid: " + currentBidCounter, currentBid);
 		}
 		return;
@@ -302,7 +302,10 @@ public class UI : MonoBehaviour {
 		}
 		
 	}
-	public void askForCards(Player player, state newState, string instructions, string button1, string button2, bool getFoes, bool getWeap, bool getAlly, bool getAmour, bool getTest, bool getMordred, int n = -1) {
+	public void askForCards(Player player, ActiveQuest newQuest, state newState, string instructions, string button1, string button2, bool getFoes, bool getWeap, bool getAlly, bool getAmour, bool getTest, bool getMordred, int n = -1) {
+		if(newQuest != null){
+			activeQuest = newQuest;
+		}
 		clearGameObjectArray(cardsToShow);
 		clearGameObjectArray(currButtons);
 		if(gm.getUserInputState() == state.ASKINGFORCARDSTODISCARD){clearGameObjectArray(currIcons);}
@@ -374,7 +377,7 @@ public class UI : MonoBehaviour {
 			currentBidCounter = multipleCardInput.Length + 1;
 			}
 		addNewCardToMultipleCardArray(selected, pos);
-		currentBidCounter = currentBidCounter + activePlayer.getFreeBids();
+		currentBidCounter = currentBidCounter + activeQuest.getCurrentPlayerFreeBids();
 		changeHeaderMessage("Current bid: " + currentBidCounter, currentBid);
 	}
 	public void drawingQuestCard() {
@@ -530,9 +533,12 @@ public class UI : MonoBehaviour {
 			Destroy(currentBid);
 			Destroy(highestBid);			
 			if(playerBP == null){playerBP = createHeaderMessage(panelPosX - panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}
-
-			changeHeaderMessage("Player BP: " + activePlayer.getBP(), playerBP);
-
+			if(activeQuest !=null){
+				changeHeaderMessage("Player BP: " + activePlayer.getBP(activeQuest.getQuest().getName()), playerBP);
+			}
+			else {
+				changeHeaderMessage("Player BP: " + activePlayer.getBP("null"), playerBP);
+			}
 
 			changeHeaderMessage("Select the cards you wish to play in this stage", instructionHeader);	
 			//createButtonMessage(panelPosX, panelPosY - panelHeight/10, "FIGHT");
@@ -544,7 +550,7 @@ public class UI : MonoBehaviour {
 			
 			if(currentBid == null) { currentBid = createHeaderMessage(panelPosX - panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}
 			if(highestBid == null) { highestBid = createHeaderMessage(panelPosX + panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}
-			changeHeaderMessage("Current bid: " + activePlayer.getFreeBids(), currentBid);
+			changeHeaderMessage("Current bid: " + activeQuest.getCurrentPlayerFreeBids(), currentBid);
 			changeHeaderMessage("Highest bid: " + activeQuest.getHighestBid(), highestBid);
 			gm.setUserInputState(state.ASKINGFORCARDSINBID);
 		}
@@ -655,9 +661,20 @@ public class UI : MonoBehaviour {
 		for(int i = 0; i< multipleCardInput.Length; i++)
 		{
 			if(multipleCardInput[i] == null){break;}
-			extraBP = extraBP + multipleCardInput[i].GetComponent<CardButtonUI>().getCard().getBP();
+			if(activeQuest !=null){
+				extraBP = extraBP + multipleCardInput[i].GetComponent<CardButtonUI>().getCard().getBP(activeQuest.getQuest().getName());
+			}
+			else {
+				extraBP = extraBP + multipleCardInput[i].GetComponent<CardButtonUI>().getCard().getBP();
+			ss}
 		}
-		return activePlayer.getBP() + extraBP;
+		Debug.Log("fuckasdasda: " + activeQuest.getQuest().getName());
+		if(activeQuest !=null){
+			return activePlayer.getBP(activeQuest.getQuest().getName()) + extraBP;
+		}
+		else {
+			return activePlayer.getBP("null") + extraBP;
+		}
 	}
 	private Card[] gameObjectArrayToCardArray(GameObject[] arr){ 
 		if(arr == null){ return null;}

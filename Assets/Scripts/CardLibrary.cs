@@ -212,9 +212,9 @@ public class CardLibrary {
 		pellinore = new Ally("pellinore", 10, 0, 4, getCardImage("pellinore"));
 		guinevere = new Ally("guinevere", 0, 0, 3, getCardImage("guinevere"));
 		iseult = new Ally("iseult", 0, 0, 2, getCardImage("iseult"));
-		gawain = new Ally("gawain", 10, 0, 0, getCardImage("gawain"));
+		gawain = new Ally("gawain", 10, 20, 0, getCardImage("gawain"));
 		lancelot = new Ally("lancelot", 15, 0, 0, getCardImage("lancelot"));
-		percival = new Ally("percival", 5, 0, 0, getCardImage("percival"));
+		percival = new Ally("percival", 5, 20, 0, getCardImage("percival"));
 		tristan = new Ally("tristan", 10, 0, 0, getCardImage("tristan"));
 
 		//Amour amour amour amour amour

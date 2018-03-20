@@ -266,7 +266,7 @@ public abstract class AbstractAI{
 				for (int i = 0; i < hand.Length; i++) {
 					if (hand [i].getType () == "foe" || hand [i].getType () == "test") {
 						continue;
-					} else if (player.getBP () + hand [i].getBP () > BPhurdle) {
+					} else if (player.getBP (quest.getQuest().getName()) + hand [i].getBP () > BPhurdle) {
 						submit [count] = hand [i];
 						count++;
 					}

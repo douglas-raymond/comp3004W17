@@ -14,6 +14,6 @@ public class Amour : AdvCard {
 		sprite = _sprite;
 	}
 	
-	public override int getFreeBid() {
+	public override int getFreeBid(string quest = "null") {
 		return freeBids;}
 }
