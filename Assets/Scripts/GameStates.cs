@@ -26,5 +26,6 @@ namespace GameState {
 		SHOWINGFOE,
 		PROSPERITY
 		};
+		
 
 }

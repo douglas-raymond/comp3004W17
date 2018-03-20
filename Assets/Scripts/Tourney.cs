@@ -2,41 +2,62 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Tourney
+public class ActiveTourney : ActiveStory
 {
-	int playerNum;
-	int strongestPlayerBP;
 	int bonusShields;
 	int totalShields;
-	Player currentPlayer;
-	Player strongestPlayer;
-	Player[] players;
-	public Tourney (Card T)
+
+	int [] bps;
+	Player winner;
+	public ActiveTourney (Card T)
 	{
-		strongestPlayerBP = 0;
-		playerNum = 0;
 		bonusShields = T.getBonusShields();
 		totalShields=0;
 		players=null;
+		winner = null;
+	}
+
+	public Player getCurrentPlayer() {
+		return currentPlayer;
 	}
 
 	public void addPlayer(Player newPlayer) {
-		int n = playerNum;
-		Player[] temp = new Player[playerNum+1];
-		for(int i = 0; i < playerNum; i++)
+		
+		int n = 0;
+		if(players != null){n = players.Length;}
+		Player[] temp = new Player[n+1];
+		for(int i = 0; i < n; i++)
 		{
 			temp[i] = players[i];
 		}
-		temp[playerNum] = newPlayer;
+		temp[n] = newPlayer;
 
 		players = temp;
-		playerNum ++;
 		currentPlayer = players[0];
+		bps = new int [n+1];
 	}
 
+
+	public void setPlayerBP(int BP){
+		Debug.Log("getPlayerInt: " + getPlayerInt(getCurrentPlayer()));
+		bps[getPlayerInt(getCurrentPlayer())] = BP;
+	}
+	
+	public void awardShields(){
+		Player strongestPlayer = null;
+		int strongestPlayerBP = -1;
+		
+		for(int i = 0; i <players.Length; i++){
+			if(bps[i] > strongestPlayerBP){
+				strongestPlayer = players[i];
+				strongestPlayerBP = bps[i];
+			}
+		}
+		winner = strongestPlayer;
+		strongestPlayer.addShields (bonusShields+getPlayerNum());
+	}
 	public void deletePlayer(Player player) {
-		if(playerNum == 1) {
-			playerNum = 0;
+		if(players.Length == 1) {
 			currentPlayer = null;
 			players = null;
 			return;
@@ -47,7 +68,6 @@ public class Tourney
 		}
 
 		Player [] newArr = new Player[players.Length-1];
-		playerNum --;
 		if(indexToDelete == players.Length-1) {
 			for(int i = 0; i < newArr.Length; i++) {
 				newArr[i] = players[i];	
@@ -72,64 +92,30 @@ public class Tourney
 
 		players = newArr;
 	}
-
-	public void nextPlayer() {
-		if(playerNum == 0) {
-			Debug.Log("Quest lost, No players left");
-
-		}
-		int currentPlayerIndex = getPlayerInt(currentPlayer);
-
-		if(currentPlayerIndex == players.Length-1){
-
-			currentPlayer = players[0];
-
-		}
-		else {
-			currentPlayer = players[currentPlayerIndex+1];
-		}
-
-	}
-	public Player getCurrentPlayer() {
-		return currentPlayer;
-	}
-
-	public int getPlayerInt(Player player) {
-		int index = -1;
-		for(int i = 0; i < players.Length; i++)
-		{
-			if(players[i] == player)
-			{
-				index = i;
-				break;
-			}
-		}
-		return index;
-	}
-
-	public Player getPlayer(int i) {
-		return players[i];
-	}
-	public int getPlayerNum() {
-		return playerNum;
-	}
-
-	public void setStrongestPlayer(Player player,int BP){
-		strongestPlayer = player;
-		strongestPlayerBP = BP;
-	}
-	public Player getStrongestPlayer(){
-		return strongestPlayer;
-	}
-	public int getStrongestBP(){
-		return strongestPlayerBP;
-	}
-	public void awardShields(){
-		strongestPlayer.addShields (bonusShields+getPlayerNum());
+	public Player getWinner(){
+			return winner;
 	}
 	public int getAwardNum(){
 		return bonusShields + getPlayerNum();
 	}
+	
+	public bool mordredSpecialAbility(Player target){
+		
+		int targetIndex = getPlayerInt(target);
+		target.removeAlly();
+		Debug.Log(target.getName() + "'s bp was " + bps[targetIndex]);
+		bps[targetIndex] = target.getBP();
+		
+		Debug.Log(target.getName() + "'s bp is now " + bps[targetIndex]);
+		
+		
+
+		return true;
+	}
+	
+	
+	
+
 }
 
 

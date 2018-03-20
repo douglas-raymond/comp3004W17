@@ -253,7 +253,9 @@ public class UI : MonoBehaviour {
 		else if(gm.getUserInputState() == state.ASKINGFORCARDSINBID){
 			log.log ("got for cards in bid");
 			if(input.Equals("BID")) {
-				gm.bidPhase(gameObjectArrayToCardArray(multipleCardInput));
+				GameObject[] temp = multipleCardInput;
+				multipleCardInput = null;
+				gm.bidPhase(gameObjectArrayToCardArray(temp));
 			}
 			else if(input.Equals("Give up")) {
 				gm.forfeitQuest();
@@ -284,19 +286,33 @@ public class UI : MonoBehaviour {
 				gm.endStageWeaponSetup(gameObjectArrayToCardArray(multipleCardInput));
 			}
 		}
-	}
 	
-	public void askForCards(Player player, state newState, string instructions, string button1, string button2, bool getFoes, bool getWeap, bool getAlly, bool getAmour, bool getTest, int n = -1) {
+		else if(gm.getUserInputState() == state.ASKINGFORMORDREDTARGET) {
+			log.log(activePlayer.getName() + " has selected " + input + " to use Mordred's special ability on");
+			gm.gotMordredTarget(input);
+		}
+	}
+	public void askForPlayerChoice(Player player, state newState, string instructions, Player[] players) {
+		clearGameObjectArray(cardsToShow);
+		clearGameObjectArray(currButtons);
+		changeHeaderMessage(instructions, instructionHeader);
+		gm.setUserInputState(newState);
+		for(int i = 0; i < players.Length; i++) {
+			createButtonMessage(panelPosX, panelPosY - panelHeight/20 - (panelHeight/20)*i, players[i].getName());
+		}
+		
+	}
+	public void askForCards(Player player, state newState, string instructions, string button1, string button2, bool getFoes, bool getWeap, bool getAlly, bool getAmour, bool getTest, bool getMordred, int n = -1) {
 		clearGameObjectArray(cardsToShow);
 		clearGameObjectArray(currButtons);
 		if(gm.getUserInputState() == state.ASKINGFORCARDSTODISCARD){clearGameObjectArray(currIcons);}
 		multipleCardInputMaxNum = n;
 		activePlayer = player;
-		Card [] cards = getOnlyTypeFromDeck(player.getHand(), getFoes, getWeap, getAlly, getAmour, getTest);
+		Card [] cards = getOnlyTypeFromDeck(player.getHand(), getFoes, getWeap, getAlly, getAmour, getTest, getMordred);
 		if(cards == null) { return; }
 		cardsToShow = showHand(cards); //Display the cards
 		gm.setUserInputState(newState);
-		Debug.Log(gm.getUserInputState());
+		//Debug.Log(gm.getUserInputState());
 		multipleCardInput = null; //Get multipleCardInput ready to hold the new card choices
 		changeHeaderMessage(instructions, instructionHeader);
 		changeHeaderMessage(activePlayer.getName() + "'s turn", headerCurrPlayer);	
@@ -561,7 +577,7 @@ public class UI : MonoBehaviour {
 		
 	}
 	
-	private Card[] getOnlyTypeFromDeck(Card[] deck, bool getFoes, bool getWeap, bool getAlly, bool getAmour, bool getTest){
+	private Card[] getOnlyTypeFromDeck(Card[] deck, bool getFoes, bool getWeap, bool getAlly, bool getAmour, bool getTest, bool getMordred){
 		if(deck.Length == null){
 			return null;
 			}
@@ -570,20 +586,14 @@ public class UI : MonoBehaviour {
 		for(int i = 0; i < deck.Length; i++ )
 		{
 			if(deck[i] != null){
-				if (Object.ReferenceEquals (deck [i].GetType (), typeof(Foe)) && getFoes) {
-					tempHand [counter] = deck [i];
-					counter++;
-				} else if (Object.ReferenceEquals (deck [i].GetType (), typeof(Weapon)) && getWeap) {
-					tempHand [counter] = deck [i];
-					counter++;
-				} else if (Object.ReferenceEquals (deck [i].GetType (), typeof(Ally)) && getAlly) {
-					tempHand [counter] = deck [i];
-					counter++;
-				} else if (Object.ReferenceEquals (deck [i].GetType (), typeof(Amour)) && getAmour) {
-					tempHand [counter] = deck [i];
-					counter++;
-				}
-				else if (Object.ReferenceEquals (deck [i].GetType (), typeof(Test)) && getTest) {
+				if ((Object.ReferenceEquals (deck [i].GetType (), typeof(Foe)) && getFoes) || 
+				(Object.ReferenceEquals (deck [i].GetType (), typeof(Weapon)) && getWeap) || 
+				(Object.ReferenceEquals (deck [i].GetType (), typeof(Ally)) && getAlly) ||
+				(Object.ReferenceEquals (deck [i].GetType (), typeof(Amour)) && getAmour) ||
+				(Object.ReferenceEquals (deck [i].GetType (), typeof(Test)) && getTest)||
+				(deck[i].getName().Equals("mordred") && getMordred))
+				{
+
 					tempHand [counter] = deck [i];
 					counter++;
 				}

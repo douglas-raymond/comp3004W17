@@ -15,6 +15,5 @@ public class Amour : AdvCard {
 	}
 	
 	public override int getFreeBid() {
-		Debug.Log(freeBids);
 		return freeBids;}
 }
