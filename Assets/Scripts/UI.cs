@@ -666,7 +666,7 @@ public class UI : MonoBehaviour {
 			}
 			else {
 				extraBP = extraBP + multipleCardInput[i].GetComponent<CardButtonUI>().getCard().getBP();
-			ss}
+			}
 		}
 		Debug.Log("fuckasdasda: " + activeQuest.getQuest().getName());
 		if(activeQuest !=null){
