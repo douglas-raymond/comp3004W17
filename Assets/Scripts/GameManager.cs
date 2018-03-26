@@ -28,8 +28,14 @@ public class GameManager : MonoBehaviour {
 	10 = testing AI strategy 1 setting up quest
 	11 = testing AI strategy 1 playing in quest
 	12 = testing AI strategy 1 playing in tourney
+	13 = testing pox
+	14 = testing plague
+	15 = testing recognition
+	16 = testing queen's favor
+	17 = testing court called to camelot
+	18 = testing kings call to arms
 	*/
-	int testingScenario = 8;
+	int testingScenario = 18;
 	int playerCount = 3;
 	int aiStrat=2;
 	Player[] players;
@@ -71,12 +77,16 @@ public class GameManager : MonoBehaviour {
 		playerCount = rigging.getRiggedPlayerCount(testingScenario);
 		players = new Player[playerCount];
 		for(int i = 0; i < playerCount; i++){
-			if(testingScenario == 12){
+			if(testingScenario == 12 || testingScenario == 13 || testingScenario == 14){
 				players[i] = new Player(new Card[12], 4, 0, "Player " + (i));
 			}
 			else {
 				players[i] = new Player(new Card[12], 0, 0, "Player " + (i));
 			}
+		}
+		
+		if(testingScenario == 18){
+			players[0] = new Player(new Card[12], 4, 0, "Player 1");
 		}
 		dealHands(playerCount);
 		if(rigging.getRiggedAiStratagy(testingScenario) != -1){
@@ -118,7 +128,7 @@ public class GameManager : MonoBehaviour {
 		
 		//activePlayerSub = activePlayerMeta;
 	}
-	private void drawQuestCard(){
+	public void drawQuestCard(){
 		gameState = state.DRAWINGSTORYCARD;
 		if(activePlayerMeta == -1){
 			activePlayerMeta = 0;
@@ -1138,5 +1148,11 @@ public class GameManager : MonoBehaviour {
 			kingsCall(nextPlayers);
 			return;
 		}
+	}
+	
+	public void recognition(){
+		recognitionActive = true;
+		drawQuestCard();
+		return;
 	}
 }

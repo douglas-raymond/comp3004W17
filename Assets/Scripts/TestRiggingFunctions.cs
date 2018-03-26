@@ -68,47 +68,38 @@ public class TestRiggingFunctions {
 		else if(test == 3){
 			if(testScenarioStep == 1){
 				drawnCard = storyDeck.getCard("camelot");
- 
 			}
 			else if(testScenarioStep == 2){
 				drawnCard = storyDeck.getCard("boarhunt");
- 
 			}
 		}
 		else if(test == 4){
 			if(testScenarioStep == 1){
 				drawnCard = storyDeck.getCard("boarhunt");
- 
 			}
 			else if(testScenarioStep == 2){
 				drawnCard = storyDeck.getCard("holygrail");
- 
 			}
 		}
 		else if(test == 5){
 			if(testScenarioStep == 1){
 				drawnCard = storyDeck.getCard("greenknighttest");
- 
 			}
 			else if(testScenarioStep == 2){
 				drawnCard = storyDeck.getCard("holygrail");
- 
 			}
 		}
 		else if(test == 6){
 			if(testScenarioStep == 1){
 				drawnCard = storyDeck.getCard("kingscall");
- 
 			}
 			else if(testScenarioStep == 2){
 				drawnCard = storyDeck.getCard("holygrail");
- 
 			}
 		}
 		else if(test == 7){
 			if(testScenarioStep == 1){
 				drawnCard = storyDeck.getCard("boarhunt");
- 
 			}
 			else if(testScenarioStep == 2){
 				drawnCard = storyDeck.getCard("holygrail");
@@ -143,6 +134,63 @@ public class TestRiggingFunctions {
 				drawnCard = storyDeck.getCard("saxonraiders");  
 			}
 			else if(testScenarioStep == 2){
+				drawnCard = storyDeck.getCard("boarhunt");
+			}
+		}
+		else if(test == 13){
+			if(testScenarioStep == 1){
+				drawnCard = storyDeck.getCard("pox");  
+			}
+			else if(testScenarioStep == 2){
+				drawnCard = storyDeck.getCard("boarhunt");
+			}
+		}
+		else if(test == 14){
+			if(testScenarioStep == 1){
+				drawnCard = storyDeck.getCard("plague");  
+			}
+			else if(testScenarioStep == 2){
+				drawnCard = storyDeck.getCard("boarhunt");
+			}
+		}
+		else if(test == 15){
+			if(testScenarioStep == 1){
+				drawnCard = storyDeck.getCard("recognition");  
+			}
+			else if(testScenarioStep == 2){
+				drawnCard = storyDeck.getCard("boarhunt");
+			}
+			else if(testScenarioStep == 3){
+				drawnCard = storyDeck.getCard("boarhunt");
+			}
+		}
+		else if(test == 16){
+			if(testScenarioStep == 1){
+				drawnCard = storyDeck.getCard("queensfavor");  
+			}
+			else if(testScenarioStep == 2){
+				drawnCard = storyDeck.getCard("boarhunt");
+			}
+		}
+		else if(test == 17){
+			if(testScenarioStep == 1){
+				drawnCard = storyDeck.getCard("boarhunt");    
+			}
+			else if(testScenarioStep == 2){
+				drawnCard = storyDeck.getCard("courtcalled");
+			}
+			else if(testScenarioStep == 3){
+				drawnCard = storyDeck.getCard("boarhunt");
+			}
+		}
+		else if(test == 18){
+			if(testScenarioStep == 1){
+				drawnCard = storyDeck.getCard("kingscall");    
+			}
+			else if(testScenarioStep == 2){
+				drawnCard = storyDeck.getCard("courtcalled");
+			}
+			else if(testScenarioStep == 3){
 				drawnCard = storyDeck.getCard("boarhunt");
 			}
 		}
@@ -409,6 +457,19 @@ public class TestRiggingFunctions {
 			}
 			result[0] = player1NewHand;
 			result[1] = player2NewHand;
+		}
+		else if(test == 13 || test == 14 || test == 15|| test == 16 || test == 17|| test == 18){
+			result = new Card[3][];
+			for(int i = 0; i < 3; i++){
+				Card[] newHand = new Card[12];
+				for(int j = 0; j < newHand.Length; j++){
+					newHand[j] = advDeck.drawCard();
+					//log.log("Gave " + players[i].getName() + " a " + newHand[j].getName() + " card");
+				}
+				result[i] = newHand;
+			}
+			
+			return result;
 		}
 		else {
 			result = new Card[3][];
