@@ -112,6 +112,9 @@ public class ActiveTourney : ActiveStory
 
 		return true;
 	}
+	public Player[] getPlayerArr(){
+		return players;
+	}
 
 }
 

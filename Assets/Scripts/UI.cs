@@ -88,6 +88,7 @@ public class UI : MonoBehaviour {
 	
 	//Ask player for input
 	public GameObject[] showCards(Card[] hand, Vector2 startPos, Vector2 scale){
+		Debug.Log("showCards" + hand.Length);
 		if(hand[0] == null) { return null; }
 		if(hand == null) { return null; }
 		int n = hand.Length;
@@ -105,7 +106,8 @@ public class UI : MonoBehaviour {
 		for(int i = 0; i< n; i++)
 		{	
 			Vector2 pos = 	new Vector2(startPos.x + offsetX + i*buffer, startPos.y);
-			currIcons[i] = (GameObject)Instantiate(Resources.Load("UICard"), pos , Quaternion.identity);			
+			currIcons[i] = (GameObject)Instantiate(Resources.Load("UICard"), pos , Quaternion.identity);	
+			Debug.Log(hand[i].getName());
 			currIcons[i].GetComponent<CardUI>().init(hand[i], this, pos, scale);
 		}
 		return cardsToShow;
@@ -354,10 +356,11 @@ public class UI : MonoBehaviour {
 	public void foeReveal(ActiveQuest activeQuest) {
 		if(enemyBP == null) { enemyBP = createHeaderMessage(panelPosX + panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}
 		Destroy(playerBP);
-		showCards(activeQuest.getStageWeapons(activeQuest.getCurrentStageNum()), new Vector2(panelPosX + panelWidth/10, panelPosY) , new Vector2(10,10));
-		showCard(activeQuest.getCurrentStage());
 		clearGameObjectArray(cardsToShow);
 		clearGameObjectArray(currButtons);
+		showCards(activeQuest.getStageWeapons(activeQuest.getCurrentStageNum()), new Vector2(panelPosX + panelWidth/10, panelPosY) , new Vector2(10,10));
+		showCard(activeQuest.getCurrentStage());
+		
 		
 		
 		stageWinners = new GameObject[activeQuest.getPlayerNum()+1];
@@ -668,6 +671,7 @@ public class UI : MonoBehaviour {
 				extraBP = extraBP + multipleCardInput[i].GetComponent<CardButtonUI>().getCard().getBP();
 			}
 		}
+
 		if(activeQuest !=null){
 			return activePlayer.getBP(activeQuest.getQuest().getName()) + extraBP;
 		}

@@ -9,7 +9,7 @@ public class ActiveQuest {
 	Card [][] stageWeapons;
 
 	Player[] players;
-	
+	Logger log = new Logger("ActiveQuest");
 
 	int stageNum;
 	Player sponsor;
@@ -24,7 +24,10 @@ public class ActiveQuest {
 	Player[] playersCompletedStage;
 	
 	bool inProgress;
-	public ActiveQuest(QuestCard _quest) {
+	
+	int extraShields;
+	public ActiveQuest(QuestCard _quest, int _extraShields) {
+		log.Init ();
 		quest = _quest;
 		stageNum = _quest.getStages();
 		players = null;
@@ -33,6 +36,7 @@ public class ActiveQuest {
 		inProgress = false;
 		totalCardsUsed = 0;
 		highestBidder = null;
+		extraShields = _extraShields;
 	}
 	
 	public void addPlayer(Player newPlayer) {
@@ -76,7 +80,6 @@ public class ActiveQuest {
 		}
 		int indexToDelete = getPlayerInt(player);
 		if(indexToDelete == -1) {
-			Debug.Log("Not found");
 			return;
 		}
 		
@@ -110,7 +113,7 @@ public class ActiveQuest {
 		if(players == null) { return;}
 		for(int i = 0; i< players.Length; i ++)
 		{
-			players[i].addShields(stageNum);
+			players[i].addShields(stageNum + extraShields);
 		}
 		quest = null;
 		inProgress = false;
@@ -123,7 +126,7 @@ public class ActiveQuest {
 			playerNum = players.Length;
 		}
 		if(playerNum == 0) {
-			Debug.Log("Quest lost, No players left");
+			log.log("Quest lost, No players left");
 			quest = null;
 		}
 		
@@ -151,15 +154,15 @@ public class ActiveQuest {
 			return null;
 		}
 		for(int i = 0; i < players.Length; i++){
-			Debug.Log("Looking at bid number"  + i + " which is "+ bids[i]);
 			if(temp < bids[i]) {
 				temp = bids[i];
 				highestBidder = players[i]; 
 				tempPlayer = highestBidder;
+				log.log("Highest bidder is " + highestBidder.getName());
 				Debug.Log("Highest bidder is " + highestBidder.getName());
 			}
 		}
-		
+		Debug.Log("Highest temp is " + temp);
 		highestBid = temp;
 		
 		
@@ -168,23 +171,27 @@ public class ActiveQuest {
 
 
 	public void endBidding() {
-				if(Object.ReferenceEquals(stages[currentStage].GetType(), typeof(Test))) {
+		Debug.Log("endBidding");
+				//if(Object.ReferenceEquals(stages[currentStage].GetType(), typeof(Test))) {
 			if(calculateHighestBidder() != null){
+				
 				calculateHighestBidder().discardCard(tentativeBet[getPlayerInt(calculateHighestBidder())]);
 				Player winningPlayer = calculateHighestBidder();
+				Debug.Log(winningPlayer.getName());
 				int winningBid = bids[getPlayerInt(winningPlayer)];
 				players = new Player[] {winningPlayer};
 				bids = new int[] {winningBid};
 				currentPlayer = players[0];
-				Debug.Log("highest bidder is " + calculateHighestBidder().getName());
+				log.log("highest bidder is " + calculateHighestBidder().getName());
 			}
 			else{
 				resetQuest();
 				return;
 			}
-		}
+		//}
 	}
 	public void nextStage() {
+		Debug.Log("nextStage");
 		if(currentStage + 1 == stages.Length){
 			quest = null;
 			//finishQuest();
@@ -223,6 +230,7 @@ public class ActiveQuest {
 		return;
 	}
 	public void setStageWeapons(Card[] newStageWeapons){
+		Debug.Log(newStageWeapons.Length);
 		stageWeapons[currentStage] = newStageWeapons;
 		if(newStageWeapons != null){
 			totalCardsUsed = totalCardsUsed + newStageWeapons.Length;
@@ -251,13 +259,18 @@ public class ActiveQuest {
 			return false;
 		}
 		
-		Debug.Log("Set player of index " + getPlayerInt(currentPlayer) + " and name " + currentPlayer.getName() + " to have a bid of " + totalBet);
+		log.log("Set player of index " + getPlayerInt(currentPlayer) + " and name " + currentPlayer.getName() + " to have a bid of " + totalBet);
 		tentativeBet[getPlayerInt(currentPlayer)] = bid;
 		bids[getPlayerInt(currentPlayer)] = totalBet;
-		
+		for(int i = 0; i< bids.Length; i++){
+			Debug.Log(bids[i]);
+		}
 		highestBid = totalBet;
 		return true;
 		
+	}
+	public void setPlayerNum(int i){
+		currentPlayer = players[i];
 	}
 	public int getStageNum() {
 		return stageNum;
@@ -328,6 +341,8 @@ public class ActiveQuest {
 	}
 	public bool isStageDone() {
 		if(getPlayerInt(currentPlayer) == players.Length-1) {
+			Debug.Log(getPlayerInt(currentPlayer));
+			Debug.Log(players.Length-1);
 			return true;
 		}
 		else {
@@ -370,12 +385,12 @@ public class ActiveQuest {
 		
 		int targetIndex = getPlayerInt(target);
 		int freeBidsToRemove = target.removeAlly(quest.getName());
-		Debug.Log("freeBidsToRemove: " + freeBidsToRemove);
+		log.log("freeBidsToRemove: " + freeBidsToRemove);
 		if(freeBidsToRemove == -1) {
 			return false;
 		}
 		if(Object.ReferenceEquals(stages[currentStage].GetType(), typeof(Test))){
-			Debug.Log("Removing from " + target.getName() + players[targetIndex].getName()  + "'s bid of "+ bids[targetIndex]);
+			log.log("Removing from " + target.getName() + players[targetIndex].getName()  + "'s bid of "+ bids[targetIndex]);
 			bids[targetIndex] = bids[targetIndex] - freeBidsToRemove;
 			calculateHighestBidder();
 		}
@@ -387,7 +402,6 @@ public class ActiveQuest {
 		return currentPlayer.getFreeBids(quest.getName());
 	}
 	public Player getCurrentPlayer() {
-		Debug.Log(currentPlayer);
 		return currentPlayer;
 	}
 	

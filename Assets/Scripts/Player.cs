@@ -11,7 +11,7 @@ public class Player {
 	private string name;
 	private int BP; 
 	private bool human = true;
-	private AIController AI = null;
+	private AbstractAI AI = null;
 	Logger log = new Logger("PlayerNull");
 
 	public Player(Card[] _hand, int _shields, int _rank, string _name){
@@ -76,8 +76,7 @@ public class Player {
 			
 		}
 	}
-	public void addShields(int newShields)
-	{
+	public void addShields(int newShields) {
 		shields += newShields;
 		log.log ("Received " + newShields + " shields.");
 		changeRank();
@@ -231,12 +230,12 @@ public class Player {
 		return human;
 	}
 
-	public void assumingDirectControl(AIController _AI){
+	public void assumingDirectControl(AbstractAI _AI){
 		human = false;
 		AI = _AI;
 	}
 
-	public AIController getAI(){
+	public AbstractAI getAI(){
 		return AI;
 	}
 	
@@ -257,6 +256,25 @@ public class Player {
 		setInPlayHand(temp);
 		
 		return returnValue;
+	}
+	
+	public int getNumOfTypeOfCard(string cardType){
+		int result = 0;
+		Debug.Log("hand size: " + hand.Length);
+		if(hand == null){
+			return 0;
+		}
+		for(int i = 0; i < hand.Length; i++){
+			if(hand[i] != null){
+				Debug.Log("("+i+"): " + hand[i].getType()); 
+				
+				if(hand[i].getType().Equals(cardType)){
+					result ++;
+				}
+				
+			}
+		}
+		return result;
 	}
 
 }
