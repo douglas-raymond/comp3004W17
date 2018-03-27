@@ -1,0 +1,11 @@
+INFO [GameManager]: created UI
+INFO [GameManager]: created player array
+INFO [GameManager]: dealt cards
+INFO [EventCard]: creating card chivdeed
+INFO [EventCard]: creating card prosperity
+INFO [EventCard]: creating card chivdeed
+INFO [EventCard]: creating card prosperity
+INFO [GameManager]: decks initialized
+INFO [GameManager]: Dealing hands, drawing first quest
+INFO [GameManager]: Tournament at camelot has begun
+INFO [GameManager]: Asking Player 0 if they want to join the tournament

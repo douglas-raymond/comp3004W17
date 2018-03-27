@@ -1,0 +1,136 @@
+INFO [GameManager]: created UI
+INFO [GameManager]: created player array
+INFO [GameManager]: dealt cards
+INFO [EventCard]: creating card chivdeed
+INFO [EventCard]: creating card prosperity
+INFO [EventCard]: creating card chivdeed
+INFO [EventCard]: creating card prosperity
+INFO [GameManager]: decks initialized
+INFO [GameManager]: Dealing hands, drawing first quest
+INFO [GameManager]: Getting sponsor
+INFO [UI]: currently asking for sponsors
+INFO [UI]: player clicked yes
+INFO [UI]: telling GM to set up quest
+INFO [UI]: getting cards to show
+INFO [UI]: setting up area
+INFO [GameManager]: Quest setup over
+INFO [UI]: getting cards to show
+INFO [UI]: setting up area
+INFO [UI]: getting cards to show
+INFO [UI]: setting up area
+INFO [GameManager]: Asking Player 1 if they want to join the quest
+INFO [UI]: currently asking for players
+INFO [UI]: player clicked yes
+INFO [UI]: telling GM we have an active player
+INFO [GameManager]: Player Player 1 joined quest.
+INFO [GameManager]: Asking Player 2 if they want to join the quest
+INFO [UI]: currently asking for players
+INFO [UI]: player clicked yes
+INFO [UI]: telling GM we have an active player
+INFO [GameManager]: Player Player 2 joined quest.
+INFO [GameManager]: Asking Player 3 if they want to join the quest
+INFO [UI]: currently asking for players
+INFO [UI]: player clicked yes
+INFO [UI]: telling GM we have an active player
+INFO [GameManager]: Player Player 3 joined quest.
+INFO [GameManager]: Done looking for players.
+INFO [GameManager]: Drawing 1 cards for Player 1
+INFO [UI]: getting cards to show
+INFO [UI]: setting up area
+INFO [GameManager]: Drawing 1 cards for Player 1
+INFO [GameManager]: Drawing 1 cards for Player 2
+INFO [UI]: getting cards to show
+INFO [UI]: setting up area
+INFO [GameManager]: Drawing 1 cards for Player 1
+INFO [GameManager]: Drawing 1 cards for Player 2
+INFO [GameManager]: Drawing 1 cards for Player 3
+INFO [UI]: getting cards to show
+INFO [UI]: setting up area
+INFO [GameManager]: Drawing 1 cards for Player 1
+INFO [GameManager]: Drawing 1 cards for Player 2
+INFO [GameManager]: Drawing 1 cards for Player 3
+INFO [GameManager]: Starting quest boarhunt
+INFO [GameManager]: Player 1 is now facing a foe of type saxons enhanced with 
+INFO [UI]: getting cards to show
+INFO [UI]: setting up area
+INFO [UI]: asking for cards in quest
+INFO [GameManager]: Player 1 is attempting to over come the foe
+INFO [GameManager]: With a total BP of 5 Player 1 fell to saxons
+INFO [GameManager]: Player 2 is now facing a foe of type saxons enhanced with 
+INFO [UI]: getting cards to show
+INFO [UI]: setting up area
+INFO [UI]: asking for cards in quest
+INFO [GameManager]: Player 2 is attempting to over come the foe
+INFO [GameManager]: Player 2 has selected , horse (10)
+INFO [GameManager]: With a total BP of 15 Player 2 overcame saxons
+INFO [GameManager]: Player 3 is now facing a foe of type saxons enhanced with 
+INFO [UI]: getting cards to show
+INFO [UI]: setting up area
+INFO [UI]: asking for cards in quest
+INFO [GameManager]: Player 3 is attempting to over come the foe
+INFO [GameManager]: Player 3 has selected , battleax (15)
+INFO [GameManager]: With a total BP of 20 Player 3 overcame saxons
+INFO [GameManager]: Stage is over.
+INFO [GameManager]: Drawing 1 cards for Player 2
+INFO [GameManager]: Drawing 1 cards for Player 3
+INFO [GameManager]: Player 2 is now facing a foe of type boar enhanced with sword dagger, 
+INFO [UI]: getting cards to show
+INFO [UI]: setting up area
+INFO [UI]: asking for cards in quest
+INFO [GameManager]: Player 2 is attempting to over come the foe
+INFO [GameManager]: Player 2 has selected , excalibur (30)
+INFO [GameManager]: With a total BP of 35 Player 2 overcame boar
+INFO [GameManager]: Player 3 is now facing a foe of type boar enhanced with sword dagger, 
+INFO [UI]: getting cards to show
+INFO [UI]: setting up area
+INFO [UI]: asking for cards in quest
+INFO [GameManager]: Player 3 is attempting to over come the foe
+INFO [GameManager]: Player 3 has selected , lance (20)
+INFO [GameManager]: With a total BP of 25 Player 3 fell to boar
+INFO [GameManager]: Stage is over.
+INFO [GameManager]: Drawing 1 cards for Player 2
+INFO [Player: Player 2]: Received 2 shields.
+INFO [GameManager]: Drawing 4 cards for Player 0
+INFO [GameManager]: Giving Player 0 a robberknight card
+INFO [GameManager]: Giving Player 0 a sword card
+INFO [GameManager]: Giving Player 0 a sword card
+INFO [GameManager]: Giving Player 0 a saxonknight card
+INFO [GameManager]: Quest is over. Players will be awarded 2 shields
+INFO [EventCard]: prosperity through the kingdom called
+INFO [GameManager]: Drawing 2 cards for Player 0
+INFO [UI]: getting cards to show
+INFO [UI]: setting up area
+INFO [EventCard]: prosperity through the kingdom called
+INFO [GameManager]: Drawing 2 cards for Player 0
+INFO [UI]: getting cards to show
+INFO [UI]: setting up area
+INFO [EventCard]: prosperity through the kingdom called
+INFO [GameManager]: Drawing 2 cards for Player 0
+INFO [UI]: getting cards to show
+INFO [UI]: setting up area
+INFO [EventCard]: prosperity through the kingdom called
+INFO [GameManager]: Drawing 2 cards for Player 0
+INFO [UI]: getting cards to show
+INFO [UI]: setting up area
+INFO [GameManager]: Drawing 2 cards for Player 0
+INFO [GameManager]: Drawing 2 cards for Player 1
+INFO [UI]: getting cards to show
+INFO [UI]: setting up area
+INFO [GameManager]: Drawing 2 cards for Player 0
+INFO [GameManager]: Drawing 2 cards for Player 1
+INFO [GameManager]: Drawing 2 cards for Player 2
+INFO [UI]: getting cards to show
+INFO [UI]: setting up area
+INFO [GameManager]: Drawing 2 cards for Player 0
+INFO [GameManager]: Drawing 2 cards for Player 1
+INFO [GameManager]: Drawing 2 cards for Player 2
+INFO [GameManager]: Drawing 2 cards for Player 3
+INFO [UI]: getting cards to show
+INFO [UI]: setting up area
+INFO [GameManager]: Drawing 2 cards for Player 0
+INFO [GameManager]: Drawing 2 cards for Player 1
+INFO [GameManager]: Drawing 2 cards for Player 2
+INFO [GameManager]: Drawing 2 cards for Player 3
+INFO [Player: Player 0]: Received 3 shields.
+INFO [Player: Player 1]: Received 3 shields.
+INFO [Player: Player 3]: Received 3 shields.

@@ -1,0 +1,7 @@
+Tournament at camelot is played
+Player 0 declines
+Players 1 2 3 accept
+Player 1 plays nothing
+Player 2 plays horse
+Player 3 plays Ax and Lance
+Player 3 wins the tournment and is awarded 6 sheilds
