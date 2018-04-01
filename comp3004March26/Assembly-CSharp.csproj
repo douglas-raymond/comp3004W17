@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{E804454B-B2F2-48A2-ED3D-E6987D4DA23E}</ProjectGuid>
+    <ProjectGuid>{F59AD6C8-A119-6C68-EE32-1F2E7A06A9C0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -64,6 +64,7 @@
      <Compile Include="Assets\Scripts\CardButtonUI.cs" />
      <Compile Include="Assets\Scripts\CardLibrary.cs" />
      <Compile Include="Assets\Scripts\CardUI.cs" />
+     <Compile Include="Assets\Scripts\Client.cs" />
      <Compile Include="Assets\Scripts\Deck.cs" />
      <Compile Include="Assets\Scripts\DiscardDeck.cs" />
      <Compile Include="Assets\Scripts\Draggable.cs" />
@@ -75,9 +76,12 @@
      <Compile Include="Assets\Scripts\HelperFunctions.cs" />
      <Compile Include="Assets\Scripts\Logger.cs" />
      <Compile Include="Assets\Scripts\MainMenuUI.cs" />
+     <Compile Include="Assets\Scripts\NetworkedGM.cs" />
+     <Compile Include="Assets\Scripts\NetworkedUI.cs" />
      <Compile Include="Assets\Scripts\OurNetwork.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
      <Compile Include="Assets\Scripts\QuestCard.cs" />
+     <Compile Include="Assets\Scripts\Server.cs" />
      <Compile Include="Assets\Scripts\ShowHandUI.cs" />
      <Compile Include="Assets\Scripts\ShowOtherPlayerUI.cs" />
      <Compile Include="Assets\Scripts\StoryCard.cs" />

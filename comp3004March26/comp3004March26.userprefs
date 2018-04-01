@@ -1,0 +1,25 @@
+﻿<Properties StartupItem="Assembly-CSharp.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Client.cs">
+    <Files>
+      <File FileName="Assets\Scripts\UI.cs" Line="343" Column="72" />
+      <File FileName="Assets\Scripts\NetworkedGM.cs" Line="8" Column="12" />
+      <File FileName="Assets\Scripts\GameManager.cs" Line="682" Column="18" />
+      <File FileName="Assets\Scripts\NetworkedUI.cs" Line="24" Column="14" />
+      <File FileName="Assets\Scripts\OurNetwork.cs" Line="74" Column="24" />
+      <File FileName="Assets\Scripts\Client.cs" Line="55" Column="45" />
+      <File FileName="Assets\Scripts\Server.cs" Line="188" Column="24" />
+      <File FileName="Assets\Scripts\Player.cs" Line="212" Column="30" />
+      <File FileName="Assets\Scripts\MainMenuUI.cs" Line="20" Column="58" />
+      <File FileName="Assets\Scripts\ActiveQuest.cs" Line="140" Column="1" />
+      <File FileName="Assets\Scripts\ShowHandUI.cs" Line="45" Column="3" />
+      <File FileName="Assets\Scripts\ShowOtherPlayerUI.cs" Line="20" Column="28" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="C:\Users\Connor\Desktop\Iter-1\comp3004W17-Team70\comp3004March26\Assets\Scripts\UI.cs" line="779" column="1" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

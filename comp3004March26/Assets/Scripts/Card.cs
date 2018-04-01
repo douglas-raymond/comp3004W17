@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Card {
+public class Card {
 
 	protected string name;
 	protected string type;
