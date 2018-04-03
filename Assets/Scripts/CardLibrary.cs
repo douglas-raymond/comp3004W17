@@ -67,12 +67,6 @@ public class CardLibrary {
 	
 	EventCard chivdeed;
 	EventCard prosperity;
-	EventCard courtcalled;
-	EventCard kingscall;
-	EventCard recognition;
-	EventCard plague;
-	EventCard pox;
-	EventCard queensfavor;
 	
 	private Sprite getCardImage(string cardTitle) {
 		if(cardTitle.Equals("excalibur")){ return Resources.Load<Sprite>("Cards/W Excalibur");}
@@ -125,12 +119,7 @@ public class CardLibrary {
 		
 		if(cardTitle.Equals("chivdeed")){ return Resources.Load<Sprite>("Cards/E Chivalrous Deed");}
 		if(cardTitle.Equals("prosperity")){ return Resources.Load<Sprite>("Cards/E Prosperity Throughout the Realm");}
-		if(cardTitle.Equals("courtcalled")){ return Resources.Load<Sprite>("Cards/E Court Called Camelot");}
-		if(cardTitle.Equals("kingscall")){ return Resources.Load<Sprite>("Cards/E Kings Call to Arms");}
-		if(cardTitle.Equals("recognition")){ return Resources.Load<Sprite>("Cards/E Kings Recognition");}	
-		if(cardTitle.Equals("plague")){ return Resources.Load<Sprite>("Cards/E Plague");}
-		if(cardTitle.Equals("pox")){ return Resources.Load<Sprite>("Cards/E Pox");}
-		if(cardTitle.Equals("queensfavor")){ return Resources.Load<Sprite>("Cards/E Queen's Favor");}			
+
 		else return null;
 	}
 	
@@ -185,12 +174,6 @@ public class CardLibrary {
 		
 		if(cardTitle.Equals("chivdeed")){ return chivdeed;}
 		if(cardTitle.Equals("prosperity")){ return prosperity;}
-		if(cardTitle.Equals("courtcalled")){ return courtcalled;}
-		if(cardTitle.Equals("kingscall")){ return kingscall;}
-		if(cardTitle.Equals("recognition")){ return recognition;}
-		if(cardTitle.Equals("plague")){ return plague;}
-		if(cardTitle.Equals("pox")){ return pox;}
-		if(cardTitle.Equals("queensfavor")){ return queensfavor;}
 
 		else return null;
 	}
@@ -229,9 +212,9 @@ public class CardLibrary {
 		pellinore = new Ally("pellinore", 10, 0, 4, getCardImage("pellinore"));
 		guinevere = new Ally("guinevere", 0, 0, 3, getCardImage("guinevere"));
 		iseult = new Ally("iseult", 0, 0, 2, getCardImage("iseult"));
-		gawain = new Ally("gawain", 10, 20, 0, getCardImage("gawain"));
+		gawain = new Ally("gawain", 10, 0, 0, getCardImage("gawain"));
 		lancelot = new Ally("lancelot", 15, 0, 0, getCardImage("lancelot"));
-		percival = new Ally("percival", 5, 20, 0, getCardImage("percival"));
+		percival = new Ally("percival", 5, 0, 0, getCardImage("percival"));
 		tristan = new Ally("tristan", 10, 0, 0, getCardImage("tristan"));
 
 		//Amour amour amour amour amour
@@ -259,11 +242,6 @@ public class CardLibrary {
 		//Events
 		chivdeed = new EventCard("chivdeed", "event", getCardImage("chivdeed"));
 		prosperity = new EventCard("prosperity", "event", getCardImage("prosperity"));
-		courtcalled = new EventCard("courtcalled", "event", getCardImage("courtcalled"));
-		kingscall = new EventCard("kingscall", "event", getCardImage("kingscall"));
-		recognition = new EventCard("recognition", "event", getCardImage("recognition"));
-		plague = new EventCard("plague", "event", getCardImage("plague"));
-		pox = new EventCard("pox", "event", getCardImage("pox"));
-		queensfavor = new EventCard("queensfavor", "event", getCardImage("queensfavor"));
+
 	}
 }

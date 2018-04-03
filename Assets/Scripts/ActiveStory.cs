@@ -56,14 +56,16 @@ public class ActiveStory  {
 	public Player[] getPlayerArr(){
 		return players;
 	}
-
-	
-	public int getPlayerNum() {
-		if(players == null) {
-			return 0;
-		}
-		return players.Length;
+	public Player getCurrentPlayer() {
+		return currentPlayer;
 	}
 	
+	public int getPlayerNum() {
+		if (players != null) {
+			return players.Length;
+		} else {
+			return 0;
+		}
 
+	}
 }

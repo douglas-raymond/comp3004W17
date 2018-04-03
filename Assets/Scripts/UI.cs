@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using GameState;
+using UnityEngine.Networking;
+using UnityEngine.Networking.NetworkSystem;
 
-public class UI : MonoBehaviour {
+public class UI : MonoBehaviour{
 
 	// Use this for initialization
 	
@@ -14,10 +16,12 @@ public class UI : MonoBehaviour {
 	GameObject[] currButtons, cardsToShow, currIcons, currPlayerHand;
 	GameObject[] stageWinners;
 	//public Card inputCard;
-	GameManager gm;
+	NetworkedGM gm;
 	Logger log = new Logger("UI");
+	GameObject tempCardSelection;
+	string tempClickedButton;
 	
-	ActiveQuest activeQuest;
+
 	// gameState = state.STANDBY;
 	
 	GameObject[] multipleCardInput;
@@ -39,8 +43,10 @@ public class UI : MonoBehaviour {
 	float panelWidth, panelHeight, panelPosX, panelPosY;
 	
 	ShowHandUI showHandUI;
-	ShowOtherPlayerUI showOtherPlayerUI;
-	public UI(GameManager _gm) {
+	ShowOtherPlayerUI showOtherPlayerUI; 
+
+
+	public UI(NetworkedGM _gm) {
 		canvas = GameObject.Find("Canvas");
 		panelWidth = canvas.GetComponent<RectTransform>().rect.width * canvas.GetComponent<RectTransform>().localScale.x;
 		panelHeight = canvas.GetComponent<RectTransform>().rect.height * canvas.GetComponent<RectTransform>().localScale.y;
@@ -51,15 +57,14 @@ public class UI : MonoBehaviour {
 		instructionHeader  = createHeaderMessage(panelPosX, panelPosY + panelHeight/3 + panelHeight/15, new Vector3(0,0,0), "Current action required");	
 		headerCurrPlayer  = createHeaderMessage(panelPosX, panelPosY + panelHeight/3, new Vector3(0,0,0), "Current player's turn");	
 		messageHeader  = createHeaderMessage(panelPosX, panelPosY - panelHeight/3, new Vector3(0,0,0), " ");	
-		
-		
-		GameObject showHandUITemp = (GameObject)Instantiate(Resources.Load("UIShowHand"), new Vector2(panelPosX + panelWidth/3, panelPosY + panelHeight/4) , Quaternion.identity);
+
+		GameObject showHandUITemp = (GameObject)MonoBehaviour.Instantiate(Resources.Load("UIShowHand"), new Vector2(panelPosX + panelWidth/3, panelPosY + panelHeight/4) , Quaternion.identity);
 		showHandUITemp.GetComponent<ShowHandUI>().init(this);
-		
-		GameObject showOtherPlayerUI = (GameObject)Instantiate(Resources.Load("UIShowOtherPlayer"), new Vector2(panelPosX + panelWidth/3, panelPosY + panelHeight/4 - panelHeight/20) , Quaternion.identity);
+
+		GameObject showOtherPlayerUI = (GameObject)MonoBehaviour.Instantiate(Resources.Load("UIShowOtherPlayer"), new Vector2(panelPosX + panelWidth/3, panelPosY + panelHeight/4 - panelHeight/20) , Quaternion.identity);
 		showOtherPlayerUI.GetComponent<ShowOtherPlayerUI>().init(this);
 	}
-	
+
 	//Prints out a given hand
 	public GameObject[] showHand(Card[] hand){
 		int n = hand.Length;
@@ -68,7 +73,7 @@ public class UI : MonoBehaviour {
 		if(cardsToShow != null)
 		{
 			for(int i = 0; i < cardsToShow.Length; i ++) {
-				Destroy(cardsToShow[i]);
+				MonoBehaviour.Destroy(cardsToShow[i]);
 				cardsToShow[i] = null;
 			}
 		}
@@ -80,7 +85,7 @@ public class UI : MonoBehaviour {
 		for(int i = 0; i< n; i++)
 		{	
 			Vector2 pos = 	new Vector2(panelPosX - totalDeckWidth/2 + i*cardWidth + i*cardSpacing, panelPosY -  panelHeight/6);
-			cardsToShow[i] = (GameObject)Instantiate(Resources.Load("UICardButton"), pos , Quaternion.identity);			
+			cardsToShow[i] = (GameObject)MonoBehaviour.Instantiate(Resources.Load("UICardButton"), pos , Quaternion.identity);			
 			cardsToShow[i].GetComponent<CardButtonUI>().init(hand[i], this, pos, i);
 		}
 		return cardsToShow;
@@ -88,14 +93,13 @@ public class UI : MonoBehaviour {
 	
 	//Ask player for input
 	public GameObject[] showCards(Card[] hand, Vector2 startPos, Vector2 scale){
-		Debug.Log("showCards" + hand.Length);
 		if(hand[0] == null) { return null; }
 		if(hand == null) { return null; }
 		int n = hand.Length;
 		if(currIcons != null)
 		{
 			for(int i = 0; i < currIcons.Length; i ++) {
-				Destroy(currIcons[i]);
+				MonoBehaviour.Destroy(currIcons[i]);
 				currIcons[i] = null;
 			}
 		}
@@ -106,47 +110,66 @@ public class UI : MonoBehaviour {
 		for(int i = 0; i< n; i++)
 		{	
 			Vector2 pos = 	new Vector2(startPos.x + offsetX + i*buffer, startPos.y);
-			currIcons[i] = (GameObject)Instantiate(Resources.Load("UICard"), pos , Quaternion.identity);	
-			Debug.Log(hand[i].getName());
+			currIcons[i] = (GameObject)MonoBehaviour.Instantiate(Resources.Load("UICard"), pos , Quaternion.identity);			
 			currIcons[i].GetComponent<CardUI>().init(hand[i], this, pos, scale);
 		}
 		return cardsToShow;
 	}
+
 	public void gotCardSelection(GameObject selected){
+		if (tempCardSelection != null) {
+			return;
+		} else {
+			tempCardSelection = selected;
+			gm.CheckCardSelection ();
+		}
+	}
+
+	public void gotCardSelection(state tempState){
 		/*
 		This method is called when a card is clicked. Depending on the current gm.getUserInputState(), a difference received mthod will be called.
 		*/
-		if (gm.getUserInputState() == state.ASKINGFORSTAGES) {
-			gotStageSelection(selected, selected.GetComponent<CardButtonUI>().getPos());
+		if (tempState == state.ASKINGFORSTAGES) {
+			gotStageSelection(tempCardSelection, tempCardSelection.GetComponent<CardButtonUI>().getPos());
 		}
-		else if (gm.getUserInputState() == state.ASKINGFORCARDSINQUEST) {
-			gotBattleCardSelection(selected, selected.GetComponent<CardButtonUI>().getPos());
+		else if (tempState == state.ASKINGFORCARDSINQUEST) {
+			gotBattleCardSelection(tempCardSelection, tempCardSelection.GetComponent<CardButtonUI>().getPos());
 		}
-		else if (gm.getUserInputState() == state.ASKINGFORCARDSINBID) {
-			gotBidCardSelection(selected, selected.GetComponent<CardButtonUI>().getPos());
+		else if (tempState == state.ASKINGFORCARDSINBID) {
+			gotBidCardSelection(tempCardSelection, tempCardSelection.GetComponent<CardButtonUI>().getPos());
 		}
-		else if (gm.getUserInputState() == state.ASKINGFORSTAGEWEAPONS) {
-			gotStageWeaponSelection(selected, selected.GetComponent<CardButtonUI>().getPos());
+		else if (tempState == state.ASKINGFORSTAGEWEAPONS) {
+			gotStageWeaponSelection(tempCardSelection, tempCardSelection.GetComponent<CardButtonUI>().getPos());
+		}	
+		else if (tempState == state.ASKINGFORCARDSTODISCARD) {
+			gotCardToDiscardSelection(tempCardSelection, tempCardSelection.GetComponent<CardButtonUI>().getPos());
 		}
-		
-		else if (gm.getUserInputState() == state.ASKINGFORCARDSTODISCARD) {
-			gotCardToDiscardSelection(selected, selected.GetComponent<CardButtonUI>().getPos());
+		else if (tempState == state.ASKINGFORCARDSINTOURNEY) {
+			gotTourneyCardSelection(tempCardSelection, tempCardSelection.GetComponent<CardButtonUI>().getPos());
 		}
-		else if (gm.getUserInputState() == state.ASKINGFORCARDSINTOURNEY) {
-			gotTourneyCardSelection(selected, selected.GetComponent<CardButtonUI>().getPos());
-		}
+		tempCardSelection = null;
 	}
-	
+
 	public void removeCardSelection(GameObject selected){
+		if (tempCardSelection != null) {
+			return;
+		} else {
+			tempCardSelection = selected;
+			gm.CheckCardRemoval ();
+		}
+
+	}
+
+	public void removeCardSelection(state newState){
 		/*
 		This method is called when a card is clicked. Depending on the current gameState, a difference received mthod will be called.
 		*/
 		
-		if(selected == null) { return;}
+		if(tempCardSelection == null) { return;}
 		int n = multipleCardInput.Length;
 		int j = -1;
 		GameObject[] temp = new GameObject[n-1];
-		j = selected.GetComponent<CardButtonUI>().getIndexInSelection();
+		j = tempCardSelection.GetComponent<CardButtonUI>().getIndexInSelection();
 
 		if(j == 0){
 			for(int i = 0; i < n-1; i++)
@@ -171,29 +194,40 @@ public class UI : MonoBehaviour {
 		}
 
 		multipleCardInput = temp;
-		Destroy(selected.GetComponent<CardButtonUI>().getSelectedCardIcon());
+		MonoBehaviour.Destroy(tempCardSelection.GetComponent<CardButtonUI>().getSelectedCardIcon());
 		
 		for(int i = 0; i < multipleCardInput.Length; i++) {
 			multipleCardInput[i].GetComponent<CardButtonUI>().setIndexInSelection(i);
 		}
-		if (gm.getUserInputState() == state.ASKINGFORCARDSINQUEST) {
+		if (newState == state.ASKINGFORCARDSINQUEST) {
 			changeHeaderMessage("Player BP: " + getPlayersBP(), playerBP);
 		}
-		if (gm.getUserInputState() == state.ASKINGFORCARDSINBID) {
+		if (newState == state.ASKINGFORCARDSINBID) {
 			int currentBidCounter;
 			if(multipleCardInput.Length == null){currentBidCounter = 0;}
 			else{currentBidCounter = multipleCardInput.Length;}
 			
-			currentBidCounter = currentBidCounter + activeQuest.getCurrentPlayerFreeBids();
+			currentBidCounter = currentBidCounter + activePlayer.getFreeBids();
 			changeHeaderMessage("Current bid: " + currentBidCounter, currentBid);
 		}
+		tempCardSelection = null;
 		return;
 	}
-	public void gotButtonClick(string input) {
+
+	public void gotButtonClick(string input){
+		if (tempClickedButton != null) {
+			return;
+		} else {
+			tempClickedButton = input;
+			gm.CheckButtonClick ();
+		}
+	}
+
+	public void gotButtonClick(state newState) {
 		//This method is called when a button is clicked
-		if(gm.getUserInputState() == state.ASKINGFORSPONSORS) { //If the game is current looking for sponsors
+		if(newState == state.ASKINGFORSPONSORS) { //If the game is current looking for sponsors
 			log.log("currently asking for sponsors");
-			if(input.Equals("Yes")) { //If the current player wants to be sponsor
+			if(tempClickedButton.Equals("Yes")) { //If the current player wants to be sponsor
 				log.log("player clicked yes");
 				gm.setUserInputState(state.STANDBY); 
 				clearGameObjectArray(currButtons);
@@ -205,9 +239,9 @@ public class UI : MonoBehaviour {
 				gm.getSponsor(); //Other wise have GameManager call getSponsor for the next player.
 			}
 		}
-		else if(gm.getUserInputState() == state.ASKINGFORPLAYERS){
+		else if(newState == state.ASKINGFORPLAYERS){
 			log.log ("currently asking for players");
-			if(input.Equals("Yes")) { //If the current player wants to be sponsor 
+			if(tempClickedButton.Equals("Yes")) { //If the current player wants to be sponsor 
 				log.log("player clicked yes");
 				gm.setUserInputState(state.STANDBY); 
 				clearGameObjectArray(currButtons);
@@ -220,9 +254,9 @@ public class UI : MonoBehaviour {
 				gm.gotPlayer(null); //Other wise have GameManager call getSponsor for the next player.
 			}
 		}
-		else if(gm.getUserInputState() == state.ASKINGFORPLAYERSTOURNEY){
+		else if(newState == state.ASKINGFORPLAYERSTOURNEY){
 			log.log ("currently asking for players for tournament");
-			if(input.Equals("Yes")) { //If the current player wants to be sponsor 
+			if(tempClickedButton.Equals("Yes")) { //If the current player wants to be sponsor 
 				log.log("player clicked yes");
 				gm.setUserInputState(state.STANDBY); 
 				clearGameObjectArray(currButtons);
@@ -235,49 +269,49 @@ public class UI : MonoBehaviour {
 				gm.gotPlayerTourney(null); //Other wise have GameManager call getSponsor for the next player.
 			}
 		}
-		else if(gm.getUserInputState() == state.ASKINGFORCARDSINQUEST){
+		else if(newState == state.ASKINGFORCARDSINQUEST){
 			log.log ("asking for cards in quest");
-			if(input.Equals("FIGHT")) {
+			if(tempClickedButton.Equals("FIGHT")) {
 				gm.questAttack(gameObjectArrayToCardArray(multipleCardInput));
 			}
-			else if(input.Equals("Give up")) {
+			else if(tempClickedButton.Equals("Give up")) {
 				gm.forfeitQuest();
 			}
 		}
-		else if(gm.getUserInputState() == state.ASKINGFORCARDSINTOURNEY){
+		else if(newState == state.ASKINGFORCARDSINTOURNEY){
 			log.log ("asking for cards in tournament");
-			if(input.Equals("ENTER TOURNAMENT!")) {
+			if(tempClickedButton.Equals("ENTER TOURNAMENT!")) {
 				clearGameObjectArray(currButtons);
 				clearGameObjectArray(cardsToShow);
 				gm.gotTournamentCards(gameObjectArrayToCardArray(multipleCardInput));
 			}
 		}
-		else if(gm.getUserInputState() == state.ASKINGFORCARDSINBID){
+		else if(newState == state.ASKINGFORCARDSINBID){
 			log.log ("got for cards in bid");
-			if(input.Equals("BID")) {
+			if(tempClickedButton.Equals("BID")) {
 				GameObject[] temp = multipleCardInput;
 				multipleCardInput = null;
 				gm.bidPhase(gameObjectArrayToCardArray(temp));
 			}
-			else if(input.Equals("Give up")) {
+			else if(tempClickedButton.Equals("Give up")) {
 				gm.forfeitQuest();
 			}
 		}
-		else if(gm.getUserInputState() == state.ASKINGFORSTAGES) {
+		else if(newState == state.ASKINGFORSTAGES) {
 			log.log ("asking for stages");
 			clearGameObjectArray(currButtons);
 			clearGameObjectArray(cardsToShow);
 			gm.endQuest("Quest forfeited");
 			displayAlert("Quest forfeited");
 		}
-		else if(gm.getUserInputState() == state.SHOWINGFOE) {
+		else if(newState == state.SHOWINGFOE) {
 			clearGameObjectArray(currButtons);
 			clearGameObjectArray(cardsToShow);
 			clearGameObjectArray(stageWinners);
-			Destroy(playerBP);
+			MonoBehaviour.Destroy(playerBP);
 			gm.endStage();
 		}
-		else if(gm.getUserInputState() == state.ASKINGFORSTAGEWEAPONS) {
+		else if(newState == state.ASKINGFORSTAGEWEAPONS) {
 			clearGameObjectArray(currButtons);
 			clearGameObjectArray(cardsToShow);
 			if(multipleCardInput == null)
@@ -289,11 +323,13 @@ public class UI : MonoBehaviour {
 			}
 		}
 	
-		else if(gm.getUserInputState() == state.ASKINGFORMORDREDTARGET) {
-			log.log(activePlayer.getName() + " has selected " + input + " to use Mordred's special ability on");
-			gm.gotMordredTarget(input);
+		else if(newState == state.ASKINGFORMORDREDTARGET) {
+			log.log(activePlayer.getName() + " has selected " + tempClickedButton + " to use Mordred's special ability on");
+			gm.gotMordredTarget(tempClickedButton);
 		}
+		tempClickedButton = null;
 	}
+
 	public void askForPlayerChoice(Player player, state newState, string instructions, Player[] players) {
 		clearGameObjectArray(cardsToShow);
 		clearGameObjectArray(currButtons);
@@ -302,15 +338,12 @@ public class UI : MonoBehaviour {
 		for(int i = 0; i < players.Length; i++) {
 			createButtonMessage(panelPosX, panelPosY - panelHeight/20 - (panelHeight/20)*i, players[i].getName());
 		}
-		
 	}
-	public void askForCards(Player player, ActiveQuest newQuest, state newState, string instructions, string button1, string button2, bool getFoes, bool getWeap, bool getAlly, bool getAmour, bool getTest, bool getMordred, int n = -1) {
-		if(newQuest != null){
-			activeQuest = newQuest;
-		}
+		
+	public void askForCards(Player player, state newState, state oldState, string instructions, string button1, string button2, bool getFoes, bool getWeap, bool getAlly, bool getAmour, bool getTest, bool getMordred, int n = -1) {
 		clearGameObjectArray(cardsToShow);
 		clearGameObjectArray(currButtons);
-		if(gm.getUserInputState() == state.ASKINGFORCARDSTODISCARD){clearGameObjectArray(currIcons);}
+		if(oldState == state.ASKINGFORCARDSTODISCARD){clearGameObjectArray(currIcons);}
 		multipleCardInputMaxNum = n;
 		activePlayer = player;
 		Card [] cards = getOnlyTypeFromDeck(player.getHand(), getFoes, getWeap, getAlly, getAmour, getTest, getMordred);
@@ -355,12 +388,11 @@ public class UI : MonoBehaviour {
 	
 	public void foeReveal(ActiveQuest activeQuest) {
 		if(enemyBP == null) { enemyBP = createHeaderMessage(panelPosX + panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}
-		Destroy(playerBP);
-		clearGameObjectArray(cardsToShow);
-		clearGameObjectArray(currButtons);
+		MonoBehaviour.Destroy(playerBP);
 		showCards(activeQuest.getStageWeapons(activeQuest.getCurrentStageNum()), new Vector2(panelPosX + panelWidth/10, panelPosY) , new Vector2(10,10));
 		showCard(activeQuest.getCurrentStage());
-		
+		clearGameObjectArray(cardsToShow);
+		clearGameObjectArray(currButtons);
 		
 		
 		stageWinners = new GameObject[activeQuest.getPlayerNum()+1];
@@ -380,9 +412,10 @@ public class UI : MonoBehaviour {
 			currentBidCounter = multipleCardInput.Length + 1;
 			}
 		addNewCardToMultipleCardArray(selected, pos);
-		currentBidCounter = currentBidCounter + activeQuest.getCurrentPlayerFreeBids();
+		currentBidCounter = currentBidCounter + activePlayer.getFreeBids();
 		changeHeaderMessage("Current bid: " + currentBidCounter, currentBid);
 	}
+
 	public void drawingQuestCard() {
 		clearGameObjectArray(cardsToShow);
 		clearGameObjectArray(currButtons);
@@ -459,26 +492,27 @@ public class UI : MonoBehaviour {
 	//UI clean up
 	private void clearGameObjectArray(GameObject [] arr){
 		//Clears any buttons on screen
-		GameObject [] toDelete =  GameObject.FindGameObjectsWithTag("CardSelected");
-		for(int i =0; i< toDelete.Length; i++)
-		{
-			Destroy(toDelete[i]);
+		if (GameObject.FindGameObjectsWithTag ("CardSelected") != null) {
+			GameObject[] toDelete = GameObject.FindGameObjectsWithTag ("CardSelected");
+			for (int i = 0; i < toDelete.Length; i++) {
+				MonoBehaviour.Destroy (toDelete [i]);
+			}
+			if (arr == null) {
+				return;
+			}
+			for (int i = 0; i < arr.Length; i++) {
+				MonoBehaviour.Destroy (arr [i]);
+			}
+			arr = null;
 		}
-		if(arr == null)
-		{
-			return;
-		}
-		for(int i = 0; i < arr.Length; i ++) {
-			Destroy(arr[i]);
-		}
-		arr = null;
 	}
 
 	//Creating and modifying headers and buttons
 	private GameObject createButtonMessage(float x, float y, string newText = "Button") {
-		GameObject tempButton = (GameObject)Instantiate(Resources.Load("UIButton"), new Vector2(x, y), Quaternion.identity);			
+		GameObject tempButton = (GameObject)MonoBehaviour.Instantiate(Resources.Load("UIButton"), new Vector2(x, y), Quaternion.identity);			
 		tempButton.GetComponent<ButtonUI>().init(this);
 		tempButton.GetComponentInChildren<Text>().text = newText;
+		tempButton.GetComponent<ButtonUI> ().transform.position = new Vector2 (x, y);
 		int n = 0;
 		if(currButtons != null) {
 			
@@ -497,8 +531,9 @@ public class UI : MonoBehaviour {
 	
 	private GameObject createHeaderMessage(float x, float y, Vector3 color, string input = "Header") {
 		GameObject header;
-		header = (GameObject)Instantiate(Resources.Load("UIHeader"), new Vector2(x, y), Quaternion.identity);	
+		header = (GameObject)MonoBehaviour.Instantiate(Resources.Load("UIHeader"), new Vector2(x, y), Quaternion.identity);	
 		header.GetComponent<HeaderUI>().init(color);
+		header.GetComponent<HeaderUI> ().transform.position = new Vector2 (x, y);
 		changeHeaderMessage(input, header);
 		
 		Renderer tempRenderer = header.GetComponent<Renderer>();
@@ -510,16 +545,16 @@ public class UI : MonoBehaviour {
 	private void changeHeaderMessage(string input, GameObject header){
 		header.GetComponent<TextMesh>().text = input;
 	}
-	
+
 	public void showCard(Card cardToShow){
-		if(cardCenter != null) { Destroy(cardCenter); }
+		if(cardCenter != null) { MonoBehaviour.Destroy(cardCenter); }
 		//cardCenter = (GameObject)Instantiate(Resources.Load("UICard"), new Vector2((float)(panelWidth/3.5), (float)(panelHeight/2.5)), Quaternion.identity);	
 		
-		cardCenter = (GameObject)Instantiate(Resources.Load("UICard"), new Vector2(panelPosX, panelPosY), Quaternion.identity);			
+		cardCenter = (GameObject)  MonoBehaviour.Instantiate(Resources.Load("UICard"), new Vector2(panelPosX, panelPosY), Quaternion.identity);			
 		//cardCenter.GetComponent<CardButtonUI>().setCard(cardToShow);
 		cardCenter.GetComponent<CardUI>().init(cardToShow, this, new Vector2(panelPosX, panelPosY + panelHeight/6), new Vector2(15, 15));
 	}
-
+		
 	public void showStage(ActiveQuest activeQuest){
 		clearGameObjectArray(cardsToShow);
 		clearGameObjectArray(currButtons);
@@ -533,15 +568,12 @@ public class UI : MonoBehaviour {
 		changeHeaderMessage(activePlayer.getName() + "'s turn", headerCurrPlayer);	
 		if(Object.ReferenceEquals(activeQuest.getCurrentStage().GetType(), typeof(Foe))) {
 			showCard(activeQuest.getQuest());
-			Destroy(currentBid);
-			Destroy(highestBid);			
+			MonoBehaviour.Destroy(currentBid);
+			MonoBehaviour.Destroy(highestBid);			
 			if(playerBP == null){playerBP = createHeaderMessage(panelPosX - panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}
-			if(activeQuest !=null){
-				changeHeaderMessage("Player BP: " + activePlayer.getBP(activeQuest.getQuest().getName()), playerBP);
-			}
-			else {
-				changeHeaderMessage("Player BP: " + activePlayer.getBP("null"), playerBP);
-			}
+
+			changeHeaderMessage("Player BP: " + activePlayer.getBP(), playerBP);
+
 
 			changeHeaderMessage("Select the cards you wish to play in this stage", instructionHeader);	
 			//createButtonMessage(panelPosX, panelPosY - panelHeight/10, "FIGHT");
@@ -553,7 +585,7 @@ public class UI : MonoBehaviour {
 			
 			if(currentBid == null) { currentBid = createHeaderMessage(panelPosX - panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}
 			if(highestBid == null) { highestBid = createHeaderMessage(panelPosX + panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}
-			changeHeaderMessage("Current bid: " + activeQuest.getCurrentPlayerFreeBids(), currentBid);
+			changeHeaderMessage("Current bid: " + activePlayer.getFreeBids(), currentBid);
 			changeHeaderMessage("Highest bid: " + activeQuest.getHighestBid(), highestBid);
 			gm.setUserInputState(state.ASKINGFORCARDSINBID);
 		}
@@ -561,11 +593,13 @@ public class UI : MonoBehaviour {
 		
 
 	}
-	
+		
 	//Other utilities
+
 	public void displayAlert(string input) {
 		changeHeaderMessage(input, messageHeader);
 	}
+
 	private Card[] cleanUpArray(Card [] oldArr){
 		int newN = 0;
 		if(oldArr == null) { return null; }
@@ -617,23 +651,24 @@ public class UI : MonoBehaviour {
 		}
 		return newTempHand;
 	}
-	
+
 	public void endQuest() {
 		clearGameObjectArray(currButtons);
-		Destroy(enemyBP);
-		Destroy(playerBP);
+		MonoBehaviour.Destroy(enemyBP);
+		MonoBehaviour.Destroy(playerBP);
 		
 		enemyBP = null;
 		playerBP = null;
 		
-		Destroy(currentBid);
-		Destroy(highestBid);
+		MonoBehaviour.Destroy(currentBid);
+		MonoBehaviour.Destroy(highestBid);
 		
 		currentBid = null;
 		highestBid = null;
 	}
+
 	private void addNewCardToMultipleCardArray(GameObject selected, Vector2 pos) {
-		selected.GetComponent<CardButtonUI>().setSelectedCardIcon((GameObject)Instantiate(Resources.Load("UISelectedCard"), pos, Quaternion.identity));	
+		selected.GetComponent<CardButtonUI>().setSelectedCardIcon((GameObject) MonoBehaviour.Instantiate(Resources.Load("UISelectedCard"), pos, Quaternion.identity));	
 		if(multipleCardInput == null){
 			multipleCardInput = new GameObject[]{selected};
 			multipleCardInput[0].GetComponent<CardButtonUI>().setIndexInSelection(0);
@@ -664,20 +699,9 @@ public class UI : MonoBehaviour {
 		for(int i = 0; i< multipleCardInput.Length; i++)
 		{
 			if(multipleCardInput[i] == null){break;}
-			if(activeQuest !=null){
-				extraBP = extraBP + multipleCardInput[i].GetComponent<CardButtonUI>().getCard().getBP(activeQuest.getQuest().getName());
-			}
-			else {
-				extraBP = extraBP + multipleCardInput[i].GetComponent<CardButtonUI>().getCard().getBP();
-			}
+			extraBP = extraBP + multipleCardInput[i].GetComponent<CardButtonUI>().getCard().getBP();
 		}
-
-		if(activeQuest !=null){
-			return activePlayer.getBP(activeQuest.getQuest().getName()) + extraBP;
-		}
-		else {
-			return activePlayer.getBP("null") + extraBP;
-		}
+		return activePlayer.getBP() + extraBP;
 	}
 	private Card[] gameObjectArrayToCardArray(GameObject[] arr){ 
 		if(arr == null){ return null;}
@@ -690,16 +714,20 @@ public class UI : MonoBehaviour {
 	
 	}
 	
-	
-	
 	public string[] mouseOverShowHandIcon() {
-		Player currPlayer = gm.getCurrentPlayer();
+		string[] newString = new string[] { "loading..." };
+		gm.LoadMouseOverShowHand ();
+		return newString;
+	}
+	
+	public void mouseOverShowHandIcon(Player currentPlayer) {
+		Player currPlayer = currentPlayer;
 		GameObject blackScreen = GameObject.FindGameObjectWithTag("BlackFilter");
 		Renderer blackScreenRenderer = blackScreen.GetComponent<Renderer>();
+
 		
-		
-		Card [] tempCardsToShow = gm.getCurrentPlayer().getHand();
-		Card [] tempCardsInPlayToShow = gm.getCurrentPlayer().getHand(true);
+		Card [] tempCardsToShow = currentPlayer.getHand();
+		Card [] tempCardsInPlayToShow = currentPlayer.getHand(true);
 		int n1, n2;
 		if(tempCardsToShow != null){
 			n1 = tempCardsToShow.Length;
@@ -724,7 +752,7 @@ public class UI : MonoBehaviour {
 		for(int i = 0; i< n1/2; i++) {	
 			if(tempCardsToShow[i] != null){
 				Vector2 pos = new Vector2(panelPosX - totalDeckWidth/4 + i*cardWidth + (i+1)*cardSpacing, panelPosY);
-				currPlayerHand[i] = (GameObject)Instantiate(Resources.Load("UICard"), pos , Quaternion.identity);			
+				currPlayerHand[i] = (GameObject) MonoBehaviour.Instantiate(Resources.Load("UICard"), pos , Quaternion.identity);			
 				currPlayerHand[i].GetComponent<CardUI>().init(tempCardsToShow[i], this, pos, new Vector2(15,15));
 				//currPlayerHand[i].GetComponent<SpriteRenderer>().sortingLayerID  = blackScreenRenderer.sortingLayerID;				
 				currPlayerHand[i].GetComponent<SpriteRenderer>().sortingOrder  = blackScreenRenderer.sortingOrder+1;			
@@ -733,7 +761,7 @@ public class UI : MonoBehaviour {
 		for(int i = n1/2; i< n1; i++) {	
 			if(tempCardsToShow[i] != null){
 				Vector2 pos = new Vector2(panelPosX - totalDeckWidth/4 + (i-n1/2)*cardWidth + ((i+1)-n1/2)*cardSpacing, panelPosY- cardWidth*2);
-				currPlayerHand[i] = (GameObject)Instantiate(Resources.Load("UICard"), pos , Quaternion.identity);			
+				currPlayerHand[i] = (GameObject) MonoBehaviour.Instantiate(Resources.Load("UICard"), pos , Quaternion.identity);			
 				currPlayerHand[i].GetComponent<CardUI>().init(tempCardsToShow[i], this, pos, new Vector2(15,15));
 				
 				currPlayerHand[i].GetComponent<SpriteRenderer>().sortingOrder = 4;
@@ -748,35 +776,100 @@ public class UI : MonoBehaviour {
 				
 				//Vector2 pos = new Vector2(panelPosX, panelPosY);
 				
-				currPlayerHand[i] = (GameObject)Instantiate(Resources.Load("UICard"), pos , Quaternion.identity);		
+				currPlayerHand[i] = (GameObject) MonoBehaviour.Instantiate(Resources.Load("UICard"), pos , Quaternion.identity);		
 				currPlayerHand[i].GetComponent<CardUI>().init(tempCardsInPlayToShow[i-n1], this, pos, new Vector2(7,7));
 				currPlayerHand[i].GetComponent<SpriteRenderer>().sortingLayerID = blackScreenRenderer.sortingLayerID;
 				currPlayerHand[i].GetComponent<SpriteRenderer>().sortingOrder = blackScreenRenderer.sortingOrder+1;
 			}
 		}
-		return mouseOverShowHandUIHeaders;
+		return;
 	}
 	
 	public void mouseLeaveShowHandIcon() {
 
 		if(currPlayerHand.Length != null) {
 			for(int i = 0; i< currPlayerHand.Length; i++) {
-				Destroy(currPlayerHand[i]);
+				MonoBehaviour.Destroy(currPlayerHand[i]);
 			}
 			
 			//currPlayerHand = null;
 		}
 	}
-	
-	public void mouseOverShowOtherPlayerIcon() {
 
-		otherPlayerHeader = createHeaderMessage(panelPosX - panelWidth/3, panelPosY + panelHeight/25, new Vector3(0,0,0), gm.getOtherPlayerInfo(gm.getCurrentPlayer()));
+	public void mouseOverShowOtherPlayerIcon(){
+		gm.LoadMouseOverShowOtherPlayer ();
+	}
+
+	public void mouseOverShowOtherPlayerIcon(string otherPlayerInfo) {
+
+		otherPlayerHeader = createHeaderMessage(panelPosX - panelWidth/3, panelPosY + panelHeight/25, new Vector3(0,0,0), otherPlayerInfo);
 	}
 	
 	public void mouseLeaveShowOtherPlayerIcon() {
 
 		if(otherPlayerHeader != null) {
-			Destroy(otherPlayerHeader);
+			MonoBehaviour.Destroy(otherPlayerHeader);
 		}
+	}
+
+	public Card[] MessageToHand(string[] hand){
+		Debug.Log ("Message To Hand");
+		Card[] tempHand = new Card[hand.Length];
+		for (int i = 0; i < hand.Length; i++) {
+			tempHand [i] = MessageToCard (hand [i]);
+		}
+		return tempHand;
+	}
+
+	public Player MessageToPlayer(string[] hand, int shield, int rank, string name, int BP){
+		Card[] tempHand = MessageToHand (hand);
+		Player newPlayer = new Player (tempHand, shield, rank, name);
+		return newPlayer;
+	}
+
+	public ActiveQuest MessageToActiveQuest(string[] weapons, string stage, int numPlayers, string[] names){
+		QuestCard tempQuest = new QuestCard (null, null, 1, null, null);
+		ActiveQuest tempActiveQuest = new ActiveQuest (tempQuest);
+		for (int i = 0; i < names.Length; i++) {
+			tempActiveQuest.addPlayer(MessageToPlayer(null, 0, 0, names[i], 0));
+		}
+		tempActiveQuest.setStage (1);
+		Card[] tempStage = new Card[1];
+		tempStage [0] = MessageToCard (stage);
+		tempActiveQuest.setStages (tempStage);
+		tempActiveQuest.setStageWeapons (MessageToHand (weapons));
+		return tempActiveQuest;
+	}
+
+	public ActiveQuest MessageToActiveQuestStage(bool foe, bool test, string questCard, int highestBid){
+		QuestCard tempQuest = null;
+		Sprite tempSprite = Resources.Load <Sprite> ("Cards/A Merlin");
+		if (foe) {
+			tempQuest = new QuestCard (questCard, "Foe", 1, null, tempSprite);
+		} else {
+			tempQuest = new QuestCard (questCard, "Test", 1, null, tempSprite);
+		}
+		ActiveQuest tempActiveQuest = new ActiveQuest (tempQuest);
+		tempActiveQuest.setStage (1);
+		tempActiveQuest.placeBid (null, highestBid);
+		return tempActiveQuest;
+	}
+
+	public Card MessageToCard(string card){
+		string[] types = new string[]{"A", "E", "F", "Q", "R", "T", "To", "W"};
+		Sprite tempSprite = null;
+		for (int i = 0; i < types.Length; i++){
+			tempSprite = Resources.Load <Sprite> ("Cards/"+types[i]+" "+card);
+			if (tempSprite != null){
+				break;
+			}
+		}
+		Card tempCard = new Card (card, tempSprite);
+		return tempCard;
+	}
+
+	public void UpdatePlayer(Player newPlayer){
+
+		activePlayer = newPlayer;
 	}
 }

@@ -102,9 +102,9 @@ public class ActiveTourney : ActiveStory
 	public bool mordredSpecialAbility(Player target){
 		
 		int targetIndex = getPlayerInt(target);
-		target.removeAlly("tourney");
+		target.removeAlly();
 		Debug.Log(target.getName() + "'s bp was " + bps[targetIndex]);
-		bps[targetIndex] = target.getBP("null");
+		bps[targetIndex] = target.getBP();
 		
 		Debug.Log(target.getName() + "'s bp is now " + bps[targetIndex]);
 		
@@ -112,9 +112,9 @@ public class ActiveTourney : ActiveStory
 
 		return true;
 	}
-	public Player[] getPlayerArr(){
-		return players;
-	}
+	
+	
+	
 
 }
 

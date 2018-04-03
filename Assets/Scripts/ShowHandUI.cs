@@ -42,8 +42,7 @@ public class ShowHandUI : MonoBehaviour {
 		//GameObject showHandUITemp = (GameObject)Instantiate(Resources.Load("UIShowHand"), new Vector2(panelPosX + panelWidth/3, panelPosY + panelHeight/4) , Quaternion.identity);
         blackScreen = (GameObject)Instantiate(Resources.Load("UIBlackScreen"), new Vector2(panelPosX, panelPosY), Quaternion.identity);
 		blackScreen.GetComponent<SpriteRenderer>().color = new Color(0f,0f,0f,.85f);
-		
-		
+
 		string[] headerStrings = ui.mouseOverShowHandIcon();
 		headers = new GameObject[headerStrings.Length +2 ];
 		Renderer blackScreenRenderer = blackScreen.GetComponent<Renderer>();

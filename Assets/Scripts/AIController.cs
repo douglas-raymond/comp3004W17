@@ -1,13 +1,15 @@
-﻿/*using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AIController {
+public class AIController : AbstractAI {
 
+	int strategy;
+	Player player;
+	Card[] hand;
 	Logger log = new Logger("AINull");
-	
+
 	public AIController(Player _player, int _strategy){
-		hp = new HelperFunctions();
 		player = _player;
 		strategy = _strategy;
 		hand = player.getHand ();
@@ -19,5 +21,3 @@ public class AIController {
 		return log;
 	}
 }
-
-*/
