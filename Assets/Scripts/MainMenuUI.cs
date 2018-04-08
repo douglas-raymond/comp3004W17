@@ -6,10 +6,13 @@ using UnityEngine.UI;
 
 public class MainMenuUI : MonoBehaviour {
 
-	public Button NewGameBtn, OptionsBtn, ExitGameBtn;
+	public Button NewGameBtn, OptionsBtn, ExitGameBtn, HostGameBtn, JoinGameBtn;
 	public Dropdown DropdownAI, DropdownHuman, DropdownTestScenario, DropdownAIStrategy;
-	public GameObject PanelOptions; 
+	public GameObject PanelOptions;
+	public InputField HostIP, HostPort;
+	public Text TextAlert;
 	int ai_DropdownVal,human_DropdownVal,test_DropdownVal,aistrat_DropdownVal;
+	string ip_InputVal,port_InputVal;
 
 	public void NewGameBtnOnClick(){
 		Debug.Log ("New Game");
@@ -39,6 +42,20 @@ public class MainMenuUI : MonoBehaviour {
 		Debug.Log ("Close Options");
 	}
 
+	public void JoinBtnOnClick()
+	{
+		PlayerPrefs.SetString("IP", ip_InputVal);
+		PlayerPrefs.SetString("Port", port_InputVal);
+		Debug.Log (ip_InputVal);
+		Debug.Log(port_InputVal);
+	}
+
+	public void HostBtnOnClick()
+	{
+		PlayerPrefs.SetString("Port", port_InputVal);
+		Debug.Log(port_InputVal);
+	}
+
 	void Start()
 	{
 		
@@ -53,6 +70,16 @@ public class MainMenuUI : MonoBehaviour {
 		}
 		if (aistrat_DropdownVal == null) {
 			DropdownAIStrategy = PanelOptions.GetComponent<Dropdown> ();		
+		}
+		if (HostIP == null) {
+			HostIP = PanelOptions.GetComponent<InputField> ();		
+		}
+		if (HostPort == null) {
+			HostPort = PanelOptions.GetComponent<InputField> ();		
+		}
+		if (TextAlert == null) 
+		{
+			TextAlert = PanelOptions.GetComponent<Text> ();
 		}
 	}
 
@@ -74,6 +101,13 @@ public class MainMenuUI : MonoBehaviour {
 			aistrat_DropdownVal = DropdownAIStrategy.value;
 			PlayerPrefs.SetInt ("aiStrategy",  aistrat_DropdownVal);
 		}
+		if (HostIP != null) {
+			ip_InputVal = HostIP.text;		
+		}
+		if (HostPort != null) {
+			port_InputVal = HostPort.text;		
+		}
+
 		PlayerPrefs.Save ();
 	}
 
