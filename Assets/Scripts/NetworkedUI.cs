@@ -21,7 +21,7 @@ public class NetworkedUI {
 		NetworkServer.SendToAll (Msg.showCard, temp);
 	}
 
-	public void askForCards(Player player, state newState, state oldState, string instructions, string button1, string button2, bool getFoes, bool getWeap, bool getAlly, bool getAmour, bool getTest, bool getMordred, int n = -1) {
+	public void askForCards(Player player, ActiveQuest newQuest, state newState, state oldState, string instructions, string button1, string button2, bool getFoes, bool getWeap, bool getAlly, bool getAmour, bool getTest, bool getMordred, int n = -1) {
 		AskForCardsMessage temp = new AskForCardsMessage( player.getHand ().Length);
 		for (int i = 0; i < player.getHand ().Length; i++) {
 			temp.hand [i] = player.getHand () [i].getName();
@@ -29,7 +29,17 @@ public class NetworkedUI {
 		temp.shield = player.getShields ();
 		temp.rank = player.getRank();
 		temp.name = player.getName();
-		temp.BP = player.getBP();
+		if (newQuest != null) {
+			temp.BP = player.getBP (newQuest.getQuest ().getName ());
+		} else {
+			temp.BP = player.getBP ("null");
+		}
+		//quest
+		if (newQuest != null) {
+			temp.questCard = newQuest.getQuest ().getName ();
+		} else {
+			temp.questCard = null;
+		}
 		//other
 		temp.newState = newState;
 		temp.oldState = oldState;
@@ -43,7 +53,8 @@ public class NetworkedUI {
 		temp.getTest = getTest;
 		temp.getMordred = getMordred;
 		temp.stage = n;
-		NetworkServer.SendToClient (player.getConnectionID(), Msg.askForCards, temp);
+		//NetworkServer.SendToClient (player.getConnectionID(), Msg.askForCards, temp);
+		NetworkServer.SendToClient (1, Msg.askForCards, temp);
 	}
 
 	public void displayAlert (string input){
@@ -87,7 +98,8 @@ public class NetworkedUI {
 		m.stage =  activeQuest.getQuest().getName();
 		m.numPlayers = activeQuest.getPlayerNum();
 		for (int p = 0; p < activeQuest.getPlayerArr ().Length; p++) {
-			NetworkServer.SendToClient (activeQuest.getPlayerArr()[p].getConnectionID(), Msg.foeReveal, m);
+			//NetworkServer.SendToClient (activeQuest.getPlayerArr()[p].getConnectionID(), Msg.foeReveal, m);
+			NetworkServer.SendToClient (1, Msg.foeReveal, m);
 		}
 	}
 
@@ -99,10 +111,11 @@ public class NetworkedUI {
 		m.shields = player.getShields ();
 		m.rank = player.getRank();
 		m.name = player.getName();
-		m.BP = player.getBP();
+		m.BP = player.getBP("null");
 		m.message = message;
 		m.messageState = messageState;
-		NetworkServer.SendToClient (player.getConnectionID(), Msg.askYesOrNo, m);
+		//NetworkServer.SendToClient (player.getConnectionID(), Msg.askYesOrNo, m);
+		NetworkServer.SendToClient (1, Msg.askYesOrNo, m);
 	}
 
 	public void askForPlayerChoice(Player player, state newState, string instructions, Player[] players){
@@ -115,7 +128,8 @@ public class NetworkedUI {
 		}
 		m.instructions = instructions;
 		m.newState = newState;
-		NetworkServer.SendToClient (player.getConnectionID(), Msg.askForPlayerChoice, m);
+		//NetworkServer.SendToClient (player.getConnectionID(), Msg.askForPlayerChoice, m);
+		NetworkServer.SendToClient (1, Msg.askForPlayerChoice, m);
 	}
 		
 	public void updatePlayers(Player[] players){
@@ -125,10 +139,11 @@ public class NetworkedUI {
 				message.hand [c] = players [i].getHand () [c].getName ();
 			}
 			message.rank = players [i].getRank ();
-			message.BP = players [i].getBP ();
+			message.BP = players [i].getBP ("null");
 			message.name = players [i].getName ();
 			message.shields = players [i].getShields ();
-			NetworkServer.SendToClient (players [i].getConnectionID (), Msg.updatePlayer, message);
+			//NetworkServer.SendToClient (players [i].getConnectionID (), Msg.updatePlayer, message);
+			NetworkServer.SendToClient (1, Msg.updatePlayer, message);
 		}
 	}
 }

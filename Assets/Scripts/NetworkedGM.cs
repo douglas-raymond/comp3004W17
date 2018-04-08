@@ -51,7 +51,11 @@ public class NetworkedGM : MonoBehaviour{
 
 	public void gotPlayer(Player newPlayer){
 		GotPlayerMessage m = new GotPlayerMessage ();
-		m.name = newPlayer.getName ();
+		if (newPlayer != null) {
+			m.name = newPlayer.getName ();
+		} else {
+			m.name = null;
+		}
 		client.Send (Msg.gotPlayer, m);
 	}
 
@@ -66,8 +70,12 @@ public class NetworkedGM : MonoBehaviour{
 	}
 
 	public void questAttack(Card [] selection) {
-		SelectionMessage m = new SelectionMessage (selection.Length);
-		for (int i = 0; i < selection.Length; i++) {
+		int len = 0;
+		if (selection != null) {
+			len = selection.Length;
+		} 
+		SelectionMessage m = new SelectionMessage (len);
+		for (int i = 0; i < len; i++) {
 			m.selection [i] = selection [i].getName();
 		}
 		m.connectionID = connectionID;
@@ -81,8 +89,12 @@ public class NetworkedGM : MonoBehaviour{
 	}
 
 	public void bidPhase(Card [] selection) {	
-		SelectionMessage m = new SelectionMessage (selection.Length);
-		for (int i = 0; i < selection.Length; i++) {
+		int len = 0;
+		if (selection != null) {
+			len = selection.Length;
+		} 
+		SelectionMessage m = new SelectionMessage (len);
+		for (int i = 0; i < len; i++) {
 			m.selection [i] = selection [i].getName();
 		}
 		m.connectionID = connectionID;
@@ -102,19 +114,16 @@ public class NetworkedGM : MonoBehaviour{
 	}
 
 	public void endStageWeaponSetup(Card[] stageWeapons){
+		int len = 0;
 		if (stageWeapons != null) {
-			SelectionMessage m = new SelectionMessage (stageWeapons.Length);
-			for (int i = 0; i < stageWeapons.Length; i++) {
-				m.selection [i] = stageWeapons [i].getName ();
-			}
-			m.connectionID = connectionID;
-			client.Send (Msg.endStageWeaponSetup, m);
-		} else {
-			SelectionMessage m = new SelectionMessage ();
-			m.selection = null;
-			m.connectionID = connectionID;
-			client.Send (Msg.endStageWeaponSetup, m);
+			len = stageWeapons.Length;
+		} 
+		SelectionMessage m = new SelectionMessage(len);
+		for (int i = 0; i < len; i++) {
+			m.selection [i] = stageWeapons [i].getName ();
 		}
+		m.connectionID = connectionID;
+		client.Send (Msg.endStageWeaponSetup, m);
 	}	
 
 	public void gotMordredTarget(string target) {
@@ -125,8 +134,12 @@ public class NetworkedGM : MonoBehaviour{
 	}
 
 	public void endQuestSetup(Card[] stages){
-		SelectionMessage m = new SelectionMessage (stages.Length);
-		for (int i = 0; i < stages.Length; i++) {
+		int len = 0;
+		if (stages != null) {
+			len = stages.Length;
+		}
+		SelectionMessage m = new SelectionMessage (len);
+		for (int i = 0; i < len; i++) {
 			m.selection [i] = stages [i].getName();
 		}
 		m.connectionID = connectionID;
@@ -134,28 +147,29 @@ public class NetworkedGM : MonoBehaviour{
 	}
 
 	public void gotTournamentCards(Card[] cards){
-		if(cards != null){
-			SelectionMessage m = new SelectionMessage (cards.Length);
-			for (int i = 0; i < cards.Length; i++) {
-				m.selection [i] = cards [i].getName();
-			}
-			m.connectionID = connectionID;
-			client.Send (Msg.gotTournamentCards, m);
-		} else {
-			SelectionMessage m = new SelectionMessage ();
-			m.selection = null;
-			m.connectionID = connectionID;
-			client.Send (Msg.gotTournamentCards, m);
+		int len = 0;
+		if (cards != null) {
+			len = cards.Length;
+		} 
+		SelectionMessage m = new SelectionMessage(len);
+		for (int i = 0; i < len; i++) {
+			m.selection [i] = cards [i].getName ();
 		}
+		m.connectionID = connectionID;
+		client.Send (Msg.endStageWeaponSetup, m);
 	}
 
 	public void gotCardLimitReached(Card[] cards){
-		SelectionMessage m = new SelectionMessage (cards.Length);
-		for (int i = 0; i < cards.Length; i++) {
-			m.selection [i] = cards [i].getName();
+		int len = 0;
+		if (cards != null) {
+			len = cards.Length;
+		} 
+		SelectionMessage m = new SelectionMessage(len);
+		for (int i = 0; i < len; i++) {
+			m.selection [i] = cards [i].getName ();
 		}
 		m.connectionID = connectionID;
-		client.Send (Msg.gotCardLimitReached, m);
+		client.Send (Msg.endStageWeaponSetup, m);
 	}
 
 	public Player getCurrentPlayer(){

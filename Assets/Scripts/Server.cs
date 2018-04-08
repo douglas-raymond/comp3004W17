@@ -141,11 +141,11 @@ public class Server : MonoBehaviour {
 			message.hand [i] = tempPlayer.getHand () [i].getName ();
 		}
 		message.name = tempPlayer.getName ();
-		message.BP = tempPlayer.getBP ();
+		message.BP = tempPlayer.getBP ("null");
 		message.shields = tempPlayer.getShields ();
 		message.rank = tempPlayer.getRank ();
 		//SendToClient
-		NetworkServer.SendToClient(connectionID, Msg.mouseOverShowHand, message);
+		NetworkServer.SendToClient(1, Msg.mouseOverShowHand, message);
 	}
 
 	public void mouseOverShowOther(NetworkMessage m){
@@ -153,7 +153,7 @@ public class Server : MonoBehaviour {
 		StringMessage message = new StringMessage ();
 		message.value = gm.getOtherPlayerInfo (gm.getPlayerWithID (connectionID));
 		//SendToClient
-		NetworkServer.SendToClient(connectionID, Msg.mouseOverShowOther, message);
+		NetworkServer.SendToClient(1, Msg.mouseOverShowOther, message);
 	}
 
 	public void checkCardSelection(NetworkMessage m){
@@ -161,7 +161,7 @@ public class Server : MonoBehaviour {
 		GetUserInputStateMessage message = new GetUserInputStateMessage ();
 		message.newState = gm.getUserInputState ();
 		//SendToClient
-		NetworkServer.SendToClient(connectionID, Msg.checkCardSelection, message);
+		NetworkServer.SendToClient(1, Msg.checkCardSelection, message);
 	}
 
 	public void checkCardRemoval (NetworkMessage m){
@@ -169,7 +169,7 @@ public class Server : MonoBehaviour {
 		GetUserInputStateMessage message = new GetUserInputStateMessage ();
 		message.newState = gm.getUserInputState ();
 		//SendToClient
-		NetworkServer.SendToClient(connectionID, Msg.checkCardRemoval, message);
+		NetworkServer.SendToClient(1, Msg.checkCardRemoval, message);
 	}
 
 	public void checkButtonClick(NetworkMessage m){
@@ -177,7 +177,7 @@ public class Server : MonoBehaviour {
 		GetUserInputStateMessage message = new GetUserInputStateMessage ();
 		message.newState = gm.getUserInputState ();
 		//SendToClient
-		NetworkServer.SendToClient(connectionID, Msg.checkButtonClick, message);
+		NetworkServer.SendToClient(1, Msg.checkButtonClick, message);
 	}
 
 	//getters
@@ -187,7 +187,7 @@ public class Server : MonoBehaviour {
 		GetUserInputStateMessage message = new GetUserInputStateMessage ();
 		message.newState = newState;
 		//SendToClient
-		NetworkServer.SendToClient (connectionID, Msg.getUserInputState, message);
+		NetworkServer.SendToClient (1, Msg.getUserInputState, message);
 	}
 
 	public void getCurrentPlayer(NetworkMessage m){
@@ -198,11 +198,11 @@ public class Server : MonoBehaviour {
 			message.hand [i] = tempPlayer.getHand () [i].getName ();
 		}
 		message.name = tempPlayer.getName ();
-		message.BP = tempPlayer.getBP ();
+		message.BP = tempPlayer.getBP ("null");
 		message.shields = tempPlayer.getShields ();
 		message.rank = tempPlayer.getRank ();
 		//SendToClient
-		NetworkServer.SendToClient (connectionID, Msg.getCurrentPlayer, message);
+		NetworkServer.SendToClient (1, Msg.getCurrentPlayer, message);
 	}
 
 	public void getOtherPlayerInfo(NetworkMessage m){
@@ -213,7 +213,7 @@ public class Server : MonoBehaviour {
 		StringMessage newMessage = new StringMessage ();
 		newMessage.value = stringToReturn;
 		//SendToClient
-		NetworkServer.SendToClient(connectionID, Msg.getOtherPlayerInfo, newMessage);
+		NetworkServer.SendToClient(1, Msg.getOtherPlayerInfo, newMessage);
 	}
 
 	//helpers

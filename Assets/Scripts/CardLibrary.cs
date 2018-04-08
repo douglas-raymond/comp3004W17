@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CardLibrary {
-	
-	
+
+
 	Weapon excalibur;
 	Weapon lance;
 	Weapon battleax;
@@ -45,9 +45,9 @@ public class CardLibrary {
 
 	//Amour amour amour amour amour
 	Amour amour;
-		
+
 	//Quests 
-	
+
 	QuestCard holygrail;
 	QuestCard enchantedforest;
 	QuestCard arthursenemies;
@@ -58,16 +58,22 @@ public class CardLibrary {
 	QuestCard slaydragon;
 	QuestCard rescuemaiden;
 	QuestCard greenknighttest;
-	
+
 	//Tourneys
 	TourneyCard camelot;
 	TourneyCard orkney;
 	TourneyCard tintagel;
 	TourneyCard york;
-	
+
 	EventCard chivdeed;
 	EventCard prosperity;
-	
+	EventCard courtcalled;
+	EventCard kingscall;
+	EventCard recognition;
+	EventCard plague;
+	EventCard pox;
+	EventCard queensfavor;
+
 	private Sprite getCardImage(string cardTitle) {
 		if(cardTitle.Equals("excalibur")){ return Resources.Load<Sprite>("Cards/W Excalibur");}
 		if(cardTitle.Equals("lance")){ return Resources.Load<Sprite>("Cards/W Lance");}
@@ -116,13 +122,18 @@ public class CardLibrary {
 		if(cardTitle.Equals("orkney")){ return Resources.Load<Sprite>("Cards/To Orkney");}
 		if(cardTitle.Equals("tintagel")){ return Resources.Load<Sprite>("Cards/To Tintagel");}
 		if(cardTitle.Equals("york")){ return Resources.Load<Sprite>("Cards/To York");}
-		
+
 		if(cardTitle.Equals("chivdeed")){ return Resources.Load<Sprite>("Cards/E Chivalrous Deed");}
 		if(cardTitle.Equals("prosperity")){ return Resources.Load<Sprite>("Cards/E Prosperity Throughout the Realm");}
-
+		if(cardTitle.Equals("courtcalled")){ return Resources.Load<Sprite>("Cards/E Court Called Camelot");}
+		if(cardTitle.Equals("kingscall")){ return Resources.Load<Sprite>("Cards/E Kings Call to Arms");}
+		if(cardTitle.Equals("recognition")){ return Resources.Load<Sprite>("Cards/E Kings Recognition");}	
+		if(cardTitle.Equals("plague")){ return Resources.Load<Sprite>("Cards/E Plague");}
+		if(cardTitle.Equals("pox")){ return Resources.Load<Sprite>("Cards/E Pox");}
+		if(cardTitle.Equals("queensfavor")){ return Resources.Load<Sprite>("Cards/E Queen's Favor");}			
 		else return null;
 	}
-	
+
 	public Card getCard(string cardTitle) {
 		if(cardTitle.Equals("excalibur")){ return excalibur;}
 		if(cardTitle.Equals("lance")){ return lance;}
@@ -171,13 +182,19 @@ public class CardLibrary {
 		if(cardTitle.Equals("orkney")){ return orkney;}
 		if(cardTitle.Equals("tintagel")){ return tintagel;}
 		if(cardTitle.Equals("york")){ return york;}
-		
+
 		if(cardTitle.Equals("chivdeed")){ return chivdeed;}
 		if(cardTitle.Equals("prosperity")){ return prosperity;}
+		if(cardTitle.Equals("courtcalled")){ return courtcalled;}
+		if(cardTitle.Equals("kingscall")){ return kingscall;}
+		if(cardTitle.Equals("recognition")){ return recognition;}
+		if(cardTitle.Equals("plague")){ return plague;}
+		if(cardTitle.Equals("pox")){ return pox;}
+		if(cardTitle.Equals("queensfavor")){ return queensfavor;}
 
 		else return null;
 	}
-	
+
 	public void init() {
 		excalibur = new Weapon("excalibur", 30, getCardImage("excalibur"));
 		lance = new Weapon("lance", 20, getCardImage("lance"));
@@ -212,16 +229,16 @@ public class CardLibrary {
 		pellinore = new Ally("pellinore", 10, 0, 4, getCardImage("pellinore"));
 		guinevere = new Ally("guinevere", 0, 0, 3, getCardImage("guinevere"));
 		iseult = new Ally("iseult", 0, 0, 2, getCardImage("iseult"));
-		gawain = new Ally("gawain", 10, 0, 0, getCardImage("gawain"));
+		gawain = new Ally("gawain", 10, 20, 0, getCardImage("gawain"));
 		lancelot = new Ally("lancelot", 15, 0, 0, getCardImage("lancelot"));
-		percival = new Ally("percival", 5, 0, 0, getCardImage("percival"));
+		percival = new Ally("percival", 5, 20, 0, getCardImage("percival"));
 		tristan = new Ally("tristan", 10, 0, 0, getCardImage("tristan"));
 
 		//Amour amour amour amour amour
 		amour = new Amour ("amour", 10, 2, getCardImage("amour"));
-			
+
 		//Quests 
-		
+
 		holygrail = new QuestCard("holygrail", "quest", 5, new Foe[]{dragon, giant, mordred, greenknight, blackknight, evilknight, saxonknight, robberknight, saxons, boar, thieves}, getCardImage("holygrail"));
 		enchantedforest = new QuestCard("enchantedforest", "quest", 3, new Foe[] {evilknight}, getCardImage("enchantedforest"));
 		arthursenemies = new QuestCard("arthursenemies", "quest", 3, new Foe[0], getCardImage("arthursenemies"));
@@ -232,16 +249,21 @@ public class CardLibrary {
 		slaydragon = new QuestCard("slaydragon", "quest", 3, new Foe[]{dragon}, getCardImage("slaydragon"));
 		rescuemaiden = new QuestCard("rescuemaiden", "quest", 3, new Foe[]{blackknight}, getCardImage("rescuemaiden"));
 		greenknighttest = new QuestCard("greenknighttest", "quest", 4, new Foe[]{greenknight}, getCardImage("greenknighttest"));
-		
+
 		//Tourneys
 		camelot = new TourneyCard("camelot", "tourney", 3, getCardImage("camelot"));
 		orkney = new TourneyCard("orkney", "tourney", 2, getCardImage("orkney"));
 		tintagel = new TourneyCard("tintagel", "tourney", 1, getCardImage("tintagel"));
 		york = new TourneyCard("york", "tourney", 0, getCardImage("york"));
-		
+
 		//Events
 		chivdeed = new EventCard("chivdeed", "event", getCardImage("chivdeed"));
 		prosperity = new EventCard("prosperity", "event", getCardImage("prosperity"));
-
+		courtcalled = new EventCard("courtcalled", "event", getCardImage("courtcalled"));
+		kingscall = new EventCard("kingscall", "event", getCardImage("kingscall"));
+		recognition = new EventCard("recognition", "event", getCardImage("recognition"));
+		plague = new EventCard("plague", "event", getCardImage("plague"));
+		pox = new EventCard("pox", "event", getCardImage("pox"));
+		queensfavor = new EventCard("queensfavor", "event", getCardImage("queensfavor"));
 	}
 }

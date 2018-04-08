@@ -55,8 +55,9 @@ public class Client : MonoBehaviour {
 	public void askForCards(NetworkMessage m){
 		AskForCardsMessage nM = m.ReadMessage<AskForCardsMessage> ();
 		Player tempPlayer = MessageToPlayer (nM.hand, nM.shield, nM.rank, nM.name, nM.BP);
+		ActiveQuest tempQuest = MessageToActiveQuestStage (true, false, nM.questCard, 0);
 		//populate tempPlayer with nM
-		ui.askForCards (tempPlayer, nM.newState, nM.oldState, nM.instructions, nM.button1, nM.button2, nM.getFoes, nM.getWeap, nM.getAlly, nM.getAmour, nM.getTest, nM.getMordred, nM.stage);
+		ui.askForCards (tempPlayer, tempQuest, nM.newState, nM.oldState, nM.instructions, nM.button1, nM.button2, nM.getFoes, nM.getWeap, nM.getAlly, nM.getAmour, nM.getTest, nM.getMordred, nM.stage);
 	}
 
 	public void foeReveal(NetworkMessage m){
@@ -177,7 +178,7 @@ public class Client : MonoBehaviour {
 
 	public ActiveQuest MessageToActiveQuest(string[] weapons, string stage, int numPlayers, string[] names){
 		QuestCard tempQuest = new QuestCard (null, null, 1, null, null);
-		ActiveQuest tempActiveQuest = new ActiveQuest (tempQuest);
+		ActiveQuest tempActiveQuest = new ActiveQuest (tempQuest, 0);
 		for (int i = 0; i < names.Length; i++) {
 			tempActiveQuest.addPlayer(MessageToPlayer(null, 0, 0, names[i], 0));
 		}
@@ -191,13 +192,13 @@ public class Client : MonoBehaviour {
 
 	public ActiveQuest MessageToActiveQuestStage(bool foe, bool test, string questCard, int highestBid){
 		QuestCard tempQuest = null;
-		Sprite tempSprite = Resources.Load <Sprite> ("Cards/A Merlin");
+		Sprite tempSprite = getCardImage (questCard);
 		if (foe) {
 			tempQuest = new QuestCard (questCard, "Foe", 1, null, tempSprite);
 		} else {
 			tempQuest = new QuestCard (questCard, "Test", 1, null, tempSprite);
 		}
-		ActiveQuest tempActiveQuest = new ActiveQuest (tempQuest);
+		ActiveQuest tempActiveQuest = new ActiveQuest (tempQuest, 0);
 		tempActiveQuest.setStage (1);
 		tempActiveQuest.placeBid (null, highestBid);
 		return tempActiveQuest;
@@ -281,7 +282,12 @@ public class Client : MonoBehaviour {
 
 		if(cardTitle.Equals("chivdeed")){ return Resources.Load<Sprite>("Cards/E Chivalrous Deed");}
 		if(cardTitle.Equals("prosperity")){ return Resources.Load<Sprite>("Cards/E Prosperity Throughout the Realm");}
-
+		if(cardTitle.Equals("courtcalled")){ return Resources.Load<Sprite>("Cards/E Court Called Camelot");}
+		if(cardTitle.Equals("kingscall")){ return Resources.Load<Sprite>("Cards/E Kings Call to Arms");}
+		if(cardTitle.Equals("recognition")){ return Resources.Load<Sprite>("Cards/E Kings Recognition");}	
+		if(cardTitle.Equals("plague")){ return Resources.Load<Sprite>("Cards/E Plague");}
+		if(cardTitle.Equals("pox")){ return Resources.Load<Sprite>("Cards/E Pox");}
+		if(cardTitle.Equals("queensfavor")){ return Resources.Load<Sprite>("Cards/E Queen's Favor");}			
 		else return null;
 	}
 

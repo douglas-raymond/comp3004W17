@@ -71,6 +71,8 @@ public class AskForCardsMessage : MessageBase{
 	public int rank;
 	public string name;
 	public int BP;
+	//activeQuest
+	public string questCard;
 	//other
 	public state newState;
 	public state oldState;

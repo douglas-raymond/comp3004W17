@@ -11,7 +11,7 @@ public class Player {
 	private string name;
 	private int BP; 
 	private bool human = true;
-	private AIController AI = null;
+	private AbstractAI AI = null;
 	Logger log = new Logger("PlayerNull");
 	private int connectionID;
 
@@ -38,12 +38,12 @@ public class Player {
 	
 	public void addCard(Card[] cardsToAdd, bool isInPlay = false) {
 		if(cardsToAdd == null){
-				Debug.Log("ERROR trying to add null cards");
-				return;
+			Debug.Log("ERROR trying to add null cards");
+			return;
 		}
-		
+
 		if(isInPlay){
-			
+
 			if(inPlay == null){
 				Debug.Log("inPlay is getting its first cards");
 				inPlay = cardsToAdd;
@@ -57,7 +57,7 @@ public class Player {
 			for(int i = inPlay.Length; i < newSize; i++) {
 				temp[i] = cardsToAdd[i-inPlay.Length];
 			}
-			
+
 			inPlay = temp;
 		}
 		else {
@@ -73,13 +73,13 @@ public class Player {
 			for(int i = hand.Length; i < newSize; i++) {
 				temp[i] = cardsToAdd[i-hand.Length];
 			}
-			
+
 			hand = temp;
-			
+
 		}
 	}
-	public void addShields(int newShields)
-	{
+
+	public void addShields(int newShields) {
 		shields += newShields;
 		log.log ("Received " + newShields + " shields.");
 		changeRank();
@@ -103,34 +103,37 @@ public class Player {
 		else{
 			return hand;
 		}
-	}	
+	}
+
 	public string getName(){
 		return name;
 	}
 	//Deletes a card from a hand.
-	public int getFreeBids() {
+	public int getFreeBids(string quest) {
 		int freeBids = 0;
 		if(inPlay != null) {
 			for(int i = 0; i< inPlay.Length; i++) {
-				if(inPlay[i].getFreeBid() != -1){
+				if(inPlay[i].getFreeBid(quest) != -1){
 					Debug.Log("free bid found");
-					freeBids = freeBids + inPlay[i].getFreeBid();
+					freeBids = freeBids + inPlay[i].getFreeBid(quest);
 				}
 			}
 		}
-		
+
 		return freeBids;
 	}
-	public int getBP(){
+
+	public int getBP(string quest){
 		int extraBP = 0;
+
 		if(inPlay != null){
 			for(int i = 0; i < inPlay.Length; i++) {
-				extraBP = extraBP + inPlay[i].getBP();
+				extraBP = extraBP + inPlay[i].getBP(quest);
 			}
 			return BP + extraBP;
 		}
 		return BP;
-		
+
 	}
 	
 	public int getShields() { return shields; }
@@ -158,13 +161,13 @@ public class Player {
 
 	public void discardCard(Card [] card){
 		if(card == null) {Debug.Log("Removing nothing"); return;}
-		
+
 		int j;
-		
+
 		for(int k = 0; k < card.Length; k++)
 		{
 			int n = hand.Length;
-			
+
 			Card[] temp = new Card[n-1];
 			j = -1;
 			for(int i = 0; i < n; i++){
@@ -177,8 +180,8 @@ public class Player {
 				Debug.Log("Requested card to delete is not in hand");
 				return;
 			}
-		
-			
+
+
 			if(j == 0){
 				for(int i = 0; i < n-1; i++)
 				{
@@ -203,7 +206,7 @@ public class Player {
 			hand = null;
 			hand = temp;
 		}
-		
+
 		return;	
 	}
 
@@ -224,44 +227,62 @@ public class Player {
 			rank = 3;
 			log.log (name + " is eligible for victory!");
 		}
-			
-	}
 
+	}
 
 	public bool isHuman(){
 		return human;
 	}
 
-	public void assumingDirectControl(AIController _AI){
+	public void assumingDirectControl(AbstractAI _AI){
 		human = false;
 		AI = _AI;
 	}
 
-	public AIController getAI(){
+	public AbstractAI getAI(){
 		return AI;
 	}
 	
-	public int removeAlly(){
+	public int removeAlly(string quest){
 		if(inPlay == null){
 			return -1;
 		}
-		int returnValue = inPlay[0].getFreeBid();
+		int returnValue = inPlay[0].getFreeBid(quest);
 		if(inPlay.Length == 1) {
 			inPlay = null;
 			return returnValue;
 		}
 		Card [] temp = new Card[inPlay.Length-1];
-		
+
 		for(int i = 1; i < inPlay.Length; i++){
 			temp[i-1] = inPlay[i];
 		}
 		setInPlayHand(temp);
-		
+
 		return returnValue;
 	}
 
 	public int getConnectionID(){
 		return connectionID;
+	}
+
+	public int getNumOfTypeOfCard(string cardType){
+		int result = 0;
+		Debug.Log("hand size: " + hand.Length);
+		if(hand == null){
+			return 0;
+		}
+		for(int i = 0; i < hand.Length; i++){
+			if(hand[i] != null){
+				Debug.Log("("+i+"): " + hand[i].getType()); 
+
+				if(hand[i].getType().Equals(cardType)){
+					result ++;
+				}
+
+			}
+		}
+		return result;
 	}
 
 }

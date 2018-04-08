@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ActiveStory  {
-	
+
 	protected Player currentPlayer;
 	protected Player[] players;
-	
+
 
 	public void nextPlayer() {
 		if(players.Length == 0) {
@@ -34,7 +34,7 @@ public class ActiveStory  {
 		}
 		return null;
 	}
-	
+
 	public int getPlayerInt(Player player) {
 		int index = -1;
 		for(int i = 0; i < players.Length; i++)
@@ -47,25 +47,23 @@ public class ActiveStory  {
 		}
 		return index;
 	}
-	
+
 	public Player getPlayer(int i) {
 		return players[i];
 	}
-	
+
 
 	public Player[] getPlayerArr(){
 		return players;
 	}
-	public Player getCurrentPlayer() {
-		return currentPlayer;
-	}
-	
+
+
 	public int getPlayerNum() {
-		if (players != null) {
-			return players.Length;
-		} else {
+		if(players == null) {
 			return 0;
 		}
-
+		return players.Length;
 	}
+
+
 }

@@ -22,7 +22,7 @@ public class ActiveTourney : ActiveStory
 	}
 
 	public void addPlayer(Player newPlayer) {
-		
+
 		int n = 0;
 		if(players != null){n = players.Length;}
 		Player[] temp = new Player[n+1];
@@ -42,11 +42,11 @@ public class ActiveTourney : ActiveStory
 		Debug.Log("getPlayerInt: " + getPlayerInt(getCurrentPlayer()));
 		bps[getPlayerInt(getCurrentPlayer())] = BP;
 	}
-	
+
 	public void awardShields(){
 		Player strongestPlayer = null;
 		int strongestPlayerBP = -1;
-		
+
 		for(int i = 0; i <players.Length; i++){
 			if(bps[i] > strongestPlayerBP){
 				strongestPlayer = players[i];
@@ -93,29 +93,27 @@ public class ActiveTourney : ActiveStory
 		players = newArr;
 	}
 	public Player getWinner(){
-			return winner;
+		return winner;
 	}
 	public int getAwardNum(){
 		return bonusShields + getPlayerNum();
 	}
-	
+
 	public bool mordredSpecialAbility(Player target){
-		
+
 		int targetIndex = getPlayerInt(target);
-		target.removeAlly();
+		target.removeAlly("tourney");
 		Debug.Log(target.getName() + "'s bp was " + bps[targetIndex]);
-		bps[targetIndex] = target.getBP();
-		
+		bps[targetIndex] = target.getBP("null");
+
 		Debug.Log(target.getName() + "'s bp is now " + bps[targetIndex]);
-		
-		
+
+
 
 		return true;
 	}
-	
-	
-	
+	public Player[] getPlayerArr(){
+		return players;
+	}
 
 }
-
-
