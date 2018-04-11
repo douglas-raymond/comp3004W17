@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour {
 	17 = testing court called to camelot
 	18 = testing kings call to arms
 	*/
-	int testingScenario = 1;
+	int testingScenario = 4;
 	int playerCount = 3;
 	int aiStrat=2;
 	Player[] players;
@@ -556,7 +556,7 @@ public class GameManager : MonoBehaviour {
 
 	public void startStage() {
 		Debug.Log("startStage");
-		//Debug.Log("current player: " + activeQuest.getCurrentPlayer().getName());
+		Debug.Log("current player: " + activeQuest.getCurrentPlayer().getName());
 		if(activeQuest.getQuest() == null) {
 			endQuest("Quest over");
 			return;
@@ -587,7 +587,8 @@ public class GameManager : MonoBehaviour {
 					true);
 			}
 			if(Object.ReferenceEquals(activeQuest.getCurrentStage().GetType(), typeof(Test))) {
-				log.log(activeQuest.getCurrentPlayer().getName() + " is now bidding in the " + activeQuest.getCurrentStage().getName() + " test");				
+				log.log(activeQuest.getCurrentPlayer().getName() + " is now bidding in the " + activeQuest.getCurrentStage().getName() + " test");	
+				Debug.Log(activeQuest.getCurrentPlayer().getName() + " is now bidding in the " + activeQuest.getCurrentStage().getName() + " test");				
 				ui.askForCards(
 					activeQuest.getCurrentPlayer(),
 					activeQuest,								
@@ -960,7 +961,7 @@ public class GameManager : MonoBehaviour {
 		Debug.Log("endStage");
 		log.log("Stage is over.");
 		if(userInputState != state.ASKINGFORCARDSTODISCARD) {
-			activeQuest.endBidding();
+			//activeQuest.endBidding();
 		}
 		drawXNumberOfCards(1);
 		if(activeQuest.getPlayerNum() == 0) {
@@ -990,7 +991,6 @@ public class GameManager : MonoBehaviour {
 	public void forfeitQuest() {
 		//log.log(activeQuest.getCurrentPlayer().getName() + " has forfeited quest");
 		activeQuest.deletePlayer(activeQuest.getCurrentPlayer());
-		//startStage();
 		if(userInputState == state.ASKINGFORCARDSINBID){
 			//activeQuest.nextPlayer();
 			//startStage();
