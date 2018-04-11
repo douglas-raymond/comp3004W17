@@ -11,6 +11,7 @@ public class Server : MonoBehaviour {
 	private GameManager gm;
 	private NetworkedUI ui;
 	private int numPlayersConnected;
+	public Text serverUpdate;
 
 	Client testClient1;
 
@@ -21,6 +22,7 @@ public class Server : MonoBehaviour {
 		ui.AssignGM (gm);
 		numPlayersConnected = 1;
 		NetworkServer.Listen(PlayerPrefs.GetInt("hostPort"));
+		serverUpdate.GetComponent<Text> ().text = "Creating new lobby...";
 		NetworkServer.RegisterHandler(MsgType.Connect, PlayerConnected);
 		NetworkServer.RegisterHandler (Msg.startQuestSetup, startQuestSetup);
 		NetworkServer.RegisterHandler (Msg.setUserInputState, setUserInputState);
@@ -49,12 +51,16 @@ public class Server : MonoBehaviour {
 
 	public void PlayerConnected(NetworkMessage m){
 		Debug.Log ("Player Connected");
+		serverUpdate.GetComponent<Text>().text = numPlayersConnected+" Players Connected - Waiting for more players...";
 		IntegerMessage message = new IntegerMessage ();
 		message.value = numPlayersConnected;
 		NetworkServer.SendToClient (numPlayersConnected, Msg.confirmConnect, message);
 		numPlayersConnected++;
 		//this should be a variable
 		if (numPlayersConnected == 5) {
+			serverUpdate.GetComponent<Text>().text = numPlayersConnected+" Players Connected - Game Ongoing";
+			EmptyMessage startMessage = new EmptyMessage ();
+			NetworkServer.SendToAll (Msg.confirmConnect, startMessage);
 			gm.gameStart ();
 		}
 	}

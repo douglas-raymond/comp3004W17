@@ -12,38 +12,46 @@ public class Client : MonoBehaviour {
 	//the client has it's own UI and abstacted gm;
 	private UI ui;
 	private NetworkedGM gm;
+	public Text connectionText;
+	private bool lobby;
 
 	void Start(){
+		lobby = false;
 		myClient = new NetworkClient ();
 		myClient.RegisterHandler (Msg.confirmConnect, Init);
 		Debug.Log ("Attempting to connect to " + PlayerPrefs.GetString ("hostIP"));
 		myClient.Connect(PlayerPrefs.GetString("hostIP"), PlayerPrefs.GetInt("hostPort"));
+		connectionText.GetComponent<Text> ().text = "Connecting...";
 	}
 
 	public void Init(NetworkMessage m){
-		connectionID = m.ReadMessage<IntegerMessage> ().value;
-		Debug.Log (connectionID);
-		gm = new NetworkedGM (myClient, connectionID);
-		ui = new UI (gm);
-		myClient.RegisterHandler(Msg.showHand, showHand);
-		myClient.RegisterHandler (Msg.showCard, showCard);
-		myClient.RegisterHandler (Msg.askForCards, askForCards);
-		myClient.RegisterHandler (Msg.displayAlert, displayAlert);
-		myClient.RegisterHandler (Msg.showStage, showStage);
-		myClient.RegisterHandler (Msg.endQuest, endQuest);
-		myClient.RegisterHandler (Msg.drawingQuestCard, drawingQuestCard);
-		myClient.RegisterHandler (Msg.askForPlayerChoice, askForPlayerChoice);
-		myClient.RegisterHandler (Msg.foeReveal, foeReveal);
-		myClient.RegisterHandler (Msg.getUserInputState, PassUserInputState);
-		myClient.RegisterHandler (Msg.getCurrentPlayer, PassCurrentPlayer);
-		myClient.RegisterHandler (Msg.getOtherPlayerInfo, PassOtherPlayerInfo);
-		myClient.RegisterHandler (Msg.askYesOrNo, askYesOrNo);
-		myClient.RegisterHandler (Msg.mouseOverShowHand, mouseOverShowHand);
-		myClient.RegisterHandler (Msg.mouseOverShowOther, mouseOverShowOther);
-		myClient.RegisterHandler (Msg.checkCardSelection, checkCardSelection);
-		myClient.RegisterHandler (Msg.checkCardRemoval, checkCardRemoval);
-		myClient.RegisterHandler (Msg.checkButtonClick, checkButtonClick);
-		myClient.RegisterHandler (Msg.updatePlayer, updatePlayer);
+		if (!(lobby)) {
+			connectionID = m.ReadMessage<IntegerMessage> ().value;
+			connectionText.GetComponent<Text> ().text = " Connected - Player " + (connectionID - 1);
+			gm = new NetworkedGM (myClient, connectionID);
+			lobby = true;
+		} else {
+			ui = new UI (gm);
+			myClient.RegisterHandler (Msg.showHand, showHand);
+			myClient.RegisterHandler (Msg.showCard, showCard);
+			myClient.RegisterHandler (Msg.askForCards, askForCards);
+			myClient.RegisterHandler (Msg.displayAlert, displayAlert);
+			myClient.RegisterHandler (Msg.showStage, showStage);
+			myClient.RegisterHandler (Msg.endQuest, endQuest);
+			myClient.RegisterHandler (Msg.drawingQuestCard, drawingQuestCard);
+			myClient.RegisterHandler (Msg.askForPlayerChoice, askForPlayerChoice);
+			myClient.RegisterHandler (Msg.foeReveal, foeReveal);
+			myClient.RegisterHandler (Msg.getUserInputState, PassUserInputState);
+			myClient.RegisterHandler (Msg.getCurrentPlayer, PassCurrentPlayer);
+			myClient.RegisterHandler (Msg.getOtherPlayerInfo, PassOtherPlayerInfo);
+			myClient.RegisterHandler (Msg.askYesOrNo, askYesOrNo);
+			myClient.RegisterHandler (Msg.mouseOverShowHand, mouseOverShowHand);
+			myClient.RegisterHandler (Msg.mouseOverShowOther, mouseOverShowOther);
+			myClient.RegisterHandler (Msg.checkCardSelection, checkCardSelection);
+			myClient.RegisterHandler (Msg.checkCardRemoval, checkCardRemoval);
+			myClient.RegisterHandler (Msg.checkButtonClick, checkButtonClick);
+			myClient.RegisterHandler (Msg.updatePlayer, updatePlayer);
+		}
 	}
 		
 	public void showHand(NetworkMessage m){

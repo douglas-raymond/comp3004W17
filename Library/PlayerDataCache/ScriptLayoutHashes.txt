@@ -2,6 +2,10 @@ WindowsStandalone
 SceneListBegin?
 Assets/MainMenu.unity
 Assets/inGame.unity
+Assets/inGameHost.unity
+Assets/inGameJoin.unity
+Assets/LobbyHost.unity
+Assets/LobbyJoin.unity
 SceneListEnd?
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationPlayableAsset
 970a95104359198fe1a98ef48655de8c UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationTrack
@@ -80,7 +84,7 @@ c63db43c730fa2cbb8ca07de15898cb6 UnityEngine.UI.dll:UnityEngine.UI.Toggle
 f61c0793411f10cf5fbfa1473fef5ef2 UnityEngine.UI.dll:UnityEngine.UI.ToggleGroup
 86d36c43c53541d667100dc90b89cfba UnityEngine.UI.dll:UnityEngine.EventSystems.TouchInputModule
 1b8c02d0aa82fbf036a2b9b2d713eec3 UnityEngine.UI.dll:UnityEngine.UI.VerticalLayoutGroup
-05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.Client
+f5399ff93a9cf4cb165ae43f68880da9 Assembly-CSharp.dll:.Client
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationPlayableAsset
 970a95104359198fe1a98ef48655de8c UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationTrack
 8144169769d51429c4aedc8b0f92d47b UnityEngine.Timeline.dll:UnityEngine.Timeline.AnimationPlayableAsset
@@ -121,7 +125,7 @@ c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.Spa
 a5efc69d30cbf81de30a2366f1af9c61 Assembly-CSharp.dll:.MainMenuUI
 ace1809e3a2a96ffeb41ec84374c7e6f Assembly-CSharp.dll:.GameManager
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.CardButtonUI
-05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.Server
+d0274808c47bc2d4863606a88d563d8b Assembly-CSharp.dll:.Server
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.Advertisements.dll:UnityEngine.Advertisements.CallbackExecutor
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.Advertisements.dll:UnityEngine.Advertisements.Editor.Placeholder
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.UI
@@ -154,3 +158,5 @@ c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.Spa
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.UITransparentBlackScreen
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.ShowOtherPlayerUI
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.ButtonUI
+2dbb57202f8eb993ef1a9904013d97fd Assembly-CSharp.dll:.JoinUI
+64630f3613ffd8023f0e1b723b17ecee Assembly-CSharp.dll:.HostUI

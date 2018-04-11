@@ -11,3 +11,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/inGame.unity
     guid: 44dc9c9fbdcd547408809dfaa18e68b6
+  - enabled: 1
+    path: Assets/inGameHost.unity
+    guid: 9d0912a4689cd55439c3831c8205d02b
+  - enabled: 1
+    path: Assets/inGameJoin.unity
+    guid: 49f884b33fcc10d4abd53e0a2b742f5d
+  - enabled: 1
+    path: Assets/LobbyHost.unity
+    guid: f4abccf93bbb35b4b9f1ce44541ae4d4
+  - enabled: 1
+    path: Assets/LobbyJoin.unity
+    guid: 5804781da2824ad44a041be4fe895256

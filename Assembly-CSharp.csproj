@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{A513BC8D-6A7D-D6C5-EEBE-D27CF600D276}</ProjectGuid>
+    <ProjectGuid>{7ECAFA0C-11D8-6A56-7B90-D2528D6F07FA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -74,6 +74,8 @@
      <Compile Include="Assets\Scripts\GameStates.cs" />
      <Compile Include="Assets\Scripts\HeaderUI.cs" />
      <Compile Include="Assets\Scripts\HelperFunctions.cs" />
+     <Compile Include="Assets\Scripts\HostUI.cs" />
+     <Compile Include="Assets\Scripts\JoinUI.cs" />
      <Compile Include="Assets\Scripts\Logger.cs" />
      <Compile Include="Assets\Scripts\MainMenuUI.cs" />
      <Compile Include="Assets\Scripts\NetworkedGM.cs" />
@@ -86,7 +88,10 @@
      <Compile Include="Assets\Scripts\ShowOtherPlayerUI.cs" />
      <Compile Include="Assets\Scripts\StoryCard.cs" />
      <Compile Include="Assets\Scripts\StoryDeck.cs" />
+     <Compile Include="Assets\Scripts\Strategy1AI.cs" />
+     <Compile Include="Assets\Scripts\Strategy2AI.cs" />
      <Compile Include="Assets\Scripts\Test.cs" />
+     <Compile Include="Assets\Scripts\TestRiggingFunctions.cs" />
      <Compile Include="Assets\Scripts\Tourney.cs" />
      <Compile Include="Assets\Scripts\TourneyCard.cs" />
      <Compile Include="Assets\Scripts\UI.cs" />
