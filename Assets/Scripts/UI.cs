@@ -889,4 +889,11 @@ public class UI : MonoBehaviour{
 
 		activePlayer = newPlayer;
 	}
+
+	public void idle(){
+		clearGameObjectArray (currButtons);
+		clearGameObjectArray (cardsToShow);
+		clearGameObjectArray (stageWinners);
+		displayAlert ("you are not the active player");
+	}
 }

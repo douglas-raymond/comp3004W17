@@ -51,6 +51,7 @@ public class Client : MonoBehaviour {
 			myClient.RegisterHandler (Msg.checkCardRemoval, checkCardRemoval);
 			myClient.RegisterHandler (Msg.checkButtonClick, checkButtonClick);
 			myClient.RegisterHandler (Msg.updatePlayer, updatePlayer);
+			myClient.RegisterHandler (Msg.idlePlayer, idlePlayer);
 		}
 	}
 		
@@ -167,6 +168,14 @@ public class Client : MonoBehaviour {
 		ui.UpdatePlayer (newPlayer);
 	}
 
+	public void idlePlayer(NetworkMessage m){
+		ShowCardMessage message = m.ReadMessage<ShowCardMessage> ();
+		string tempCard = message.card;
+		Card card = MessageToCard (tempCard);
+		ui.idle ();
+		ui.showCard (card);
+	}
+
 	//Helpers
 	public Card[] MessageToHand(string[] hand){
 		Card[] tempHand = null;
@@ -201,15 +210,16 @@ public class Client : MonoBehaviour {
 	}
 
 	public ActiveQuest MessageToActiveQuestStage(bool foe, bool test, string questCard, int highestBid){
-		QuestCard tempQuest = null;
 		Sprite tempSprite = getCardImage (questCard);
+		QuestCard tempQuest = new QuestCard (questCard, "quest", 1, null, tempSprite);
+		Card tempEncounter;
 		if (foe) {
-			tempQuest = new QuestCard (questCard, "Foe", 1, null, tempSprite);
+			tempEncounter = new Foe ("", 0, 0, tempSprite);
 		} else {
-			tempQuest = new QuestCard (questCard, "Test", 1, null, tempSprite);
+			tempEncounter = new Test ("", 0, 0, tempSprite);
 		}
 		Card[] newStage = new Card[1];
-		newStage [0] = tempQuest;
+		newStage [0] = tempEncounter;
 		ActiveQuest tempActiveQuest = new ActiveQuest (tempQuest, 0);
 		tempActiveQuest.setStages (newStage);
 		tempActiveQuest.setStage (0);
@@ -237,7 +247,7 @@ public class Client : MonoBehaviour {
 			Ally tempCard = new Ally (card, 0, 0, 0, tempSprite);
 			return tempCard;
 		} else if (type.Equals("amour")) {
-			Amour tempCard = new Amour (card, 0, 0, tempSprite);
+			Amour tempCard = new Amour (card, 10, 1, tempSprite);
 			return tempCard;
 		} 
 		Debug.Log (card+ " not found " + type );
@@ -334,4 +344,5 @@ public class Client : MonoBehaviour {
 		}
 		return null;
 	}
+		
 }

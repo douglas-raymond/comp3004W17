@@ -9,6 +9,7 @@ using UnityEngine.Networking.NetworkSystem;
 public class NetworkedUI {
 
 	private GameManager gm;
+	public int numPlayersConnected;
 
 	public NetworkedUI(){
 	}
@@ -16,6 +17,9 @@ public class NetworkedUI {
 	}
 	public void AssignGM(GameManager _gm){
 		gm = _gm;
+	}
+	public void setNumPlayersConnected(int i){
+		numPlayersConnected = i;
 	}
 
 	public void showCard(Card cardToShow){

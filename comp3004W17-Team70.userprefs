@@ -1,11 +1,10 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Client.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\UI.cs">
     <Files>
       <File FileName="Assets\Scripts\MainMenuUI.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\GameManager.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\StoryDeck.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\UI.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\UI.cs" Line="701" Column="26" />
       <File FileName="Assets\Scripts\ActiveQuest.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Player.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Card.cs" Line="1" Column="1" />
@@ -17,8 +16,16 @@
       <File FileName="Assets\Scripts\AdvCard.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Tourney.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\TourneyCard.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Server.cs" Line="60" Column="34" />
-      <File FileName="Assets\Scripts\Client.cs" Line="54" Column="4" />
+      <File FileName="Assets\Scripts\Server.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Client.cs" Line="247" Column="43" />
+      <File FileName="Assets\Scripts\ShowHandUI.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\OurNetwork.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\NetworkedGM.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\NetworkedUI.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\HostUI.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\QuestCard.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\CardLibrary.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\GameManager.cs" Line="46" Column="25" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

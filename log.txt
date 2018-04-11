@@ -1,7 +1,2 @@
-INFO [GameManager]: Testing scenario is 1
-INFO [GameManager]: There are 0 AI players.
-INFO [GameManager]: There are 0 Human players.
-INFO [GameManager]: Current test scenario is 0
-INFO [GameManager]: Created UI
-INFO [GameManager]: Created player array
-INFO [GameManager]: Dealt cards
+INFO [UI]: getting cards to show
+INFO [UI]: setting up area

@@ -46,6 +46,7 @@ public class Msg {
 	public static short checkButtonClick = 587;
 	//update
 	public static short updatePlayer = 588;
+	public static short idlePlayer = 600;
 }
 
 public class ShowHandMessage : MessageBase {
