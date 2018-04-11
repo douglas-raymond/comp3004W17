@@ -43,8 +43,13 @@ public class GameManager : MonoBehaviour {
 	17 = testing court called to camelot
 	18 = testing kings call to arms
 	*/
+<<<<<<< HEAD
 	int testingScenario = 1;
 	int playerCount = 4;
+=======
+	int testingScenario = 4;
+	int playerCount = 3;
+>>>>>>> dda58ade2835801ac5b82bd2f5cd600da1726335
 	int aiStrat=2;
 	Player[] players;
 	
