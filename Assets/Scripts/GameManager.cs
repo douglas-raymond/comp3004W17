@@ -944,7 +944,7 @@ public class GameManager : MonoBehaviour {
 	public void forfeitQuest() {
 		//log.log(activeQuest.getCurrentPlayer().getName() + " has forfeited quest");
 		activeQuest.deletePlayer(activeQuest.getCurrentPlayer());
-		startStage();
+		//startStage();
 		if(userInputState == state.ASKINGFORCARDSINBID){
 			//activeQuest.nextPlayer();
 			//startStage();
