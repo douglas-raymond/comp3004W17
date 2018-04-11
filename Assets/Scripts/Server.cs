@@ -18,8 +18,9 @@ public class Server : MonoBehaviour {
 		Debug.Log ("here");
 		ui = new NetworkedUI (null);
 		gm = new GameManager (ui);
+		ui.AssignGM (gm);
 		numPlayersConnected = 1;
-		NetworkServer.Listen(4444);
+		NetworkServer.Listen(PlayerPrefs.GetInt("hostPort"));
 		NetworkServer.RegisterHandler(MsgType.Connect, PlayerConnected);
 		NetworkServer.RegisterHandler (Msg.startQuestSetup, startQuestSetup);
 		NetworkServer.RegisterHandler (Msg.setUserInputState, setUserInputState);
@@ -53,7 +54,7 @@ public class Server : MonoBehaviour {
 		NetworkServer.SendToClient (numPlayersConnected, Msg.confirmConnect, message);
 		numPlayersConnected++;
 		//this should be a variable
-		if (numPlayersConnected == 2) {
+		if (numPlayersConnected == 5) {
 			gm.gameStart ();
 		}
 	}
@@ -145,7 +146,7 @@ public class Server : MonoBehaviour {
 		message.shields = tempPlayer.getShields ();
 		message.rank = tempPlayer.getRank ();
 		//SendToClient
-		NetworkServer.SendToClient(1, Msg.mouseOverShowHand, message);
+		NetworkServer.SendToClient(connectionID, Msg.mouseOverShowHand, message);
 	}
 
 	public void mouseOverShowOther(NetworkMessage m){
@@ -153,7 +154,7 @@ public class Server : MonoBehaviour {
 		StringMessage message = new StringMessage ();
 		message.value = gm.getOtherPlayerInfo (gm.getPlayerWithID (connectionID));
 		//SendToClient
-		NetworkServer.SendToClient(1, Msg.mouseOverShowOther, message);
+		NetworkServer.SendToClient(connectionID, Msg.mouseOverShowOther, message);
 	}
 
 	public void checkCardSelection(NetworkMessage m){
@@ -161,7 +162,7 @@ public class Server : MonoBehaviour {
 		GetUserInputStateMessage message = new GetUserInputStateMessage ();
 		message.newState = gm.getUserInputState ();
 		//SendToClient
-		NetworkServer.SendToClient(1, Msg.checkCardSelection, message);
+		NetworkServer.SendToClient(connectionID, Msg.checkCardSelection, message);
 	}
 
 	public void checkCardRemoval (NetworkMessage m){
@@ -169,7 +170,7 @@ public class Server : MonoBehaviour {
 		GetUserInputStateMessage message = new GetUserInputStateMessage ();
 		message.newState = gm.getUserInputState ();
 		//SendToClient
-		NetworkServer.SendToClient(1, Msg.checkCardRemoval, message);
+		NetworkServer.SendToClient(connectionID, Msg.checkCardRemoval, message);
 	}
 
 	public void checkButtonClick(NetworkMessage m){
@@ -177,7 +178,7 @@ public class Server : MonoBehaviour {
 		GetUserInputStateMessage message = new GetUserInputStateMessage ();
 		message.newState = gm.getUserInputState ();
 		//SendToClient
-		NetworkServer.SendToClient(1, Msg.checkButtonClick, message);
+		NetworkServer.SendToClient(connectionID, Msg.checkButtonClick, message);
 	}
 
 	//getters
@@ -187,7 +188,7 @@ public class Server : MonoBehaviour {
 		GetUserInputStateMessage message = new GetUserInputStateMessage ();
 		message.newState = newState;
 		//SendToClient
-		NetworkServer.SendToClient (1, Msg.getUserInputState, message);
+		NetworkServer.SendToClient (connectionID, Msg.getUserInputState, message);
 	}
 
 	public void getCurrentPlayer(NetworkMessage m){
@@ -202,7 +203,7 @@ public class Server : MonoBehaviour {
 		message.shields = tempPlayer.getShields ();
 		message.rank = tempPlayer.getRank ();
 		//SendToClient
-		NetworkServer.SendToClient (1, Msg.getCurrentPlayer, message);
+		NetworkServer.SendToClient (connectionID, Msg.getCurrentPlayer, message);
 	}
 
 	public void getOtherPlayerInfo(NetworkMessage m){
@@ -213,7 +214,7 @@ public class Server : MonoBehaviour {
 		StringMessage newMessage = new StringMessage ();
 		newMessage.value = stringToReturn;
 		//SendToClient
-		NetworkServer.SendToClient(1, Msg.getOtherPlayerInfo, newMessage);
+		NetworkServer.SendToClient(connectionID, Msg.getOtherPlayerInfo, newMessage);
 	}
 
 	//helpers

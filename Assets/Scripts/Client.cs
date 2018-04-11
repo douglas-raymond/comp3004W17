@@ -16,7 +16,8 @@ public class Client : MonoBehaviour {
 	void Start(){
 		myClient = new NetworkClient ();
 		myClient.RegisterHandler (Msg.confirmConnect, Init);
-		myClient.Connect("127.0.0.1", 4444);
+		Debug.Log ("Attempting to connect to " + PlayerPrefs.GetString ("hostIP"));
+		myClient.Connect(PlayerPrefs.GetString("hostIP"), PlayerPrefs.GetInt("hostPort"));
 	}
 
 	public void Init(NetworkMessage m){
@@ -55,7 +56,8 @@ public class Client : MonoBehaviour {
 	public void askForCards(NetworkMessage m){
 		AskForCardsMessage nM = m.ReadMessage<AskForCardsMessage> ();
 		Player tempPlayer = MessageToPlayer (nM.hand, nM.shield, nM.rank, nM.name, nM.BP);
-		ActiveQuest tempQuest = MessageToActiveQuestStage (true, false, nM.questCard, 0);
+		QuestCard tempCard = new QuestCard (nM.questCard, "test", 0, null, getCardImage (nM.questCard));
+		ActiveQuest tempQuest = new ActiveQuest (tempCard, 0);
 		//populate tempPlayer with nM
 		ui.askForCards (tempPlayer, tempQuest, nM.newState, nM.oldState, nM.instructions, nM.button1, nM.button2, nM.getFoes, nM.getWeap, nM.getAlly, nM.getAmour, nM.getTest, nM.getMordred, nM.stage);
 	}
@@ -182,7 +184,7 @@ public class Client : MonoBehaviour {
 		for (int i = 0; i < names.Length; i++) {
 			tempActiveQuest.addPlayer(MessageToPlayer(null, 0, 0, names[i], 0));
 		}
-		tempActiveQuest.setStage (1);
+		tempActiveQuest.setStage (0);
 		Card[] tempStage = new Card[1];
 		tempStage [0] = MessageToCard (stage);
 		tempActiveQuest.setStages (tempStage);
@@ -198,8 +200,11 @@ public class Client : MonoBehaviour {
 		} else {
 			tempQuest = new QuestCard (questCard, "Test", 1, null, tempSprite);
 		}
+		Card[] newStage = new Card[1];
+		newStage [0] = tempQuest;
 		ActiveQuest tempActiveQuest = new ActiveQuest (tempQuest, 0);
-		tempActiveQuest.setStage (1);
+		tempActiveQuest.setStages (newStage);
+		tempActiveQuest.setStage (0);
 		tempActiveQuest.placeBid (null, highestBid);
 		return tempActiveQuest;
 	}

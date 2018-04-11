@@ -8,17 +8,22 @@ using UnityEngine.Networking.NetworkSystem;
 
 public class NetworkedUI {
 
+	private GameManager gm;
 
 	public NetworkedUI(){
 	}
-	public NetworkedUI(GameManager gm){
+	public NetworkedUI(GameManager _gm){
+	}
+	public void AssignGM(GameManager _gm){
+		gm = _gm;
 	}
 
 	public void showCard(Card cardToShow){
 		
 		ShowCardMessage temp = new ShowCardMessage();
 		temp.card = cardToShow.getName ();
-		NetworkServer.SendToAll (Msg.showCard, temp);
+		//NetworkServer.SendToAll (Msg.showCard, temp);
+		NetworkServer.SendToClient(gm.getCurrentPlayer().getConnectionID(), Msg.showCard, temp);
 	}
 
 	public void askForCards(Player player, ActiveQuest newQuest, state newState, state oldState, string instructions, string button1, string button2, bool getFoes, bool getWeap, bool getAlly, bool getAmour, bool getTest, bool getMordred, int n = -1) {
@@ -30,13 +35,21 @@ public class NetworkedUI {
 		temp.rank = player.getRank();
 		temp.name = player.getName();
 		if (newQuest != null) {
-			temp.BP = player.getBP (newQuest.getQuest ().getName ());
+			if (newQuest.getQuest() != null) {
+				temp.BP = player.getBP (newQuest.getQuest ().getName ());
+			} else {
+				temp.BP = player.getBP ("null");
+			}
 		} else {
 			temp.BP = player.getBP ("null");
 		}
 		//quest
 		if (newQuest != null) {
-			temp.questCard = newQuest.getQuest ().getName ();
+			if (newQuest.getQuest () != null) {
+				temp.questCard = newQuest.getQuest ().getName ();
+			} else {
+				temp.questCard = null;
+			}
 		} else {
 			temp.questCard = null;
 		}
@@ -53,14 +66,15 @@ public class NetworkedUI {
 		temp.getTest = getTest;
 		temp.getMordred = getMordred;
 		temp.stage = n;
-		//NetworkServer.SendToClient (player.getConnectionID(), Msg.askForCards, temp);
-		NetworkServer.SendToClient (1, Msg.askForCards, temp);
+		NetworkServer.SendToClient (player.getConnectionID(), Msg.askForCards, temp);
+		//NetworkServer.SendToClient (1, Msg.askForCards, temp);
 	}
 
 	public void displayAlert (string input){
 		DisplayAlertMessage temp = new DisplayAlertMessage ();
 		temp.input = input;
-		NetworkServer.SendToAll (Msg.displayAlert, temp);
+		//NetworkServer.SendToAll (Msg.displayAlert, temp);
+		NetworkServer.SendToClient(gm.getCurrentPlayer().getConnectionID(), Msg.displayAlert, temp);
 	}
 
 	public void showStage(ActiveQuest activeQuest){
@@ -73,13 +87,14 @@ public class NetworkedUI {
 			m.test = true;
 		}
 		m.highestBid = activeQuest.getHighestBid ();
-		m.questCard = activeQuest.getQuest ().getName ();
-		NetworkServer.SendToAll (Msg.showStage, m);
+		m.questCard = activeQuest.getCurrentStage ().getName ();
+		NetworkServer.SendToClient(gm.getCurrentPlayer().getConnectionID(), Msg.showStage, m);
 	}
 
 	public void endQuest(){
 		EmptyMessage temp = new EmptyMessage ();
 		NetworkServer.SendToAll (Msg.endQuest, temp);
+		//NetworkServer.SendToClient(gm.getCurrentPlayer().getConnectionID(), Msg.endQuest, temp);
 	}
 
 	public void drawingQuestCard(){
@@ -88,19 +103,26 @@ public class NetworkedUI {
 	}
 
 	public void foeReveal(ActiveQuest activeQuest){
-		FoeRevealMessage m = new FoeRevealMessage(activeQuest.getStageWeapons(activeQuest.getCurrentStageNum()).Length, activeQuest.getPlayerNum());
-		for (int w = 0; w < activeQuest.getStageWeapons(activeQuest.getCurrentStageNum()).Length; w++){
+		int counter = 0;
+		for (int i = 0; i < activeQuest.getStageWeapons(activeQuest.getCurrentStageNum()).Length; i++){
+			if (activeQuest.getStageWeapons (activeQuest.getCurrentStageNum ()) [i] != null){
+				counter++;
+			}
+		}
+		FoeRevealMessage m = new FoeRevealMessage(counter, activeQuest.getPlayerNum());
+		for (int w = 0; w < counter; w++){
+			Debug.Log ("w len: " + counter);
 			m.weapons [w] = activeQuest.getStageWeapons (activeQuest.getCurrentStageNum ()) [w].getName();
 		}
 		for (int n = 0; n < activeQuest.getPlayerNum (); n++) {
 			m.names [n] = activeQuest.getPlayerArr ()[n].getName();
 		}
-		m.stage =  activeQuest.getQuest().getName();
+
+		m.stage = activeQuest.getCurrentStage().getName();
 		m.numPlayers = activeQuest.getPlayerNum();
-		for (int p = 0; p < activeQuest.getPlayerArr ().Length; p++) {
-			//NetworkServer.SendToClient (activeQuest.getPlayerArr()[p].getConnectionID(), Msg.foeReveal, m);
-			NetworkServer.SendToClient (1, Msg.foeReveal, m);
-		}
+			NetworkServer.SendToAll (Msg.foeReveal, m);
+			//NetworkServer.SendToClient (1, Msg.foeReveal, m);
+
 	}
 
 	public void askYesOrNo(Player player, string message, state messageState){
@@ -114,8 +136,8 @@ public class NetworkedUI {
 		m.BP = player.getBP("null");
 		m.message = message;
 		m.messageState = messageState;
-		//NetworkServer.SendToClient (player.getConnectionID(), Msg.askYesOrNo, m);
-		NetworkServer.SendToClient (1, Msg.askYesOrNo, m);
+		NetworkServer.SendToClient (player.getConnectionID(), Msg.askYesOrNo, m);
+		//NetworkServer.SendToClient (1, Msg.askYesOrNo, m);
 	}
 
 	public void askForPlayerChoice(Player player, state newState, string instructions, Player[] players){
@@ -128,8 +150,8 @@ public class NetworkedUI {
 		}
 		m.instructions = instructions;
 		m.newState = newState;
-		//NetworkServer.SendToClient (player.getConnectionID(), Msg.askForPlayerChoice, m);
-		NetworkServer.SendToClient (1, Msg.askForPlayerChoice, m);
+		NetworkServer.SendToClient (player.getConnectionID(), Msg.askForPlayerChoice, m);
+		//NetworkServer.SendToClient (1, Msg.askForPlayerChoice, m);
 	}
 		
 	public void updatePlayers(Player[] players){
@@ -142,8 +164,8 @@ public class NetworkedUI {
 			message.BP = players [i].getBP ("null");
 			message.name = players [i].getName ();
 			message.shields = players [i].getShields ();
-			//NetworkServer.SendToClient (players [i].getConnectionID (), Msg.updatePlayer, message);
-			NetworkServer.SendToClient (1, Msg.updatePlayer, message);
+			NetworkServer.SendToClient (players [i].getConnectionID (), Msg.updatePlayer, message);
+			//NetworkServer.SendToClient (1, Msg.updatePlayer, message);
 		}
 	}
 }

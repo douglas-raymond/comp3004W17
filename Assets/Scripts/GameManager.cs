@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour {
 	17 = testing court called to camelot
 	18 = testing kings call to arms
 	*/
-	int testingScenario = 0;
+	int testingScenario = 1;
 	int playerCount = 3;
 	int aiStrat=2;
 	Player[] players;
@@ -231,7 +231,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void startQuestSetup(){
-		Debug.Log("setting player " + activePlayerSub + "as sponsor");
+		Debug.Log("setting player " + activePlayerSub + " as sponsor");
 		//activePlayerSub = activePlayerMeta;
 		activeQuest.setSponsor(players[activePlayerSub]);
 		//ui.askForStageSelection(activeQuest.getSponsor(), activeQuest.getStageNum());
@@ -556,7 +556,7 @@ public class GameManager : MonoBehaviour {
 
 	public void startStage() {
 		Debug.Log("startStage");
-		Debug.Log("current player: " + activeQuest.getCurrentPlayer().getName());
+		//Debug.Log("current player: " + activeQuest.getCurrentPlayer().getName());
 		if(activeQuest.getQuest() == null) {
 			endQuest("Quest over");
 			return;
@@ -622,7 +622,7 @@ public class GameManager : MonoBehaviour {
 		drawXNumberOfCards(activeQuest.getTotalCardsUsed(), activeQuest.getSponsor());
 
 		if(userInputState != state.ASKINGFORCARDSTODISCARD) {
-
+			Debug.Log (userInputState);
 			log.log("Quest is over. Players will be awarded " + activeQuest.getStageNum() + " shields");
 			storyDeck.discardCard(new Card[]{activeQuest.getQuest()});
 			ui.endQuest();
@@ -990,7 +990,7 @@ public class GameManager : MonoBehaviour {
 	public void forfeitQuest() {
 		//log.log(activeQuest.getCurrentPlayer().getName() + " has forfeited quest");
 		activeQuest.deletePlayer(activeQuest.getCurrentPlayer());
-		startStage();
+		//startStage();
 		if(userInputState == state.ASKINGFORCARDSINBID){
 			//activeQuest.nextPlayer();
 			//startStage();
@@ -1071,6 +1071,7 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 		else {
+			Debug.Log ("Drawing " + numOfCardsToDraw + " cards for " + player.getName ());
 			log.log("Drawing " + numOfCardsToDraw + " cards for " + player.getName());
 			if(player.getHand().Length + numOfCardsToDraw > 12){
 				log.log(player.getName() + "'s hand exceeds the 12 card limit. Asking to discard.");
@@ -1222,13 +1223,18 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public Card[] IdentifySelection(string[] selection, int id){
-		Card[] newSelection = new Card[selection.Length];
+		Card[] newSelection = null;
+		if (selection.Length == 0){ return newSelection;}
+		if (selection == null){ return newSelection;}
+		newSelection = new Card[selection.Length];
+		Player temp = getPlayerWithID (id);
 		for (int i = 0; i < selection.Length; i++) {
-			for (int c = 0; c < getCurrentPlayer().getHand().Length; c++) {
-				if (getCurrentPlayer().getHand () [c].getName () == selection [i]) 
+			for (int c = 0; c < temp.getHand().Length; c++) {
+				if (temp.getHand () [c].getName () == selection [i]) 
 				{
-					newSelection [i] = getCurrentPlayer().getHand () [c];
-					Debug.Log (newSelection [i].getName ());
+					newSelection [i] = temp.getHand () [c];
+					Debug.Log ("selection found: "+newSelection [i].getName ());
+					break;
 				}
 			}
 		}

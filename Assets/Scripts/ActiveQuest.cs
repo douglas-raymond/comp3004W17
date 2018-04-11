@@ -230,7 +230,6 @@ public class ActiveQuest {
 		return;
 	}
 	public void setStageWeapons(Card[] newStageWeapons){
-		Debug.Log(newStageWeapons.Length);
 		stageWeapons[currentStage] = newStageWeapons;
 		if(newStageWeapons != null){
 			totalCardsUsed = totalCardsUsed + newStageWeapons.Length;
@@ -283,6 +282,7 @@ public class ActiveQuest {
 		return stages[i];
 	}
 	public Card getCurrentStage() {
+		Debug.Log ("Current Stage: " + currentStage);
 		return stages[currentStage];
 	}
 	public int getCurrentStageNum(){
@@ -329,6 +329,7 @@ public class ActiveQuest {
 				extraBP = extraBP + stageWeapons[i][j].getBP();
 			}
 		}
+		Debug.Log (baseBP + extraBP);
 		return (baseBP + extraBP);
 	}
 	public int getTotalCardsUsed() {
@@ -415,8 +416,8 @@ public class ActiveQuest {
 	}
 
 	public int getPlayerInt(Player player) {
+		
 		int index = -1;
-		Debug.Log (players.Length);
 		for(int i = 0; i < players.Length; i++)
 		{
 			if(players[i].getName().Equals(player.getName()))

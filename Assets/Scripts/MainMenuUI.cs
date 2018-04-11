@@ -6,28 +6,26 @@ using UnityEngine.UI;
 
 public class MainMenuUI : MonoBehaviour {
 
-	public Button NewGameBtn, OptionsBtn, ExitGameBtn, HostGameBtn, JoinGameBtn;
+	public Button NewGameBtn, OptionsBtn, ExitGameBtn;
 	public Dropdown DropdownAI, DropdownHuman, DropdownTestScenario, DropdownAIStrategy;
-	public GameObject PanelOptions;
-	public InputField HostIP, HostPort;
-	public Text TextAlert;
+	public GameObject PanelOptions; 
 	int ai_DropdownVal,human_DropdownVal,test_DropdownVal,aistrat_DropdownVal;
-	string ip_InputVal,port_InputVal;
 
 	public void NewGameBtnOnClick(){
-		Debug.Log ("New Game");
-		Debug.Log(human_DropdownVal);
-		PlayerPrefs.SetInt("aiPlayerNum",ai_DropdownVal);
-		PlayerPrefs.SetInt ("humanPlayerNum", human_DropdownVal);
-		PlayerPrefs.SetInt ("testScenario", test_DropdownVal);
-		PlayerPrefs.SetInt ("aiStrategy", aistrat_DropdownVal);
-		SceneManager.LoadScene ("inGame");
+		//Debug.Log ("New Game");
+		//Debug.Log(human_DropdownVal);
+		//PlayerPrefs.SetInt("aiPlayerNum",ai_DropdownVal);
+		//PlayerPrefs.SetInt ("humanPlayerNum", human_DropdownVal);
+		//PlayerPrefs.SetInt ("testScenario", test_DropdownVal);
+		//PlayerPrefs.SetInt ("aiStrategy", aistrat_DropdownVal);
+		SceneManager.LoadScene ("LobbyHost");
 
 	}
 
 	public void OptionsBtnOnClick(){
-		PanelOptions.SetActive (true);
-		Debug.Log ("Options");
+		//PanelOptions.SetActive (true);
+		//Debug.Log ("Options");
+		SceneManager.LoadScene ("LobbyJoin");
 	}
 
 
@@ -40,20 +38,6 @@ public class MainMenuUI : MonoBehaviour {
 	{
 		PanelOptions.SetActive (false);
 		Debug.Log ("Close Options");
-	}
-
-	public void JoinBtnOnClick()
-	{
-		PlayerPrefs.SetString("IP", ip_InputVal);
-		PlayerPrefs.SetString("Port", port_InputVal);
-		Debug.Log (ip_InputVal);
-		Debug.Log(port_InputVal);
-	}
-
-	public void HostBtnOnClick()
-	{
-		PlayerPrefs.SetString("Port", port_InputVal);
-		Debug.Log(port_InputVal);
 	}
 
 	void Start()
@@ -70,16 +54,6 @@ public class MainMenuUI : MonoBehaviour {
 		}
 		if (aistrat_DropdownVal == null) {
 			DropdownAIStrategy = PanelOptions.GetComponent<Dropdown> ();		
-		}
-		if (HostIP == null) {
-			HostIP = PanelOptions.GetComponent<InputField> ();		
-		}
-		if (HostPort == null) {
-			HostPort = PanelOptions.GetComponent<InputField> ();		
-		}
-		if (TextAlert == null) 
-		{
-			TextAlert = PanelOptions.GetComponent<Text> ();
 		}
 	}
 
@@ -101,13 +75,6 @@ public class MainMenuUI : MonoBehaviour {
 			aistrat_DropdownVal = DropdownAIStrategy.value;
 			PlayerPrefs.SetInt ("aiStrategy",  aistrat_DropdownVal);
 		}
-		if (HostIP != null) {
-			ip_InputVal = HostIP.text;		
-		}
-		if (HostPort != null) {
-			port_InputVal = HostPort.text;		
-		}
-
 		PlayerPrefs.Save ();
 	}
 

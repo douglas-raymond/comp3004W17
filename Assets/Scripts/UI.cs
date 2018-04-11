@@ -93,7 +93,6 @@ public class UI : MonoBehaviour{
 	
 	//Ask player for input
 	public GameObject[] showCards(Card[] hand, Vector2 startPos, Vector2 scale){
-		if(hand[0] == null) { return null; }
 		if(hand == null) { return null; }
 		int n = hand.Length;
 		if(currIcons != null)
@@ -370,7 +369,8 @@ public class UI : MonoBehaviour{
 		//Card selected = selectedObj.GetComponent<CardButtonUI>().getCard();
 		if(!checkIfArrayContainsCard(multipleCardInput, selected)) {
 			addNewCardToMultipleCardArray(selected, pos);
-			changeHeaderMessage("Player BP: " + getPlayersBP(), playerBP);
+			string newString = ("Player BP: " + getPlayersBP ().ToString());
+			changeHeaderMessage(newString, playerBP);
 		}
 		else {
 			displayAlert("Cannot have two weapons of the same type!");
@@ -390,6 +390,7 @@ public class UI : MonoBehaviour{
 	}
 	
 	public void foeReveal(ActiveQuest activeQuest) {
+		Debug.Log ("Foe Reveal");
 		if(enemyBP == null) { enemyBP = createHeaderMessage(panelPosX + panelWidth/3, panelHeight/2, new Vector3(0,0,0), " ");}
 		MonoBehaviour.Destroy(playerBP);
 		showCards(activeQuest.getStageWeapons(activeQuest.getCurrentStageNum()), new Vector2(panelPosX + panelWidth/10, panelPosY) , new Vector2(10,10));

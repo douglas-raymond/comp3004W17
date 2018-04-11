@@ -156,7 +156,7 @@ public class NetworkedGM : MonoBehaviour{
 			m.selection [i] = cards [i].getName ();
 		}
 		m.connectionID = connectionID;
-		client.Send (Msg.endStageWeaponSetup, m);
+		client.Send (Msg.gotTournamentCards, m);
 	}
 
 	public void gotCardLimitReached(Card[] cards){
@@ -169,7 +169,7 @@ public class NetworkedGM : MonoBehaviour{
 			m.selection [i] = cards [i].getName ();
 		}
 		m.connectionID = connectionID;
-		client.Send (Msg.endStageWeaponSetup, m);
+		client.Send (Msg.gotCardLimitReached, m);
 	}
 
 	public Player getCurrentPlayer(){
