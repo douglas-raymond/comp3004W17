@@ -74,7 +74,7 @@ public class UI : MonoBehaviour {
 		}
 		cardsToShow = new GameObject[n];
 		float cardWidth = panelWidth/21;
-		float cardSpacing = cardWidth/4;
+		float cardSpacing = cardWidth - cardWidth/4;
 		float totalDeckWidth = (n-1)*cardSpacing + (n-1)*cardWidth;
 		log.log ("setting up area");
 		for(int i = 0; i< n; i++)

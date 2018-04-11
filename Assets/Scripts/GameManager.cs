@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour {
 	17 = testing court called to camelot
 	18 = testing kings call to arms
 	*/
-	int testingScenario = 18;
+	int testingScenario = 1;
 	int playerCount = 3;
 	int aiStrat=2;
 	Player[] players;
@@ -212,8 +212,6 @@ public class GameManager : MonoBehaviour {
 					getSponsor();
 				}
 			}
-			
-			
 		}
 	}
 	public void startQuestSetup(){

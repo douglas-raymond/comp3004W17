@@ -7,6 +7,7 @@ public class Weapon : AdvCard {
 	public Weapon(string _name, int _BP, Sprite _sprite)
 	{
 		name = _name;
+		type = "weapon";
 		BP = _BP;
 		sprite = _sprite;
 

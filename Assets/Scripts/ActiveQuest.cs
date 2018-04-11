@@ -22,7 +22,7 @@ public class ActiveQuest {
 	int totalCardsUsed;
 	Player highestBidder;
 	Player[] playersCompletedStage;
-	
+	int testPhase;
 	bool inProgress;
 	
 	int extraShields;
@@ -37,6 +37,7 @@ public class ActiveQuest {
 		totalCardsUsed = 0;
 		highestBidder = null;
 		extraShields = _extraShields;
+		testPhase = 0;
 	}
 	
 	public void addPlayer(Player newPlayer) {
@@ -121,6 +122,7 @@ public class ActiveQuest {
 
 	
 	public void nextPlayer() {
+		Debug.Log("testPhase: " + testPhase);
 		int playerNum = 0;
 		if(players != null){
 			playerNum = players.Length;
@@ -133,13 +135,21 @@ public class ActiveQuest {
 		int currentPlayerIndex = getPlayerInt(currentPlayer);
 		addPlayerToStageCompleteArray(currentPlayer);
 		if(players == null) {
+			Debug.Log("Players == null");
 			nextStage();
 			return;
 		}
 		if(currentPlayerIndex == players.Length-1){
 			
 			currentPlayer = players[0];
-			//nextStage();
+			if(testPhase == 1){
+				testPhase = 0;
+				nextStage();
+			}
+			else {
+				testPhase = 1;
+				currentPlayerIndex = 0;
+			}
 
 		}
 		else {
@@ -340,7 +350,7 @@ public class ActiveQuest {
 		currentStage = 0;
 	}
 	public bool isStageDone() {
-		if(getPlayerInt(currentPlayer) == players.Length-1) {
+		if(getPlayerInt(currentPlayer) == players.Length-1 && testPhase == 1) {
 			Debug.Log(getPlayerInt(currentPlayer));
 			Debug.Log(players.Length-1);
 			return true;
@@ -442,6 +452,10 @@ public class ActiveQuest {
 			return 0;
 		}
 		return players.Length;
+	}
+	
+	public int getCurrentTestPhase(){
+		return testPhase;
 	}
 	
 }

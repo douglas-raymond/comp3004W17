@@ -107,6 +107,11 @@ public class Strategy2AI : AbstractAI{
 					return null;
 				}
 			}
+			else {
+				if(quest.getCurrentTestPhase() == 1 && hp.numberOfCardInstancesInHand(hand, hand[i]) > 1){
+					submit = hp.addCard(submit, hand [i]);
+				}
+			}
 		}
 		return null;
 	}

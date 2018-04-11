@@ -148,7 +148,7 @@ public class Strategy1AI : AbstractAI{
 			//quest.deletePlayer(player);
 			return submit;
 		}
-
+		
 		for (int i = 0; i < hand.Length; i++) {
 			if (hand [i].getType().Equals("foe") && hand[i].getBP() <= 20) {
 				submit = hp.addCard(submit, hand [i]);

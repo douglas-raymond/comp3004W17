@@ -9,6 +9,7 @@ public class Foe : AdvCard {
 	public Foe(string _name, int _BP, int _altBP, Sprite _sprite)
 	{
 		name = _name;
+		type = "foe";
 		BP = _BP;
 		altBP = _altBP;
 		sprite = _sprite;
