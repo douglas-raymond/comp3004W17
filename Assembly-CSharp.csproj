@@ -51,6 +51,39 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\AbstractAI.cs" />
+     <Compile Include="Assets\ActiveQuest.cs" />
+     <Compile Include="Assets\ActiveStory.cs" />
+     <Compile Include="Assets\AdvCard.cs" />
+     <Compile Include="Assets\AdvDeck.cs" />
+     <Compile Include="Assets\AIController.cs" />
+     <Compile Include="Assets\Ally.cs" />
+     <Compile Include="Assets\Amour.cs" />
+     <Compile Include="Assets\ButtonUI.cs" />
+     <Compile Include="Assets\Card.cs" />
+     <Compile Include="Assets\CardButtonUI.cs" />
+     <Compile Include="Assets\CardLibrary.cs" />
+     <Compile Include="Assets\CardUI.cs" />
+     <Compile Include="Assets\Client.cs" />
+     <Compile Include="Assets\Debug.cs" />
+     <Compile Include="Assets\Deck.cs" />
+     <Compile Include="Assets\DiscardDeck.cs" />
+     <Compile Include="Assets\Draggable.cs" />
+     <Compile Include="Assets\EventCard.cs" />
+     <Compile Include="Assets\Foe.cs" />
+     <Compile Include="Assets\GameManager.cs" />
+     <Compile Include="Assets\GameStates.cs" />
+     <Compile Include="Assets\HeaderUI.cs" />
+     <Compile Include="Assets\HelperFunctions.cs" />
+     <Compile Include="Assets\HostUI.cs" />
+     <Compile Include="Assets\JoinUI.cs" />
+     <Compile Include="Assets\Logger.cs" />
+     <Compile Include="Assets\MainMenuUI.cs" />
+     <Compile Include="Assets\NetworkedGM.cs" />
+     <Compile Include="Assets\NetworkedUI.cs" />
+     <Compile Include="Assets\OurNetwork.cs" />
+     <Compile Include="Assets\Player.cs" />
+     <Compile Include="Assets\QuestCard.cs" />
      <Compile Include="Assets\Scripts\AbstractAI.cs" />
      <Compile Include="Assets\Scripts\ActiveQuest.cs" />
      <Compile Include="Assets\Scripts\ActiveStory.cs" />
@@ -97,6 +130,20 @@
      <Compile Include="Assets\Scripts\UI.cs" />
      <Compile Include="Assets\Scripts\UITransparentBlackScreen.cs" />
      <Compile Include="Assets\Scripts\Weapon.cs" />
+     <Compile Include="Assets\Server.cs" />
+     <Compile Include="Assets\ShowHandUI.cs" />
+     <Compile Include="Assets\ShowOtherPlayerUI.cs" />
+     <Compile Include="Assets\StoryCard.cs" />
+     <Compile Include="Assets\StoryDeck.cs" />
+     <Compile Include="Assets\Strategy1AI.cs" />
+     <Compile Include="Assets\Strategy2AI.cs" />
+     <Compile Include="Assets\Test.cs" />
+     <Compile Include="Assets\TestRiggingFunctions.cs" />
+     <Compile Include="Assets\Tourney.cs" />
+     <Compile Include="Assets\TourneyCard.cs" />
+     <Compile Include="Assets\UI.cs" />
+     <Compile Include="Assets\UITransparentBlackScreen.cs" />
+     <Compile Include="Assets\Weapon.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
