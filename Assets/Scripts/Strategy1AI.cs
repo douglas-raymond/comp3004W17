@@ -14,11 +14,13 @@ public class Strategy1AI : AbstractAI{
 		player.assumingDirectControl (this);
 	}
 	public override bool doIParticipateInTournament(Player currPlayer, ActiveTourney tourney, Player[] players){
+		Debug.Log("AI is debating if it will enter the tourney");
 		tounamentReward = tourney.getAwardNum();
 		bool someoneWillEvolve = false;
 		for(int i = 0; i< players.Length; i++){
 			if(players[i] != player) {
 				if(hp.willPlayerEvolve(players[i], tounamentReward)){
+					Debug.Log("AI has noticed that " + players[i] + " will evolve");
 					someoneWillEvolve = true;
 				}
 			}
@@ -66,12 +68,14 @@ public class Strategy1AI : AbstractAI{
 			}
 			if(allyHand != null){
 				for(int i = 0; i < allyHand.Length; i++){
+					Debug.Log("Playing a " + allyHand[i].getName());
 					submit = hp.addCard(submit, allyHand[i]);
 				}
 			}
 			if(weaponHand != null){
 				for(int i = 0; i < weaponHand.Length; i++){
 					if(!hp.checkIfArrayContainsCard(submit, weaponHand[i])){
+						Debug.Log("Playing a " + weaponHand[i].getName());
 						submit = hp.addCard(submit, weaponHand[i]);
 					}
 				}
@@ -92,7 +96,7 @@ public class Strategy1AI : AbstractAI{
 	}
 
 	public override bool doIParticipateInQuest (QuestCard quest){
-		Debug.Log("AskingAI to participate in quest");
+		Debug.Log("Asking AI to participate in quest");
 		bool c1 = false;
 		bool c2 = false;
 		int lowestBP = 0;

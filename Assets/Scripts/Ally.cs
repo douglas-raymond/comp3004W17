@@ -9,6 +9,7 @@ public class Ally : AdvCard {
 
 	public Ally(string _name, int _BP, int _altBP, int _freeBids, Sprite _sprite)
 	{
+		type = "ally";
 		name = _name;
 		BP = _BP;
 		altBP = _altBP;

@@ -14,6 +14,7 @@ public abstract class AbstractAI{
 	abstract public bool doIParticipateInTournament(Player currPlayer, ActiveTourney tourney, Player[] players);
 	abstract public Card[] playTournament(ActiveTourney tourney);
 	public  bool doISponsorAQuest (Player[] players, QuestCard quest){
+		Debug.Log("AI is considering if it should sponser a quest");
 		int hasTest = 0; //either 0 or 1, and we use int rather than bool to use it in quest stage calculations
 		int lowestBP = 0;
 		int totalFoes = 0;
@@ -48,11 +49,13 @@ public abstract class AbstractAI{
 				lowestBP = hand [i].getBP ();
 			}
 		}
-		if (quest.getStages() > totalFoes + hasTest) {
+		if (quest.getStages() < totalFoes + hasTest) {
+			Debug.Log("As " + quest.getStages() " < " + totalFoes + " + " + hasTest + ", AI has accepted sponsorship");
 			return true;
 		}
+		Debug.Log("As " + quest.getStages() " > " + totalFoes + " + " + hasTest + ", AI has declined sponsorship");
 		return false;
-	}	//strategy 1 and 2 run this the exact same way, so no switch statement needed... yet
+	}	
 	abstract public bool doIParticipateInQuest (QuestCard quest);
 	abstract public Card[] nextBid(ActiveQuest quest);	
 

@@ -8,6 +8,7 @@ public class Amour : AdvCard {
 
 	public Amour(string _name, int _BP, int _bids, Sprite _sprite)
 	{
+		type = "amour";
 		name = _name;
 		BP = _BP;
 		freeBids = _bids;

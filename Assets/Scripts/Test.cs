@@ -8,6 +8,7 @@ public class Test : AdvCard {
 	
 	public Test(string _name, int _BP, int _bids, Sprite _sprite)
 	{
+		type = "test";
 		name = _name;
 		BP = _BP;
 		bids = _bids;
