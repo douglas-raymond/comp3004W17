@@ -26,6 +26,11 @@ public class Logger{
 		catch(Exception ex){
 			Console.WriteLine(ex.ToString());
 		}
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 6349e86b0135ed2e81850e2c9e62cfbb66f693b1
 		
 	}
 	*/
@@ -43,4 +48,8 @@ public class Logger{
 		source = _source;
 	}
 	
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 6349e86b0135ed2e81850e2c9e62cfbb66f693b1
