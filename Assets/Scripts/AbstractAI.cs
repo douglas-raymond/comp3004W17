@@ -50,10 +50,10 @@ public abstract class AbstractAI{
 			}
 		}
 		if (quest.getStages() < totalFoes + hasTest) {
-			Debug.Log("As " + quest.getStages() " < " + totalFoes + " + " + hasTest + ", AI has accepted sponsorship");
+			Debug.Log("As " + quest.getStages() + " < " + totalFoes + " + " + hasTest + ", AI has accepted sponsorship");
 			return true;
 		}
-		Debug.Log("As " + quest.getStages() " > " + totalFoes + " + " + hasTest + ", AI has declined sponsorship");
+		Debug.Log("As " + quest.getStages() + " > " + totalFoes + " + " + hasTest + ", AI has declined sponsorship");
 		return false;
 	}	
 	abstract public bool doIParticipateInQuest (QuestCard quest);
