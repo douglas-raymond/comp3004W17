@@ -23,9 +23,9 @@ public class MainMenuUI : MonoBehaviour {
 	}
 
 	public void OptionsBtnOnClick(){
-		PanelOptions.SetActive (true);
+		//PanelOptions.SetActive (true);
 		//Debug.Log ("Options");
-		//SceneManager.LoadScene ("LobbyJoin");
+		SceneManager.LoadScene ("LobbyJoin");
 	}
 
 

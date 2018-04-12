@@ -210,7 +210,7 @@ public class NetworkedUI {
 	}
 		
 	public void updatePlayers(Player[] players){
-		for (int i = 0; i < players.Length; i++) {
+		for (int i = 0; i < gm.getPlayerCount(); i++) {
 
 			int cardsInPlayLen = 0;
 			if (players[i].getHand (true) != null) {

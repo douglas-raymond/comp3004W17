@@ -41,10 +41,11 @@ public class GameManager : MonoBehaviour {
 	17 = testing court called to camelot
 	18 = testing kings call to arms
 	*/
-	int testingScenario = 4;
-	int playerCount = 4;
 
-	int aiStrat=2;
+	int testingScenario = PlayerPrefs.GetInt("testScenario");
+	int playerCount =  PlayerPrefs.GetInt("aiPlayerNum")+PlayerPrefs.GetInt("humanPlayerNum");
+
+	int aiStrat= PlayerPrefs.GetInt("aiStrategy");
 	Player[] players;
 	
 	//Game states. There will eventually be many possible states, but for right now these two exist.
@@ -1292,6 +1293,10 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 		return null;
+	}
+
+	public int getPlayerCount(){
+		return rigging.getRiggedPlayerCount(testingScenario);
 	}
 
 	//This is begging to be abstracted, to do later
