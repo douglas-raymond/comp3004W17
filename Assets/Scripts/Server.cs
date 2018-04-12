@@ -57,9 +57,9 @@ public class Server : MonoBehaviour {
 		NetworkServer.SendToClient (numPlayersConnected, Msg.confirmConnect, message);
 		numPlayersConnected++;
 		//this should be a variable
-		if (numPlayersConnected == 5) {
+		if (numPlayersConnected == 4) {
 			ui.setNumPlayersConnected (numPlayersConnected);
-			serverUpdate.GetComponent<Text>().text = numPlayersConnected+" Players Connected - Game Ongoing";
+			serverUpdate.GetComponent<Text>().text = "All Players Connected - Game Ongoing";
 			EmptyMessage startMessage = new EmptyMessage ();
 			NetworkServer.SendToAll (Msg.confirmConnect, startMessage);
 			gm.gameStart ();

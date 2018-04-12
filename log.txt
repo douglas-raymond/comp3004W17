@@ -1,2 +1,1 @@
-INFO [UI]: getting cards to show
-INFO [UI]: setting up area
+INFO [GameManager]: Getting sponsor

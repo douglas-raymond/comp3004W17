@@ -1,31 +1,20 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\UI.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\ActiveQuest.cs">
     <Files>
       <File FileName="Assets\Scripts\MainMenuUI.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\StoryDeck.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\UI.cs" Line="701" Column="26" />
-      <File FileName="Assets\Scripts\ActiveQuest.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\UI.cs" Line="411" Column="25" />
+      <File FileName="Assets\Scripts\ActiveQuest.cs" Line="291" Column="26" />
       <File FileName="Assets\Scripts\Player.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Card.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Deck.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\CardUI.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\CardButtonUI.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\ButtonUI.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\AdvDeck.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\AdvCard.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Tourney.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\TourneyCard.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Server.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Client.cs" Line="247" Column="43" />
-      <File FileName="Assets\Scripts\ShowHandUI.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\OurNetwork.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\NetworkedGM.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\NetworkedUI.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\HostUI.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\QuestCard.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\CardLibrary.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\GameManager.cs" Line="46" Column="25" />
+      <File FileName="Assets\Scripts\Server.cs" Line="102" Column="17" />
+      <File FileName="Assets\Scripts\Client.cs" Line="226" Column="46" />
+      <File FileName="Assets\Scripts\GameManager.cs" Line="652" Column="17" />
+      <File FileName="Assets\Scripts\NetworkedUI.cs" Line="72" Column="18" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

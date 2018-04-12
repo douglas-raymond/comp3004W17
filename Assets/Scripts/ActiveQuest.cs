@@ -289,6 +289,9 @@ public class ActiveQuest {
 		return currentStage;
 	}
 	public int getHighestBid(){
+		if (players == null) {
+			return highestBid;
+		}
 
 		if(highestBid == -1 && Object.ReferenceEquals(stages[currentStage].GetType(), typeof(Test)))
 		{
@@ -446,4 +449,7 @@ public class ActiveQuest {
 		return players.Length;
 	}
 
+	public void setHighestBid(int i){
+		highestBid = i;
+	}
 }

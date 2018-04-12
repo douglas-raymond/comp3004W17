@@ -223,7 +223,7 @@ public class Client : MonoBehaviour {
 		ActiveQuest tempActiveQuest = new ActiveQuest (tempQuest, 0);
 		tempActiveQuest.setStages (newStage);
 		tempActiveQuest.setStage (0);
-		tempActiveQuest.placeBid (null, highestBid);
+		tempActiveQuest.setHighestBid (highestBid);
 		return tempActiveQuest;
 	}
 

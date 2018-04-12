@@ -340,6 +340,7 @@ public class UI : MonoBehaviour{
 	}
 		
 	public void askForCards(Player player, ActiveQuest newQuest, state newState, state oldState, string instructions, string button1, string button2, bool getFoes, bool getWeap, bool getAlly, bool getAmour, bool getTest, bool getMordred, int n = -1) {
+		Debug.Log ("arrived");
 		if(newQuest != null){
 			activeQuest = newQuest;
 		}
@@ -416,7 +417,8 @@ public class UI : MonoBehaviour{
 			currentBidCounter = multipleCardInput.Length + 1;
 			}
 		addNewCardToMultipleCardArray(selected, pos);
-		currentBidCounter = currentBidCounter + activeQuest.getCurrentPlayerFreeBids();
+		//currentBidCounter = currentBidCounter + activeQuest.getCurrentPlayerFreeBids();
+		currentBidCounter = currentBidCounter + activePlayer.getFreeBids(activeQuest.getQuest().getName());
 		changeHeaderMessage("Current bid: " + currentBidCounter, currentBid);
 	}
 
