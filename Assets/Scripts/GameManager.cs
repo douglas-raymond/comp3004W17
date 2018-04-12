@@ -233,6 +233,7 @@ public class GameManager : MonoBehaviour {
 
 	public void startQuestSetup(){
 		Debug.Log("setting player " + activePlayerSub + " as sponsor");
+		ui.displayAlert ("Player "+activePlayerSub+ " has chosen to sponsor.", true);
 		//activePlayerSub = activePlayerMeta;
 		activeQuest.setSponsor(players[activePlayerSub]);
 		//ui.askForStageSelection(activeQuest.getSponsor(), activeQuest.getStageNum());
@@ -429,6 +430,7 @@ public class GameManager : MonoBehaviour {
 
 		if(newPlayer != null) {
 			log.log("Player " + newPlayer.getName() + " joined quest.");
+			ui.displayAlert ("Player " + newPlayer.getName () + " joined quest.", true);
 			activeQuest.addPlayer(newPlayer);
 		}
 		if(counter == players.Length)

@@ -42,6 +42,7 @@ public class ShowHandUI : MonoBehaviour {
 		//GameObject showHandUITemp = (GameObject)Instantiate(Resources.Load("UIShowHand"), new Vector2(panelPosX + panelWidth/3, panelPosY + panelHeight/4) , Quaternion.identity);
         blackScreen = (GameObject)Instantiate(Resources.Load("UIBlackScreen"), new Vector2(panelPosX, panelPosY), Quaternion.identity);
 		blackScreen.GetComponent<SpriteRenderer>().color = new Color(0f,0f,0f,.85f);
+		blackScreen.GetComponent<SpriteRenderer> ().transform.position = new Vector2 (panelPosX, panelPosY);
 
 		string[] headerStrings = ui.mouseOverShowHandIcon();
 		headers = new GameObject[headerStrings.Length +2 ];
@@ -59,7 +60,7 @@ public class ShowHandUI : MonoBehaviour {
     {
 		Destroy(blackScreen);
 		for(int i = 0; i < headers.Length; i++) {
-			Destroy(headers[i]);
+			Destroy (headers [i]);
 		}
         ui.mouseLeaveShowHandIcon();
     }
@@ -68,6 +69,7 @@ public class ShowHandUI : MonoBehaviour {
 	private GameObject createHeader(string text, Vector2 pos, Renderer _blackScreenRenderer) {
 			GameObject temp = (GameObject)Instantiate(Resources.Load("UIHeader"), pos , Quaternion.identity);
 			temp.GetComponent<HeaderUI>().init(new Vector3(1,1,1));
+			temp.GetComponent<HeaderUI>().transform.position = new Vector2 (pos.x, pos.y);
 			temp.GetComponent<TextMesh>().text = text;
 			Renderer tempRenderer = temp.GetComponent<Renderer>();
 			tempRenderer.sortingLayerID = _blackScreenRenderer.sortingLayerID;

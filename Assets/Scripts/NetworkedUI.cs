@@ -7,6 +7,7 @@ using UnityEngine.Networking;
 using UnityEngine.Networking.NetworkSystem;
 
 public class NetworkedUI {
+	Logger log = new Logger ("NetworkedUI");
 
 	private GameManager gm;
 	public int numPlayersConnected;
@@ -27,7 +28,13 @@ public class NetworkedUI {
 		ShowCardMessage temp = new ShowCardMessage();
 		temp.card = cardToShow.getName ();
 		//NetworkServer.SendToAll (Msg.showCard, temp);
-		NetworkServer.SendToClient(gm.getCurrentPlayer().getConnectionID(), Msg.showCard, temp);
+		if (cardToShow.GetType ().Equals( typeof(QuestCard))) {
+			log.log ("Broadcasting Quest Card to all players");
+			NetworkServer.SendToAll (Msg.showCard, temp);
+		} else {
+			log.log ("Showing a card to " + gm.getCurrentPlayer ().getName () + ".");
+			NetworkServer.SendToClient (gm.getCurrentPlayer ().getConnectionID (), Msg.showCard, temp);
+		}
 	}
 
 	public void askForCards(Player player, ActiveQuest newQuest, state newState, state oldState, string instructions, string button1, string button2, bool getFoes, bool getWeap, bool getAlly, bool getAmour, bool getTest, bool getMordred, int n = -1) {
@@ -74,11 +81,16 @@ public class NetworkedUI {
 		//NetworkServer.SendToClient (1, Msg.askForCards, temp);
 	}
 
-	public void displayAlert (string input){
+	public void displayAlert (string input, bool broadcast = false){
 		DisplayAlertMessage temp = new DisplayAlertMessage ();
 		temp.input = input;
 		//NetworkServer.SendToAll (Msg.displayAlert, temp);
-		NetworkServer.SendToClient(gm.getCurrentPlayer().getConnectionID(), Msg.displayAlert, temp);
+		if (broadcast) {
+			log.log ("All players were alerted - "+input);
+			NetworkServer.SendToAll (Msg.displayAlert, temp);
+		} else {
+			NetworkServer.SendToClient (gm.getCurrentPlayer ().getConnectionID (), Msg.displayAlert, temp);
+		}
 	}
 
 	public void showStage(ActiveQuest activeQuest){
@@ -124,8 +136,9 @@ public class NetworkedUI {
 
 		m.stage = activeQuest.getCurrentStage().getName();
 		m.numPlayers = activeQuest.getPlayerNum();
-			NetworkServer.SendToAll (Msg.foeReveal, m);
-			//NetworkServer.SendToClient (1, Msg.foeReveal, m);
+		log.log ("Showing resolution of the stage to all players");
+		NetworkServer.SendToAll (Msg.foeReveal, m);
+		//NetworkServer.SendToClient (1, Msg.foeReveal, m);
 
 	}
 

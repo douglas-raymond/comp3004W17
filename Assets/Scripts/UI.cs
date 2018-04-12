@@ -60,9 +60,11 @@ public class UI : MonoBehaviour{
 
 		GameObject showHandUITemp = (GameObject)MonoBehaviour.Instantiate(Resources.Load("UIShowHand"), new Vector2(panelPosX + panelWidth/3, panelPosY + panelHeight/4) , Quaternion.identity);
 		showHandUITemp.GetComponent<ShowHandUI>().init(this);
+		showHandUITemp.GetComponent<ShowHandUI> ().transform.position = new Vector2 (panelPosX + panelWidth / 3, panelPosY + panelHeight / 4);
 
 		GameObject showOtherPlayerUI = (GameObject)MonoBehaviour.Instantiate(Resources.Load("UIShowOtherPlayer"), new Vector2(panelPosX + panelWidth/3, panelPosY + panelHeight/4 - panelHeight/20) , Quaternion.identity);
 		showOtherPlayerUI.GetComponent<ShowOtherPlayerUI>().init(this);
+		showOtherPlayerUI.GetComponent<ShowOtherPlayerUI> ().transform.position = new Vector2(panelPosX + panelWidth/3, panelPosY + panelHeight/4 - panelHeight/20);
 	}
 
 	//Prints out a given hand
@@ -733,9 +735,15 @@ public class UI : MonoBehaviour{
 	}
 	
 	public string[] mouseOverShowHandIcon() {
-		string[] newString = new string[] { "loading..." };
+		
+		string[] mouseOverShowHandUIHeaders = new string[] {
+			activePlayer.getName (),
+			"Rank: " + activePlayer.getRankString (),
+			"Shields: " + activePlayer.getShields ()
+
+		};
 		gm.LoadMouseOverShowHand ();
-		return newString;
+		return mouseOverShowHandUIHeaders;
 	}
 	
 	public void mouseOverShowHandIcon(Player currentPlayer) {
