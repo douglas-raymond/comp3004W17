@@ -67,10 +67,10 @@ public class TestRiggingFunctions {
 		}
 		else if(test == 3){
 			if(testScenarioStep == 1){
-				drawnCard = storyDeck.getCard("camelot");
+				drawnCard = storyDeck.getCard("slaydragon");
 			}
 			else if(testScenarioStep == 2){
-				drawnCard = storyDeck.getCard("boarhunt");
+				drawnCard = storyDeck.getCard("slaydragon");
 			}
 		}
 		else if(test == 4){
@@ -225,7 +225,10 @@ public class TestRiggingFunctions {
 			}
 
 			Card[] player2NewHand = new Card[12];
-			for(int i = 0; i < player2NewHand.Length; i++){
+			player2NewHand [0] = advDeck.getCard ("totemptation");
+			player2NewHand [1] = advDeck.getCard ("saxonknight");
+			player2NewHand [2] = advDeck.getCard ("giant");
+			for(int i = 3; i < player2NewHand.Length; i++){
 				player2NewHand[i] = advDeck.drawCard();
 			}
 
