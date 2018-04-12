@@ -2,31 +2,34 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ActiveTourney
+public class ActiveTourney : ActiveStory
 {
 	int bonusShields;
 	int totalShields;
 	private Player currentPlayer;
-	private Player[] players;
+	//private Player[] players;
 	int [] bps;
 	Player winner;
 	public ActiveTourney (Card T)
 	{
+		type = "tourney";
 		bonusShields = T.getBonusShields();
 		totalShields=0;
 		players=null;
 		winner = null;
+		hp = new HelperFunctions();
 	}
 
-	public Player getCurrentPlayer() {
+	public override Player getCurrentPlayer() {
 		return currentPlayer;
 	}
-
-	public Player getPlayer(int i) {
+/*
+	public override Player getPlayer(int i) {
 		Debug.Log("returning " + players[i].getName());
 		return players[i];
 	}
-	public void addPlayer(Player newPlayer) {
+	/*
+	public override void addPlayer(Player newPlayer) {
 
 		int n = 0;
 		if(players != null){n = players.Length;}
@@ -38,6 +41,10 @@ public class ActiveTourney
 		temp[n] = newPlayer;
 
 		players = temp;
+		currentPlayer = players[0];
+	}
+	*/
+	protected override void addPlayerExtraBehaviour(int n){
 		currentPlayer = players[0];
 		bps = new int [n+1];
 	}
@@ -61,7 +68,8 @@ public class ActiveTourney
 		winner = strongestPlayer;
 		strongestPlayer.addShields (bonusShields+getPlayerNum());
 	}
-	public void deletePlayer(Player player) {
+	/*
+	public override void deletePlayer(Player player) {
 		if(players.Length == 1) {
 			currentPlayer = null;
 			players = null;
@@ -97,6 +105,7 @@ public class ActiveTourney
 
 		players = newArr;
 	}
+	*/
 	public Player getWinner(){
 		return winner;
 	}
@@ -104,7 +113,7 @@ public class ActiveTourney
 		return bonusShields + getPlayerNum();
 	}
 
-	public bool mordredSpecialAbility(Player target){
+	public override bool mordredSpecialAbility(Player target){
 
 		int targetIndex = getPlayerInt(target);
 		target.removeAlly("tourney");
@@ -119,7 +128,7 @@ public class ActiveTourney
 	}
 
 	
-	public void nextPlayer() {
+	public override void nextPlayer() {
 		if(players.Length == 0) {
 			Debug.Log("Quest lost, No players left");
 
@@ -136,8 +145,8 @@ public class ActiveTourney
 		}
 
 	}
-
-	public Player findPlayer(string target) {
+/*
+	public override Player findPlayer(string target) {
 		for(int i = 0; i < players.Length; i++) {
 			if(players[i].getName().Equals(target)) {
 				return players[i];
@@ -145,8 +154,8 @@ public class ActiveTourney
 		}
 		return null;
 	}
-
-	public int getPlayerInt(Player player) {
+	
+	public override int getPlayerInt(Player player) {
 		int index = -1;
 		for(int i = 0; i < players.Length; i++)
 		{
@@ -158,20 +167,23 @@ public class ActiveTourney
 		}
 		return index;
 	}
+	
 
 
 
-	public Player[] getPlayerArr(){
+	public override Player[] getPlayerArr(){
 		return players;
 	}
+	*/
 
-
-	public int getPlayerNum() {
+/*
+	public override int getPlayerNum() {
 		if(players == null) {
 			return 0;
 		}
 		return players.Length;
 	}
+	*/
 
 
 }

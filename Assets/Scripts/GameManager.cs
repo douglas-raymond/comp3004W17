@@ -6,8 +6,6 @@ using UnityEngine.Networking;
 using UnityEngine.Networking.NetworkSystem;
 
 public class GameManager : MonoBehaviour {
-	//REMOVE
-
 	//Initialize logging functionality
 	Logger log = new Logger("GameManager");
 	CardLibrary lib = new CardLibrary();
@@ -27,7 +25,7 @@ public class GameManager : MonoBehaviour {
 	1 = prof given scenario 1
 	2 = prof given scenario 2
 	3 = testing tourneys
-	4 =
+	4 = testing bidding
 	5 =
 	6 = testing kings call
 	7 = testing AI strategy 2 setting up quest
@@ -43,7 +41,7 @@ public class GameManager : MonoBehaviour {
 	17 = testing court called to camelot
 	18 = testing kings call to arms
 	*/
-	int testingScenario = 3;
+	int testingScenario = 4;
 	int playerCount = 4;
 
 	int aiStrat=2;
@@ -62,6 +60,7 @@ public class GameManager : MonoBehaviour {
 	
 	ActiveQuest activeQuest;
 	ActiveTourney tourney;
+	ActiveStory currentStory;
 	bool cyclingThroughPlayers;
 	
 	Card[] tempCardSelection;
@@ -76,7 +75,7 @@ public class GameManager : MonoBehaviour {
 		rigging = new TestRiggingFunctions();
 		advDeck.initDeck();
 		storyDeck.initDeck();
-		Debug.Log ("decks initialized");
+		DebugX.Log ("decks initialized");
 		//testingScenario = PlayerPrefs.GetInt("testScenario");
 		//playerCount = PlayerPrefs.GetInt("humanPlayerNum")  + 1 ;
 		//aiStrat=PlayerPrefs.GetInt("aiStrategy");
@@ -136,6 +135,7 @@ public class GameManager : MonoBehaviour {
 	}
 	public void drawQuestCard(){
 		gameState = state.DRAWINGSTORYCARD;
+		currentStory = null;
 		if(activePlayerMeta == -1){
 			activePlayerMeta = 0;
 		}
@@ -164,10 +164,12 @@ public class GameManager : MonoBehaviour {
 		case "quest":
 			if(recognitionActive){
 				activeQuest = new ActiveQuest((QuestCard)storyCard, 2);
+				currentStory = activeQuest;
 				recognitionActive = false;
 			}
 			else{
 				activeQuest = new ActiveQuest((QuestCard)storyCard, 0);
+				currentStory = activeQuest;
 			}
 			activePlayerSub = activePlayerMeta;
 			cyclingThroughPlayers = false;
@@ -487,7 +489,7 @@ public class GameManager : MonoBehaviour {
 			return;
 		}
 		gameState = state.QUESTSTARTING;
-		drawXNumberOfCards(1);
+		drawXNumberOfCards(1, activeQuest, gameState);
 		if(userInputState != state.ASKINGFORCARDSTODISCARD){
 			Debug.Log("Starting quest " + activeQuest.getQuest().getName());
 			gameState = state.QUESTINPROGRESS;
@@ -502,7 +504,7 @@ public class GameManager : MonoBehaviour {
 			return;
 		}
 		if(gameState == state.STARTINGTOURNEY){;
-			drawXNumberOfCardsTourney (1);
+			drawXNumberOfCards(1, tourney, state.TOURNEYINPROGRESS);
 		}
 		
 		if(userInputState != state.ASKINGFORCARDSTODISCARD){
@@ -623,7 +625,7 @@ public class GameManager : MonoBehaviour {
 		Debug.Log("endQuest");
 		gameState = state.QUESTWRAPUP;
 
-		drawXNumberOfCards(activeQuest.getTotalCardsUsed(), activeQuest.getSponsor());
+		drawXNumberOfCards(activeQuest.getTotalCardsUsed(), activeQuest, gameState, activeQuest.getSponsor());
 
 		if(userInputState != state.ASKINGFORCARDSTODISCARD) {
 			Debug.Log (userInputState);
@@ -633,6 +635,7 @@ public class GameManager : MonoBehaviour {
 			ui.drawingQuestCard();
 			activeQuest.finishQuest();
 			activePlayerMeta = nextPlayer(activePlayerMeta);
+			
 			drawQuestCard();
 
 		}
@@ -671,6 +674,7 @@ public class GameManager : MonoBehaviour {
 		activeQuest.setTentativeBet(selection);
 		if(activeQuest.isStageDone()) {
 			Debug.Log("Stage is over.");
+			activeQuest.endBidding();
 			endStage();
 		}
 		else {
@@ -749,7 +753,7 @@ public class GameManager : MonoBehaviour {
 			advDeck.discardCard(cards);
 			drawXGeneralNumberOfCards(2, state.PROSPERITY, players);
 		}
-		if(gameState == state.QUEENSFAVOR){
+		else if(gameState == state.QUEENSFAVOR){
 			//players[activePlayerOther].discardCard(cards);
 			for(int i = 0; i < cards.Length; i++){
 				if(Object.ReferenceEquals(cards[i].GetType(), typeof(Amour))){
@@ -794,13 +798,18 @@ public class GameManager : MonoBehaviour {
 					if(Object.ReferenceEquals(cards[i].GetType(), typeof(Amour))){
 						Debug.Log("Setting amour to inPlay");
 						//DECOUPLE
+						currentStory.getPlayer(activePlayerOther).addCard(new Card[]{cards[i]}, true);
+						/*
 						if(activeQuest != null){
 							activeQuest.getPlayer(activePlayerOther).addCard(new Card[]{cards[i]}, true);
 						}
 						else if(tourney != null){
 							tourney.getPlayer(activePlayerOther).addCard(new Card[]{cards[i]}, true);
 						}
+						*/
 					}
+					currentStory.getPlayer(activePlayerOther).discardCard(new Card[]{cards[i]});
+					/*
 					if(activeQuest != null){
 						Debug.Log("discarding cards from activequest");
 						activeQuest.getPlayer(activePlayerOther).discardCard(new Card[]{cards[i]});
@@ -809,6 +818,7 @@ public class GameManager : MonoBehaviour {
 						Debug.Log("discarding cards from tourney");
 						tourney.getPlayer(activePlayerOther).discardCard(new Card[]{cards[i]});
 					}
+					*/
 
 				}
 			}
@@ -829,8 +839,7 @@ public class GameManager : MonoBehaviour {
 				startTourney();
 			}
 		}
-	}
-	
+	}	
 	public Card containsMordred(Card[] selection) {
 		if(selection == null) {
 			return null;
@@ -984,7 +993,7 @@ public class GameManager : MonoBehaviour {
 		if(userInputState != state.ASKINGFORCARDSTODISCARD) {
 			//activeQuest.endBidding();
 		}
-		drawXNumberOfCards(1);
+		drawXNumberOfCards(1, activeQuest, gameState);
 		if(activeQuest.getPlayerNum() == 0) {
 			endQuest("All players dead");
 			return;
@@ -1004,6 +1013,7 @@ public class GameManager : MonoBehaviour {
 	public void createTourney(Card tourneyCard){
 		Debug.Log("Tournament at " + tourneyCard.getName() + " has begun");
 		tourney = new ActiveTourney(tourneyCard);
+		currentStory = tourney;
 		ui.showCard(tourneyCard);
 		activePlayerSub = activePlayerMeta;
 		gameState = state.STARTINGTOURNEY;
@@ -1074,23 +1084,26 @@ public class GameManager : MonoBehaviour {
 
 	}
 
-	private void drawXNumberOfCards(int numOfCardsToDraw, Player player = null) {		
+	private void drawXNumberOfCards(int numOfCardsToDraw,  ActiveStory activeStory, state successState, Player player = null) {		
 		if(player == null) {
-			for(int i = 0 ; i< activeQuest.getPlayerNum(); i ++){
+			for(int i = 0 ; i< activeStory.getPlayerNum(); i ++){
 				//Debug.Log("Drawing " + numOfCardsToDraw + " cards for " + activeQuest.getPlayer(i).getName());
-				if(activeQuest.getPlayer(i).getHand().Length + numOfCardsToDraw > 12){
+				if(activeStory.getPlayer(i).getHand().Length + numOfCardsToDraw > 12){
 					userInputState = state.ASKINGFORCARDSTODISCARD;
-					askForCardLimitReached(activeQuest.getPlayer(i), (activeQuest.getPlayer(i).getHand().Length + numOfCardsToDraw) - 12);
+					askForCardLimitReached(activeStory.getPlayer(i), (activeStory.getPlayer(i).getHand().Length + numOfCardsToDraw) - 12);
 					activePlayerOther = i;
 					return;
 				}
 			}
 
-			for(int i = 0 ; i< activeQuest.getPlayerNum(); i ++){
+			for(int i = 0 ; i< activeStory.getPlayerNum(); i ++){
 				for(int j = 0; j < numOfCardsToDraw; j++) {
-					activeQuest.getPlayer(i).addCard(new Card[]{advDeck.drawCard()});
+					activeStory.getPlayer(i).addCard(new Card[]{advDeck.drawCard()});
 				}
 			}
+			
+			gameState = successState;
+			
 		}
 		else {
 			Debug.Log ("Drawing " + numOfCardsToDraw + " cards for " + player.getName ());
@@ -1099,7 +1112,13 @@ public class GameManager : MonoBehaviour {
 				Debug.Log(player.getName() + "'s hand exceeds the 12 card limit. Asking to discard.");
 				userInputState = state.ASKINGFORCARDSTODISCARD;
 				askForCardLimitReached(player, (player.getHand().Length + numOfCardsToDraw) - 12);
-				activePlayerOther = activeQuest.getPlayerInt(player);
+				if(activeStory.getType().Equals("quest")){
+					activePlayerOther = -1;
+				}
+				else {
+					Debug.Log("If you see this message do not delete the next line");
+					activePlayerOther = activeStory.getPlayerInt(player);
+				}
 				return;
 			}		
 
@@ -1108,6 +1127,7 @@ public class GameManager : MonoBehaviour {
 				Debug.Log("Giving " + player.getName() + " a " + newCard.getName() + " card");
 				player.addCard(new Card[]{newCard});
 			}	
+			gameState = successState;
 		}
 	}
 
@@ -1133,7 +1153,7 @@ public class GameManager : MonoBehaviour {
 		drawQuestCard();
 
 	}
-
+/*
 	private void drawXNumberOfCardsTourney(int numOfCardsToDraw, Player player = null) {	
 
 		if(player == null) {
@@ -1171,6 +1191,7 @@ public class GameManager : MonoBehaviour {
 			}	
 		}
 	}
+	*/
 
 	public state getUserInputState(){
 		return userInputState;

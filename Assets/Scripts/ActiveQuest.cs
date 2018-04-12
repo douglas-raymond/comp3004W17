@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ActiveQuest {
+public class ActiveQuest : ActiveStory {
 
 	QuestCard quest;
 	Card [] stages;
 	Card [][] stageWeapons;
 
-	Player[] players;
+	//Player[] players;
 	Logger log = new Logger("ActiveQuest");
 
 	int stageNum;
@@ -27,6 +27,7 @@ public class ActiveQuest {
 
 	int extraShields;
 	public ActiveQuest(QuestCard _quest, int _extraShields) {
+		type = "quest";
 		log.Init ();
 		quest = _quest;
 		stageNum = _quest.getStages();
@@ -38,15 +39,14 @@ public class ActiveQuest {
 		highestBidder = null;
 		extraShields = _extraShields;
 		testPhase = 0;
+		hp = new HelperFunctions();
 	}
-
-	public void addPlayer(Player newPlayer) {
+/*
+	public override void addPlayer(Player newPlayer) {
 
 		int n = 0;
-
 		if(players != null){n = players.Length;}
 		Player[] temp = new Player[n+1];
-		playersCompletedStage = new Player[n+1];
 		for(int i = 0; i < n; i++)
 		{
 			temp[i] = players[i];
@@ -55,7 +55,13 @@ public class ActiveQuest {
 
 		players = temp;
 		currentPlayer = players[0];
-
+		addPlayerExtraBehaviour(n);
+	}
+	*/
+	
+	protected override void addPlayerExtraBehaviour(int n){
+		currentPlayer = players[0];
+		playersCompletedStage = new Player[n+1];
 		bids = new int[n+1];
 		tentativeBet = new Card[n+1][];
 	}
@@ -121,7 +127,7 @@ public class ActiveQuest {
 	}
 
 
-	public void nextPlayer() {
+	public override void nextPlayer() {
 		Debug.Log("testPhase: " + testPhase);
 		int playerNum = 0;
 		if(players != null){
@@ -393,7 +399,7 @@ public class ActiveQuest {
 		}
 		return stringToReturn;
 	}
-	public bool mordredSpecialAbility(Player target){
+	public override bool mordredSpecialAbility(Player target){
 
 		int targetIndex = getPlayerInt(target);
 		int freeBidsToRemove = target.removeAlly(quest.getName());
@@ -413,11 +419,11 @@ public class ActiveQuest {
 	public int getCurrentPlayerFreeBids(){
 		return currentPlayer.getFreeBids(quest.getName());
 	}
-	public Player getCurrentPlayer() {
+	public override Player getCurrentPlayer() {
 		return currentPlayer;
 	}
-
-	public Player findPlayer(string target) {
+/*
+	public override Player findPlayer(string target) {
 		for(int i = 0; i < players.Length; i++) {
 			if(players[i].getName().Equals(target)) {
 				return players[i];
@@ -425,8 +431,9 @@ public class ActiveQuest {
 		}
 		return null;
 	}
+	
 
-	public int getPlayerInt(Player player) {
+	public override int getPlayerInt(Player player) {
 		int index = -1;
 		for(int i = 0; i < players.Length; i++)
 		{
@@ -439,22 +446,25 @@ public class ActiveQuest {
 		return index;
 	}
 
-	public Player getPlayer(int i) {
+	/*
+	public override Player getPlayer(int i) {
 		return players[i];
 	}
+	
 
 
-	public Player[] getPlayerArr(){
+	public override Player[] getPlayerArr(){
 		return players;
 	}
-
-
-	public int getPlayerNum() {
+*/
+/*
+	public override int getPlayerNum() {
 		if(players == null) {
 			return 0;
 		}
 		return players.Length;
 	}
+	*/
 
 	public int getCurrentTestPhase(){
 		return testPhase;

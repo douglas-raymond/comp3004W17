@@ -2,29 +2,40 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ActiveStory  {
-
-	protected Player currentPlayer;
+public abstract class ActiveStory  {
+/* fill out common func*/
 	protected Player[] players;
+	protected HelperFunctions hp;
+	public string type;
+	
+	public abstract Player getCurrentPlayer() ;
+	
+	public string getType() {return type;}
+	public void addPlayer(Player newPlayer) {
 
-
-	public void nextPlayer() {
-		if(players.Length == 0) {
-			Debug.Log("Quest lost, No players left");
-
+		int n = 0;
+		if(players != null){n = players.Length;}
+		
+		/*
+		Player[] temp = new Player[n+1];
+		for(int i = 0; i < n; i++)
+		{
+			temp[i] = players[i];
 		}
-		int currentPlayerIndex = getPlayerInt(currentPlayer);
-
-		if(currentPlayerIndex == players.Length-1){
-
-			currentPlayer = players[0];
-
-		}
-		else {
-			currentPlayer = players[currentPlayerIndex+1];
-		}
-
+		temp[n] = newPlayer;
+*/
+		Player[] temp = hp.addPlayer(players, newPlayer);
+		players = temp;
+		
+		addPlayerExtraBehaviour(n);
 	}
+
+
+	protected abstract void addPlayerExtraBehaviour(int n);
+	//public abstract void deletePlayer(Player player){
+
+
+	public abstract void nextPlayer() ;
 
 	public Player findPlayer(string target) {
 		for(int i = 0; i < players.Length; i++) {
@@ -34,7 +45,11 @@ public class ActiveStory  {
 		}
 		return null;
 	}
-
+	
+	public  Player getPlayer(int i) {
+		Debug.Log("returning " + players[i].getName());
+		return players[i];
+	}
 	public int getPlayerInt(Player player) {
 		int index = -1;
 		for(int i = 0; i < players.Length; i++)
@@ -48,12 +63,13 @@ public class ActiveStory  {
 		return index;
 	}
 
-
+	public abstract bool mordredSpecialAbility(Player target);
 
 	public Player[] getPlayerArr(){
 		return players;
 	}
 
+	
 
 	public int getPlayerNum() {
 		if(players == null) {
@@ -61,6 +77,5 @@ public class ActiveStory  {
 		}
 		return players.Length;
 	}
-
-
+	
 }

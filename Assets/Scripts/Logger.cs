@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.IO;
+using System.IO.Writer;
 using UnityEngine;
 
 public class Logger{
@@ -16,6 +17,7 @@ public class Logger{
 	}
 
 	public void Init(){
+		/*
 		try
 		{
 			FileStream fs = new FileStream(path, FileMode.Create);
@@ -24,7 +26,9 @@ public class Logger{
 		catch(Exception ex){
 			Console.WriteLine(ex.ToString());
 		}
+*/
 
+		
 	}
 	
 	public void log(string msg)
