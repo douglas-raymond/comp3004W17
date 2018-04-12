@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ActiveTourney : ActiveStory
+public class ActiveTourney
 {
 	int bonusShields;
 	int totalShields;
-
+	private Player currentPlayer;
+	private Player[] players;
 	int [] bps;
 	Player winner;
 	public ActiveTourney (Card T)
@@ -21,6 +22,10 @@ public class ActiveTourney : ActiveStory
 		return currentPlayer;
 	}
 
+	public Player getPlayer(int i) {
+		Debug.Log("returning " + players[i].getName());
+		return players[i];
+	}
 	public void addPlayer(Player newPlayer) {
 
 		int n = 0;
@@ -112,8 +117,61 @@ public class ActiveTourney : ActiveStory
 
 		return true;
 	}
+
+	
+	public void nextPlayer() {
+		if(players.Length == 0) {
+			Debug.Log("Quest lost, No players left");
+
+		}
+		int currentPlayerIndex = getPlayerInt(currentPlayer);
+
+		if(currentPlayerIndex == players.Length-1){
+
+			currentPlayer = players[0];
+
+		}
+		else {
+			currentPlayer = players[currentPlayerIndex+1];
+		}
+
+	}
+
+	public Player findPlayer(string target) {
+		for(int i = 0; i < players.Length; i++) {
+			if(players[i].getName().Equals(target)) {
+				return players[i];
+			}
+		}
+		return null;
+	}
+
+	public int getPlayerInt(Player player) {
+		int index = -1;
+		for(int i = 0; i < players.Length; i++)
+		{
+			if(players[i].getName().Equals(player.getName()))
+			{
+				index = i;
+				break;
+			}
+		}
+		return index;
+	}
+
+
+
 	public Player[] getPlayerArr(){
 		return players;
 	}
+
+
+	public int getPlayerNum() {
+		if(players == null) {
+			return 0;
+		}
+		return players.Length;
+	}
+
 
 }

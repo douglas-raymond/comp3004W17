@@ -48,9 +48,6 @@ public class ActiveStory  {
 		return index;
 	}
 
-	public Player getPlayer(int i) {
-		return players[i];
-	}
 
 
 	public Player[] getPlayerArr(){
