@@ -22,7 +22,7 @@ public class ActiveQuest {
 	int totalCardsUsed;
 	Player highestBidder;
 	Player[] playersCompletedStage;
-
+	int testPhase;
 	bool inProgress;
 
 	int extraShields;
@@ -37,6 +37,7 @@ public class ActiveQuest {
 		totalCardsUsed = 0;
 		highestBidder = null;
 		extraShields = _extraShields;
+		testPhase = 0;
 	}
 
 	public void addPlayer(Player newPlayer) {
@@ -121,6 +122,7 @@ public class ActiveQuest {
 
 
 	public void nextPlayer() {
+		Debug.Log("testPhase: " + testPhase);
 		int playerNum = 0;
 		if(players != null){
 			playerNum = players.Length;
@@ -133,13 +135,21 @@ public class ActiveQuest {
 		int currentPlayerIndex = getPlayerInt(currentPlayer);
 		addPlayerToStageCompleteArray(currentPlayer);
 		if(players == null) {
+			Debug.Log("Players == null");
 			nextStage();
 			return;
 		}
 		if(currentPlayerIndex == players.Length-1){
 
 			currentPlayer = players[0];
-			//nextStage();
+			if(testPhase == 1){
+				testPhase = 0;
+				nextStage();
+			}
+			else {
+				testPhase = 1;
+				currentPlayerIndex = 0;
+			}
 
 		}
 		else {
@@ -230,6 +240,7 @@ public class ActiveQuest {
 		return;
 	}
 	public void setStageWeapons(Card[] newStageWeapons){
+		Debug.Log(newStageWeapons.Length);
 		stageWeapons[currentStage] = newStageWeapons;
 		if(newStageWeapons != null){
 			totalCardsUsed = totalCardsUsed + newStageWeapons.Length;
@@ -282,7 +293,6 @@ public class ActiveQuest {
 		return stages[i];
 	}
 	public Card getCurrentStage() {
-		Debug.Log ("Current Stage: " + currentStage);
 		return stages[currentStage];
 	}
 	public int getCurrentStageNum(){
@@ -292,7 +302,6 @@ public class ActiveQuest {
 		if (players == null) {
 			return highestBid;
 		}
-
 		if(highestBid == -1 && Object.ReferenceEquals(stages[currentStage].GetType(), typeof(Test)))
 		{
 			highestBid = stages[currentStage].getMinBid();
@@ -332,7 +341,6 @@ public class ActiveQuest {
 				extraBP = extraBP + stageWeapons[i][j].getBP();
 			}
 		}
-		Debug.Log (baseBP + extraBP);
 		return (baseBP + extraBP);
 	}
 	public int getTotalCardsUsed() {
@@ -344,7 +352,7 @@ public class ActiveQuest {
 		currentStage = 0;
 	}
 	public bool isStageDone() {
-		if(getPlayerInt(currentPlayer) == players.Length-1) {
+		if(getPlayerInt(currentPlayer) == players.Length-1 && testPhase == 1) {
 			Debug.Log(getPlayerInt(currentPlayer));
 			Debug.Log(players.Length-1);
 			return true;
@@ -419,7 +427,6 @@ public class ActiveQuest {
 	}
 
 	public int getPlayerInt(Player player) {
-		
 		int index = -1;
 		for(int i = 0; i < players.Length; i++)
 		{
@@ -449,7 +456,12 @@ public class ActiveQuest {
 		return players.Length;
 	}
 
+	public int getCurrentTestPhase(){
+		return testPhase;
+	}
+
 	public void setHighestBid(int i){
 		highestBid = i;
 	}
+
 }

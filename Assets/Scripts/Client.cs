@@ -235,7 +235,7 @@ public class Client : MonoBehaviour {
 		}
 		string type = GetCardType (card);
 		if (type.Equals("weapon")) {
-			Weapon tempCard = new Weapon (card, 0, tempSprite);
+			Weapon tempCard = new Weapon (card, getBP(card), tempSprite);
 			return tempCard;
 		} else if (type.Equals("foe")) {
 			Foe tempCard = new Foe (card, 0, 0, tempSprite);
@@ -244,7 +244,7 @@ public class Client : MonoBehaviour {
 			Test tempCard = new Test (card, 0, 0, tempSprite);
 			return tempCard;
 		} else if (type.Equals("ally")) {
-			Ally tempCard = new Ally (card, 0, 0, 0, tempSprite);
+			Ally tempCard = new Ally (card, getBP(card), getAltBP(card), getFreeBids(card), tempSprite);
 			return tempCard;
 		} else if (type.Equals("amour")) {
 			Amour tempCard = new Amour (card, 10, 1, tempSprite);
@@ -343,6 +343,63 @@ public class Client : MonoBehaviour {
 			return "foe";
 		}
 		return null;
+	}
+
+	public int getBP(string name){
+		if (name.Equals ("excalibur")) {
+			return 30;
+		} else if (name.Equals ("lance")) {
+			return 20;
+		} else if (name.Equals ("sword")) {
+			return 10;
+		} else if (name.Equals ("battleax")) {
+			return 15;
+		} else if (name.Equals ("dagger")) {
+			return 5;
+		} else if (name.Equals ("horse")) {
+			return 10;
+		} else if (name.Equals ("galahad")) {
+			return 15;
+		} else if (name.Equals ("pellinore")) {
+			return 10;
+		} else if (name.Equals ("guinevere")) {
+			return 0;
+		} else if (name.Equals ("iseult")) {
+			return 0;
+		} else if (name.Equals ("gawain")) {
+			return 10;
+		} else if (name.Equals ("lancelot")) {
+			return 15;
+		} else if (name.Equals ("percival")) {
+			return 5;
+		} else if (name.Equals ("tristan")) {
+			return 10;
+		} else if (name.Equals ("arthur")) {
+			return 10;
+		} else {
+			return 0;
+		}
+	}
+	public int getAltBP(string name){
+		if (name.Equals ("gawain")) {
+			return 20;
+		} else if (name.Equals ("percival")) {
+			return 20;
+		}  else {
+			return 0;
+		}
+	}
+
+	public int getFreeBids(string name){
+		if (name.Equals ("arthur")) {
+			return 2;
+		} else if (name.Equals ("pellinore")) {
+			return 4;
+		} else if (name.Equals ("guinevere")) {
+			return 3;
+		} else {
+			return 0;
+		}
 	}
 		
 }

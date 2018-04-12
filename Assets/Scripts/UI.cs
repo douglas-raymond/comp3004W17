@@ -206,7 +206,8 @@ public class UI : MonoBehaviour{
 			if(multipleCardInput.Length == null){currentBidCounter = 0;}
 			else{currentBidCounter = multipleCardInput.Length;}
 			
-			currentBidCounter = currentBidCounter + activeQuest.getCurrentPlayerFreeBids();
+			//currentBidCounter = currentBidCounter + activeQuest.getCurrentPlayerFreeBids();
+			currentBidCounter = currentBidCounter + activePlayer.getFreeBids(activeQuest.getQuest().getName());
 			changeHeaderMessage("Current bid: " + currentBidCounter, currentBid);
 		}
 		tempCardSelection = null;
