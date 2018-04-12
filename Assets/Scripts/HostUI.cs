@@ -7,9 +7,9 @@ using UnityEngine.UI;
 public class HostUI : MonoBehaviour {
 
 	public InputField port;
-	public Button NewGameBtn, OptionsBtn;
+	public Button NewGameBtn, OptionsBtn, TempNewGameBtn, TempOptionsBtn;
 	public Dropdown DropdownAI, DropdownHuman, DropdownTestScenario, DropdownAIStrategy;
-	public GameObject PanelOptions; 
+	public GameObject PanelOptions, standard; 
 	int ai_DropdownVal,human_DropdownVal,test_DropdownVal,aistrat_DropdownVal;
 
 	public void NewGameBtnOnClick(){
@@ -45,8 +45,8 @@ public class HostUI : MonoBehaviour {
 		if (aistrat_DropdownVal == null) {
 			DropdownAIStrategy = PanelOptions.GetComponent<Dropdown> ();		
 		}
-		NewGameBtn = NewGameBtn.GetComponent<Button> ();
-		OptionsBtn = OptionsBtn.GetComponent<Button> ();
+		NewGameBtn = TempNewGameBtn.GetComponent<Button> ();
+		OptionsBtn = TempOptionsBtn.GetComponent<Button> ();
 		NewGameBtn.onClick.AddListener (NewGameBtnOnClick);
 		OptionsBtn.onClick.AddListener (OptionsBtnOnClick);
 	}

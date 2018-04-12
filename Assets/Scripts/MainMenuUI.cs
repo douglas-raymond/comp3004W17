@@ -23,9 +23,9 @@ public class MainMenuUI : MonoBehaviour {
 	}
 
 	public void OptionsBtnOnClick(){
-		//PanelOptions.SetActive (true);
+		PanelOptions.SetActive (true);
 		//Debug.Log ("Options");
-		SceneManager.LoadScene ("LobbyJoin");
+		//SceneManager.LoadScene ("LobbyJoin");
 	}
 
 
@@ -36,7 +36,8 @@ public class MainMenuUI : MonoBehaviour {
 
 	public void OptionsExitBtnOnClick ()
 	{
-		PanelOptions.SetActive (false);
+		PanelOptions.SetActive (true);
+		Debug.Log(PanelOptions.activeSelf);
 		Debug.Log ("Close Options");
 	}
 
