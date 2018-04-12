@@ -43,9 +43,16 @@ public class NetworkedUI {
 		log.log ("Broadcasting the current player");
 		NetworkServer.SendToAll (Msg.idlePlayer, broadcast);
 
-		AskForCardsMessage temp = new AskForCardsMessage( player.getHand ().Length);
+		int cardsInPlayLen = 0;
+		if (player.getHand (true) != null) {
+			cardsInPlayLen = player.getHand (true).Length;
+		}
+		AskForCardsMessage temp = new AskForCardsMessage( player.getHand ().Length, cardsInPlayLen);
 		for (int i = 0; i < player.getHand ().Length; i++) {
 			temp.hand [i] = player.getHand () [i].getName();
+		}
+		for (int p = 0; p < cardsInPlayLen; p++) {
+			temp.inPlay [p] = player.getHand (true) [p].getName ();
 		}
 		temp.shield = player.getShields ();
 		temp.rank = player.getRank();
@@ -155,9 +162,16 @@ public class NetworkedUI {
 		log.log ("Broadcasting the current player");
 		NetworkServer.SendToAll (Msg.idlePlayer, broadcast);
 
-		AskYesOrNoMessage m = new AskYesOrNoMessage (player.getHand ().Length);
+		int cardsInPlayLen = 0;
+		if (player.getHand (true) != null) {
+			cardsInPlayLen = player.getHand (true).Length;
+		}
+		AskYesOrNoMessage m = new AskYesOrNoMessage (player.getHand ().Length, cardsInPlayLen);
 		for (int i = 0; i < player.getHand ().Length; i++) {
 			m.hand [i] = player.getHand () [i].getName();
+		}
+		for (int p = 0; p < cardsInPlayLen; p++) {
+			m.inPlay [p] = player.getHand (true) [p].getName ();
 		}
 		m.shields = player.getShields ();
 		m.rank = player.getRank();
@@ -175,12 +189,19 @@ public class NetworkedUI {
 		log.log ("Broadcasting the current player");
 		NetworkServer.SendToAll (Msg.idlePlayer, broadcast);
 
-		AskForPlayerChoiceMessage m = new AskForPlayerChoiceMessage (player.getHand().Length, players.Length);
+		int cardsInPlayLen = 0;
+		if (player.getHand (true) != null) {
+			cardsInPlayLen = player.getHand (true).Length;
+		}
+		AskForPlayerChoiceMessage m = new AskForPlayerChoiceMessage (player.getHand().Length, players.Length, cardsInPlayLen);
 		for (int h = 0; h < player.getHand ().Length; h++) {
 			m.hand [h] = player.getHand () [h].getName ();
 		}
 		for (int p = 0; p < players.Length; p++) {
 			m.names [p] = players [p].getName ();
+		}
+		for (int z = 0; z < cardsInPlayLen; z++) {
+			m.inPlay [z] = player.getHand (true) [z].getName ();
 		}
 		m.instructions = instructions;
 		m.newState = newState;
@@ -190,9 +211,17 @@ public class NetworkedUI {
 		
 	public void updatePlayers(Player[] players){
 		for (int i = 0; i < players.Length; i++) {
-			UpdatePlayerMessage message = new UpdatePlayerMessage (players [i].getHand ().Length);
+
+			int cardsInPlayLen = 0;
+			if (players[i].getHand (true) != null) {
+				cardsInPlayLen = players[i].getHand (true).Length;
+			}
+			UpdatePlayerMessage message = new UpdatePlayerMessage (players [i].getHand ().Length, cardsInPlayLen);
 			for (int c = 0; c < players [i].getHand ().Length; c++) {
 				message.hand [c] = players [i].getHand () [c].getName ();
+			}
+			for (int z = 0; z < cardsInPlayLen; z++) {
+				message.inPlay [z] = players[i].getHand (true) [z].getName ();
 			}
 			message.rank = players [i].getRank ();
 			message.BP = players [i].getBP ("null");

@@ -151,10 +151,18 @@ public class Server : MonoBehaviour {
 
 	public void mouseOverShowHand(NetworkMessage m){
 		int connectionID = m.ReadMessage<IntegerMessage> ().value;
-		Player tempPlayer = gm.getPlayerWithID (connectionID);;
-		GetCurrentPlayerMessage message = new GetCurrentPlayerMessage (tempPlayer.getHand ().Length);
+		Player tempPlayer = gm.getPlayerWithID (connectionID);
+
+		int cardsInPlayLen = 0;
+		if (tempPlayer.getHand (true) != null) {
+			cardsInPlayLen = tempPlayer.getHand (true).Length;
+		}
+		GetCurrentPlayerMessage message = new GetCurrentPlayerMessage (tempPlayer.getHand ().Length, cardsInPlayLen);
 		for (int i = 0; i < tempPlayer.getHand ().Length; i++) {
 			message.hand [i] = tempPlayer.getHand () [i].getName ();
+		}
+		for (int z = 0; z < cardsInPlayLen; z++) {
+			message.inPlay [z] = tempPlayer.getHand (true) [z].getName ();
 		}
 		message.name = tempPlayer.getName ();
 		message.BP = tempPlayer.getBP ("null");
@@ -209,9 +217,17 @@ public class Server : MonoBehaviour {
 	public void getCurrentPlayer(NetworkMessage m){
 		int connectionID = m.ReadMessage<IntegerMessage> ().value;
 		Player tempPlayer = gm.getPlayerWithID (connectionID);
-		GetCurrentPlayerMessage message = new GetCurrentPlayerMessage (tempPlayer.getHand ().Length);
+
+		int cardsInPlayLen = 0;
+		if (tempPlayer.getHand (true) != null) {
+			cardsInPlayLen = tempPlayer.getHand (true).Length;
+		}
+		GetCurrentPlayerMessage message = new GetCurrentPlayerMessage (tempPlayer.getHand ().Length, cardsInPlayLen);
 		for (int i = 0; i < tempPlayer.getHand ().Length; i++) {
 			message.hand [i] = tempPlayer.getHand () [i].getName ();
+		}
+		for (int z = 0; z < cardsInPlayLen; z++) {
+			message.inPlay [z] = tempPlayer.getHand (true) [z].getName ();
 		}
 		message.name = tempPlayer.getName ();
 		message.BP = tempPlayer.getBP ("null");

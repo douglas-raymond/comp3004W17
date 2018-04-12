@@ -64,7 +64,7 @@ public class Client : MonoBehaviour {
 
 	public void askForCards(NetworkMessage m){
 		AskForCardsMessage nM = m.ReadMessage<AskForCardsMessage> ();
-		Player tempPlayer = MessageToPlayer (nM.hand, nM.shield, nM.rank, nM.name, nM.BP);
+		Player tempPlayer = MessageToPlayer (nM.hand, nM.inPlay, nM.shield, nM.rank, nM.name, nM.BP);
 		QuestCard tempCard = new QuestCard (nM.questCard, "quest", 0, null, getCardImage (nM.questCard));
 		ActiveQuest tempQuest = new ActiveQuest (tempCard, 0);
 		//populate tempPlayer with nM
@@ -111,7 +111,7 @@ public class Client : MonoBehaviour {
 
 	public void PassCurrentPlayer(NetworkMessage m){
 		GetCurrentPlayerMessage message = m.ReadMessage<GetCurrentPlayerMessage> ();
-		Player tempPlayer = MessageToPlayer (message.hand, message.shields, message.rank, message.name, message.BP);
+		Player tempPlayer = MessageToPlayer (message.hand, message.inPlay, message.shields, message.rank, message.name, message.BP);
 		gm.PostUpdate (tempPlayer);
 	}
 
@@ -122,7 +122,7 @@ public class Client : MonoBehaviour {
 
 	public void askYesOrNo(NetworkMessage m){
 		AskYesOrNoMessage message = m.ReadMessage<AskYesOrNoMessage> ();
-		Player tempPlayer = MessageToPlayer (message.hand, message.shields, message.rank, message.name, message.BP);
+		Player tempPlayer = MessageToPlayer (message.hand, message.inPlay, message.shields, message.rank, message.name, message.BP);
 		ui.askYesOrNo (tempPlayer, message.message, message.messageState);
 	}
 
@@ -130,15 +130,15 @@ public class Client : MonoBehaviour {
 		AskForPlayerChoiceMessage message = m.ReadMessage<AskForPlayerChoiceMessage> ();
 		Player[] playerList = new Player[message.names.Length];
 		for (int i = 0; i < message.names.Length; i++){
-			playerList [i] = MessageToPlayer (null, 0, 0, message.names[i], 0);
+			playerList [i] = MessageToPlayer (null, null, 0, 0, message.names[i], 0);
 		}
-		Player tempPlayer = MessageToPlayer (message.hand, message.shield, message.rank, message.name, message.BP);
+		Player tempPlayer = MessageToPlayer (message.hand, message.inPlay, message.shield, message.rank, message.name, message.BP);
 		ui.askForPlayerChoice (tempPlayer, message.newState, message.instructions, playerList);
 	}
 
 	public void mouseOverShowHand(NetworkMessage m){
 		GetCurrentPlayerMessage message = m.ReadMessage<GetCurrentPlayerMessage> ();
-		Player tempPlayer = MessageToPlayer (message.hand, message.shields, message.rank, message.name, message.BP);
+		Player tempPlayer = MessageToPlayer (message.hand, message.inPlay, message.shields, message.rank, message.name, message.BP);
 		ui.mouseOverShowHandIcon (tempPlayer);
 	}
 
@@ -164,7 +164,7 @@ public class Client : MonoBehaviour {
 
 	public void updatePlayer (NetworkMessage m){
 		UpdatePlayerMessage nM = m.ReadMessage<UpdatePlayerMessage> ();
-		Player newPlayer = MessageToPlayer (nM.hand, nM.shields, nM.rank, nM.name, nM.BP);
+		Player newPlayer = MessageToPlayer (nM.hand, nM.inPlay, nM.shields, nM.rank, nM.name, nM.BP);
 		ui.UpdatePlayer (newPlayer);
 	}
 
@@ -187,9 +187,11 @@ public class Client : MonoBehaviour {
 		return tempHand;
 	}
 
-	public Player MessageToPlayer(string[] hand, int shield, int rank, string name, int BP){
+	public Player MessageToPlayer(string[] hand, string[] inPlay, int shield, int rank, string name, int BP){
 		Card[] tempHand = MessageToHand (hand);
+		Card[] tempInPlay = MessageToHand (inPlay);
 		Player newPlayer = new Player (tempHand, shield, rank, name);
+		newPlayer.setInPlayHand (tempInPlay);
 		return newPlayer;
 	}
 
@@ -197,7 +199,7 @@ public class Client : MonoBehaviour {
 		QuestCard tempQuest = new QuestCard (null, null, 1, null, null);
 		ActiveQuest tempActiveQuest = new ActiveQuest (tempQuest, 0);
 		for (int i = 0; i < names.Length; i++) {
-			tempActiveQuest.addPlayer(MessageToPlayer(null, 0, 0, names[i], 0));
+			tempActiveQuest.addPlayer(MessageToPlayer(null, null, 0, 0, names[i], 0));
 		}
 		tempActiveQuest.setStage (0);
 		Card[] tempStage = new Card[1];

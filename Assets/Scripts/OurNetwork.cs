@@ -63,11 +63,13 @@ public class ShowCardMessage : MessageBase {
 
 public class AskForCardsMessage : MessageBase{
 	//player
-	public AskForCardsMessage(int i){
+	public AskForCardsMessage(int i, int p){
 		hand = new string[i];
+		inPlay = new string[p];
 	}
 	public AskForCardsMessage(){}
 	public string[] hand;
+	public string[] inPlay;
 	public int shield;
 	public int rank;
 	public string name;
@@ -103,12 +105,14 @@ public class ShowStageMessage : MessageBase {
 public class AskForPlayerChoiceMessage : MessageBase {
 
 	public AskForPlayerChoiceMessage(){}
-	public AskForPlayerChoiceMessage(int h, int p){
+	public AskForPlayerChoiceMessage(int h, int p, int z){
 		hand = new string[h];
 		names = new string[p];
+		inPlay = new string[z];
 	}
 	//player
 	public string[] hand;
+	public string[] inPlay;
 	public int shield;
 	public int rank;
 	public string name;
@@ -170,12 +174,14 @@ public class GetUserInputStateMessage: MessageBase {
 public class GetCurrentPlayerMessage : MessageBase {
 	
 	public GetCurrentPlayerMessage(){}
-	public GetCurrentPlayerMessage(int n){
+	public GetCurrentPlayerMessage(int n, int p){
 		hand = new string[n];
+		inPlay = new string[p];
 	}
 		
 	public string name;
 	public string[] hand;
+	public string[] inPlay;
 	public int rank;
 	public int BP;
 	public int shields;
@@ -188,12 +194,14 @@ public class GetOtherPlayerMessage : MessageBase {
 
 public class AskYesOrNoMessage : MessageBase {
 	public AskYesOrNoMessage(){}
-	public AskYesOrNoMessage(int n){
+	public AskYesOrNoMessage(int n, int p){
 		hand = new string[n];
+		inPlay = new string[p];
 	}
 
 	public string name;
 	public string[] hand;
+	public string[] inPlay;
 	public int rank;
 	public int BP;
 	public int shields;
@@ -204,12 +212,14 @@ public class AskYesOrNoMessage : MessageBase {
 
 public class UpdatePlayerMessage : MessageBase {
 	public UpdatePlayerMessage(){}
-	public UpdatePlayerMessage(int n){
+	public UpdatePlayerMessage(int n, int p){
 		hand = new string[n];
+		inPlay = new string[p];
 	}
 
 	public string name;
 	public string[] hand;
+	public string[] inPlay;
 	public int rank;
 	public int BP;
 	public int shields;

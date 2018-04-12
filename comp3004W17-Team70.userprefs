@@ -1,26 +1,24 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\UI.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\NetworkedUI.cs">
     <Files>
       <File FileName="Assets\Scripts\MainMenuUI.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\StoryDeck.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\UI.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\ActiveQuest.cs" Line="5" Column="1" />
+      <File FileName="Assets\Scripts\ActiveQuest.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Player.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Card.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Deck.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\CardButtonUI.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Server.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Client.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Server.cs" Line="160" Column="110" />
+      <File FileName="Assets\Scripts\Client.cs" Line="133" Column="49" />
       <File FileName="Assets\Scripts\GameManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\NetworkedUI.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\CardLibrary.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\ShowHandUI.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\HostUI.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\OurNetwork.cs" Line="106" Column="49" />
+      <File FileName="Assets\Scripts\HostUI.cs" Line="48" Column="1" />
+      <File FileName="Assets\Scripts\OurNetwork.cs" Line="217" Column="26" />
       <File FileName="Assets\Scripts\NetworkedGM.cs" Line="1" Column="1" />
-      <File FileName="Assets\UITransparentBlackScreen.cs" Line="1" Column="1" />
-      <File FileName="Assets\UI.cs" Line="9" Column="1" />
+      <File FileName="Assets\Scripts\NetworkedUI.cs" Line="219" Column="104" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
