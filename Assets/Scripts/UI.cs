@@ -54,8 +54,8 @@ public class UI : MonoBehaviour{
 		panelPosY = canvas.GetComponent<RectTransform>().position.y;
 		gm = _gm;
 		
-		instructionHeader  = createHeaderMessage(panelPosX, panelPosY + panelHeight/3 + panelHeight/15, new Vector3(0,0,0), "Current action required");	
-		headerCurrPlayer  = createHeaderMessage(panelPosX, panelPosY + panelHeight/3, new Vector3(0,0,0), "Current player's turn");	
+		instructionHeader  = createHeaderMessage(panelPosX, panelPosY + panelHeight/3 + panelHeight/15, new Vector3(0,0,0), " ");	
+		headerCurrPlayer  = createHeaderMessage(panelPosX, panelPosY + panelHeight/3, new Vector3(0,0,0), " ");	
 		messageHeader  = createHeaderMessage(panelPosX, panelPosY - panelHeight/3, new Vector3(0,0,0), " ");	
 
 		GameObject showHandUITemp = (GameObject)MonoBehaviour.Instantiate(Resources.Load("UIShowHand"), new Vector2(panelPosX + panelWidth/3, panelPosY + panelHeight/4) , Quaternion.identity);
@@ -285,7 +285,10 @@ public class UI : MonoBehaviour{
 			if(tempClickedButton.Equals("ENTER TOURNAMENT!")) {
 				clearGameObjectArray(currButtons);
 				clearGameObjectArray(cardsToShow);
-				gm.gotTournamentCards(gameObjectArrayToCardArray(multipleCardInput));
+				Debug.Log ("sending tournament Cards");
+				GameObject[] temp = multipleCardInput;
+				multipleCardInput = null;
+				gm.gotTournamentCards(gameObjectArrayToCardArray(temp));
 			}
 		}
 		else if(newState == state.ASKINGFORCARDSINBID){
@@ -434,6 +437,7 @@ public class UI : MonoBehaviour{
 		
 	}
 	private void gotStageSelection(GameObject selected, Vector2 pos){
+		Debug.Log ("gotStageSelection");
 		//Card selected = selectedObj.GetComponent<CardButtonUI>().getCard();
 		addNewCardToMultipleCardArray(selected, pos);
 		
@@ -464,6 +468,7 @@ public class UI : MonoBehaviour{
 	}
 	
 	private void gotCardToDiscardSelection(GameObject selected, Vector2 pos){
+		Debug.Log ("gotCardToDiscardSelection");
 		//Card selected = selectedObj.GetComponent<CardButtonUI>().getCard();
 		addNewCardToMultipleCardArray(selected, pos);
 		
@@ -905,6 +910,12 @@ public class UI : MonoBehaviour{
 		clearGameObjectArray (currButtons);
 		clearGameObjectArray (cardsToShow);
 		clearGameObjectArray (stageWinners);
-		displayAlert ("you are not the active player");
+	}
+
+	public void updateCurrentPlayer(string message){
+		idle ();
+		changeHeaderMessage ("", instructionHeader);
+
+		changeHeaderMessage (message, headerCurrPlayer);
 	}
 }

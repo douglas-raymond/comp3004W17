@@ -48,12 +48,15 @@ public class ShowHandUI : MonoBehaviour {
 		headers = new GameObject[headerStrings.Length +2 ];
 		Renderer blackScreenRenderer = blackScreen.GetComponent<Renderer>();
 		for(int i = 0; i < headerStrings.Length; i++) {
-			headers[i] = createHeader(headerStrings[i],  new Vector2(panelPosX - panelPosX/3 - panelPosX/3 - panelPosX/5 , panelPosY + panelHeight/3 - i*(panelHeight/20)), blackScreenRenderer);			
+			headers[i] = createHeader(headerStrings[i],  new Vector2(panelPosX - panelPosX/3 - panelPosX/3 - panelPosX/5 , panelPosY + panelHeight/3 - i*(panelHeight/20)), blackScreenRenderer);	
+			headers [i].GetComponent<HeaderUI> ().transform.position = new Vector2 (panelPosX - panelPosX / 3 - panelPosX / 3 - panelPosX / 5, panelPosY + panelHeight / 3 - i * (panelHeight / 20));
 		}
 		
 		
 		headers[headerStrings.Length] = createHeader("Cards in play",  new Vector2(panelPosX , panelPosY + panelHeight/2- (panelHeight/20)), blackScreenRenderer);	
-		headers[headerStrings.Length] = createHeader("Current hand",  new Vector2(panelPosX , panelPosY + panelHeight/2- (panelHeight/3)), blackScreenRenderer);			
+		headers [headerStrings.Length].GetComponent<HeaderUI> ().transform.position = new Vector2 (panelPosX, panelPosY + panelHeight / 2 - (panelHeight / 20));
+		headers[headerStrings.Length] = createHeader("Current hand",  new Vector2(panelPosX , panelPosY + panelHeight/2- (panelHeight/3)), blackScreenRenderer);
+		headers [headerStrings.Length].GetComponent<HeaderUI> ().transform.position = new Vector2 (panelPosX, panelPosY + panelHeight / 2 - (panelHeight / 3));
     }
 	
 	public void PointerExit()

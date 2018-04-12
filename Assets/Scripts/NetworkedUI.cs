@@ -28,7 +28,7 @@ public class NetworkedUI {
 		ShowCardMessage temp = new ShowCardMessage();
 		temp.card = cardToShow.getName ();
 		//NetworkServer.SendToAll (Msg.showCard, temp);
-		if (cardToShow.GetType ().Equals( typeof(QuestCard))) {
+		if (cardToShow.GetType ().Equals( typeof(QuestCard)) || cardToShow.GetType ().Equals( typeof(EventCard)) || cardToShow.GetType ().Equals( typeof(TourneyCard))) {
 			log.log ("Broadcasting Quest Card to all players");
 			NetworkServer.SendToAll (Msg.showCard, temp);
 		} else {
@@ -38,6 +38,11 @@ public class NetworkedUI {
 	}
 
 	public void askForCards(Player player, ActiveQuest newQuest, state newState, state oldState, string instructions, string button1, string button2, bool getFoes, bool getWeap, bool getAlly, bool getAmour, bool getTest, bool getMordred, int n = -1) {
+		StringMessage broadcast = new StringMessage ();
+		broadcast.value = player.getName () + "'s turn";
+		log.log ("Broadcasting the current player");
+		NetworkServer.SendToAll (Msg.idlePlayer, broadcast);
+
 		AskForCardsMessage temp = new AskForCardsMessage( player.getHand ().Length);
 		for (int i = 0; i < player.getHand ().Length; i++) {
 			temp.hand [i] = player.getHand () [i].getName();
@@ -79,6 +84,7 @@ public class NetworkedUI {
 		temp.stage = n;
 		NetworkServer.SendToClient (player.getConnectionID(), Msg.askForCards, temp);
 		//NetworkServer.SendToClient (1, Msg.askForCards, temp);
+
 	}
 
 	public void displayAlert (string input, bool broadcast = false){
@@ -103,8 +109,9 @@ public class NetworkedUI {
 			m.test = true;
 		}
 		m.highestBid = activeQuest.getHighestBid ();
-		m.questCard = activeQuest.getCurrentStage ().getName ();
+		m.questCard = activeQuest.getQuest().getName ();
 		NetworkServer.SendToClient(gm.getCurrentPlayer().getConnectionID(), Msg.showStage, m);
+		showCard (activeQuest.getQuest ());
 	}
 
 	public void endQuest(){
@@ -143,6 +150,11 @@ public class NetworkedUI {
 	}
 
 	public void askYesOrNo(Player player, string message, state messageState){
+		StringMessage broadcast = new StringMessage ();
+		broadcast.value = player.getName () + "'s turn";
+		log.log ("Broadcasting the current player");
+		NetworkServer.SendToAll (Msg.idlePlayer, broadcast);
+
 		AskYesOrNoMessage m = new AskYesOrNoMessage (player.getHand ().Length);
 		for (int i = 0; i < player.getHand ().Length; i++) {
 			m.hand [i] = player.getHand () [i].getName();
@@ -158,6 +170,11 @@ public class NetworkedUI {
 	}
 
 	public void askForPlayerChoice(Player player, state newState, string instructions, Player[] players){
+		StringMessage broadcast = new StringMessage ();
+		broadcast.value = player.getName () + "'s turn";
+		log.log ("Broadcasting the current player");
+		NetworkServer.SendToAll (Msg.idlePlayer, broadcast);
+
 		AskForPlayerChoiceMessage m = new AskForPlayerChoiceMessage (player.getHand().Length, players.Length);
 		for (int h = 0; h < player.getHand ().Length; h++) {
 			m.hand [h] = player.getHand () [h].getName ();

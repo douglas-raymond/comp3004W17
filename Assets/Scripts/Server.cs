@@ -59,7 +59,7 @@ public class Server : MonoBehaviour {
 		NetworkServer.SendToClient (numPlayersConnected, Msg.confirmConnect, message);
 		numPlayersConnected++;
 		//this should be a variable
-		if (numPlayersConnected == 4) {
+		if (numPlayersConnected == 5) {
 			ui.setNumPlayersConnected (numPlayersConnected);
 			serverUpdate.GetComponent<Text>().text = "All Players Connected - Game Ongoing";
 			log.log ("All Players have connected and the game is starting");
@@ -98,6 +98,7 @@ public class Server : MonoBehaviour {
 	}
 
 	public void gotPlayerTournamentCards(NetworkMessage m){
+		Debug.Log ("Recieved Tournament Cards");
 		SelectionMessage message = m.ReadMessage<SelectionMessage> ();
 		gm.gotTournamentCards (MessageToSelection (message.selection, message.connectionID));
 	}
@@ -117,6 +118,10 @@ public class Server : MonoBehaviour {
 	}
 
 	public void endStage(NetworkMessage m){
+		StringMessage broadcast = new StringMessage ();
+		broadcast.value = "";
+		log.log ("Broadcasting the current player");
+		NetworkServer.SendToAll (Msg.idlePlayer, broadcast);
 		gm.endStage ();
 	}
 

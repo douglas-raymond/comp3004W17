@@ -65,7 +65,7 @@ public class Client : MonoBehaviour {
 	public void askForCards(NetworkMessage m){
 		AskForCardsMessage nM = m.ReadMessage<AskForCardsMessage> ();
 		Player tempPlayer = MessageToPlayer (nM.hand, nM.shield, nM.rank, nM.name, nM.BP);
-		QuestCard tempCard = new QuestCard (nM.questCard, "test", 0, null, getCardImage (nM.questCard));
+		QuestCard tempCard = new QuestCard (nM.questCard, "quest", 0, null, getCardImage (nM.questCard));
 		ActiveQuest tempQuest = new ActiveQuest (tempCard, 0);
 		//populate tempPlayer with nM
 		ui.askForCards (tempPlayer, tempQuest, nM.newState, nM.oldState, nM.instructions, nM.button1, nM.button2, nM.getFoes, nM.getWeap, nM.getAlly, nM.getAmour, nM.getTest, nM.getMordred, nM.stage);
@@ -169,11 +169,9 @@ public class Client : MonoBehaviour {
 	}
 
 	public void idlePlayer(NetworkMessage m){
-		ShowCardMessage message = m.ReadMessage<ShowCardMessage> ();
-		string tempCard = message.card;
-		Card card = MessageToCard (tempCard);
-		ui.idle ();
-		ui.showCard (card);
+		StringMessage message = m.ReadMessage<StringMessage> ();
+		string player = message.value;
+		ui.updateCurrentPlayer(player);
 	}
 
 	//Helpers

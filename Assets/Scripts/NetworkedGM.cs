@@ -156,6 +156,7 @@ public class NetworkedGM : MonoBehaviour{
 			m.selection [i] = cards [i].getName ();
 		}
 		m.connectionID = connectionID;
+		Debug.Log ("sending tournament cards to server");
 		client.Send (Msg.gotTournamentCards, m);
 	}
 

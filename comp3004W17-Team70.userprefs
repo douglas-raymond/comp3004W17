@@ -1,22 +1,24 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\CardButtonUI.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GameManager.cs">
     <Files>
       <File FileName="Assets\Scripts\MainMenuUI.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\StoryDeck.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\UI.cs" Line="742" Column="44" />
-      <File FileName="Assets\Scripts\ActiveQuest.cs" Line="304" Column="4" />
+      <File FileName="Assets\Scripts\UI.cs" Line="757" Column="1" />
+      <File FileName="Assets\Scripts\ActiveQuest.cs" Line="431" Column="1" />
       <File FileName="Assets\Scripts\Player.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Card.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Deck.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\CardButtonUI.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Server.cs" Line="143" Column="24" />
-      <File FileName="Assets\Scripts\Client.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\GameManager.cs" Line="236" Column="30" />
-      <File FileName="Assets\Scripts\NetworkedUI.cs" Line="141" Column="3" />
+      <File FileName="Assets\Scripts\Server.cs" Line="122" Column="22" />
+      <File FileName="Assets\Scripts\Client.cs" Line="93" Column="23" />
+      <File FileName="Assets\Scripts\GameManager.cs" Line="626" Column="21" />
+      <File FileName="Assets\Scripts\NetworkedUI.cs" Line="114" Column="38" />
       <File FileName="Assets\Scripts\CardLibrary.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\ShowHandUI.cs" Line="63" Column="26" />
-      <File FileName="Assets\Scripts\HostUI.cs" Line="48" Column="1" />
+      <File FileName="Assets\Scripts\ShowHandUI.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\HostUI.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\OurNetwork.cs" Line="1" Column="3" />
+      <File FileName="Assets\Scripts\NetworkedGM.cs" Line="208" Column="33" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

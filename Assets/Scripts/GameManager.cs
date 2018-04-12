@@ -43,8 +43,8 @@ public class GameManager : MonoBehaviour {
 	17 = testing court called to camelot
 	18 = testing kings call to arms
 	*/
-	int testingScenario = 4;
-	int playerCount = 3;
+	int testingScenario = 1;
+	int playerCount = 4;
 
 	int aiStrat=2;
 	Player[] players;
@@ -429,8 +429,8 @@ public class GameManager : MonoBehaviour {
 		counter ++;
 
 		if(newPlayer != null) {
-			log.log("Player " + newPlayer.getName() + " joined quest.");
-			ui.displayAlert ("Player " + newPlayer.getName () + " joined quest.", true);
+			log.log(newPlayer.getName() + " joined quest.");
+			ui.displayAlert (newPlayer.getName () + " joined quest.", true);
 			activeQuest.addPlayer(newPlayer);
 		}
 		if(counter == players.Length)
@@ -646,7 +646,7 @@ public class GameManager : MonoBehaviour {
 		}
 		tourney.awardShields();
 		log.log(tourney.getWinner().getName() + " won the tournament and is awarded " + tourney.getAwardNum() + " shields");
-		ui.displayAlert(tourney.getWinner().getName() + " won the tournament and is awarded " + tourney.getAwardNum() + " shields");
+		ui.displayAlert(tourney.getWinner().getName() + " won the tournament and is awarded " + tourney.getAwardNum() + " shields", true);
 		tourney = null;
 		drawQuestCard();
 	}
