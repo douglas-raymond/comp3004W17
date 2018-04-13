@@ -1009,6 +1009,7 @@ public class GameManager : MonoBehaviour {
 				endQuest();
 			}
 		}
+		ui.updatePlayers (players);
 	}
 
 	public void createTourney(Card tourneyCard){
