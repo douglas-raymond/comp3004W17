@@ -42,11 +42,19 @@ public class TestRiggingFunctions {
 
 			}
 			else if(testScenarioStep == 2){
-				drawnCard = storyDeck.getCard("prosperity");
+				drawnCard = storyDeck.getCard("chivdeed");
 
 			}
 			else if(testScenarioStep == 3){
-				drawnCard = storyDeck.getCard("holygrail");
+				drawnCard = storyDeck.getCard("prosperity");
+
+			}
+			else if(testScenarioStep == 4){
+				drawnCard = storyDeck.getCard("tintagel");  
+
+			}
+			else if(testScenarioStep == 5){
+				drawnCard = storyDeck.getCard("slaydragon");  
 
 			}
 			else {
@@ -220,7 +228,8 @@ public class TestRiggingFunctions {
 			player1NewHand[1] = advDeck.getCard("boar");
 			player1NewHand[2] = advDeck.getCard("sword");
 			player1NewHand[3] = advDeck.getCard("toquestingbeast");
-			for(int i = 4; i < player1NewHand.Length; i++){
+			player1NewHand[4] = advDeck.getCard("dagger");
+			for(int i = 5; i < player1NewHand.Length; i++){
 				player1NewHand[i] = advDeck.drawCard();
 			}
 
@@ -235,14 +244,16 @@ public class TestRiggingFunctions {
 			Card[] player3NewHand = new Card[12];
 			player3NewHand[0] = advDeck.getCard("horse");
 			player3NewHand[1] = advDeck.getCard("excalibur");
-			for(int i = 2; i < player3NewHand.Length; i++){
+			player3NewHand[2] = advDeck.getCard("tovalor"); 
+			for(int i = 3; i < player3NewHand.Length; i++){
 				player3NewHand[i] = advDeck.drawCard();
 			}
 
 			Card[] player4NewHand = new Card[12];
 			player4NewHand[0] = advDeck.getCard("battleax");
 			player4NewHand[1] = advDeck.getCard("lance");
-			for(int i = 2; i < player4NewHand.Length; i++){
+			player4NewHand[2] = advDeck.getCard("tomorganlefey");
+			for(int i = 3; i < player4NewHand.Length; i++){
 				player4NewHand[i] = advDeck.drawCard();
 			}
 			result[0] = player1NewHand;
@@ -308,7 +319,7 @@ public class TestRiggingFunctions {
 			result[1] = player2NewHand;
 			result[2] = player3NewHand;
 		}
-		else if(test == 7) {
+		else if(test == 10) {
 			result = new Card[3][];
 			for(int i = 0; i < 3; i++){
 				Card[] newHand = new Card[12];
@@ -318,19 +329,26 @@ public class TestRiggingFunctions {
 				}
 				result[i] = newHand;
 			}
+			Card[] player1NewHand = new Card[12];
+			player1NewHand[0] = advDeck.getCard("thieves");
+			player1NewHand[1] = advDeck.getCard("saxons");
+			player1NewHand[2] = advDeck.getCard("boar");
+			player1NewHand[3] = advDeck.getCard("greenknight");
+			for(int i = 4; i < player1NewHand.Length; i++){
+				player1NewHand[i] = advDeck.drawCard();
+			}
+
 			Card[] player2NewHand = new Card[12];
 			player2NewHand[0] = advDeck.getCard("thieves");
-			player2NewHand[1] = advDeck.getCard("thieves");
-			player2NewHand[2] = advDeck.getCard("thieves");
-			player2NewHand[3] = advDeck.getCard("saxons");
-			player2NewHand[4] = advDeck.getCard("saxons");
-			player2NewHand[5] = advDeck.getCard("saxons");
-			player2NewHand[6] = advDeck.getCard("robberknight");
-			player2NewHand[7] = advDeck.getCard("robberknight");
-			player2NewHand[8] = advDeck.getCard("tovalor");
-			for(int i = 9; i < player2NewHand.Length; i++){
+			player2NewHand[1] = advDeck.getCard("saxons");
+			player2NewHand[2] = advDeck.getCard("horse");
+			player2NewHand[3] = advDeck.getCard("horse");
+			player2NewHand[4] = advDeck.getCard("lance");
+			player2NewHand[5] = advDeck.getCard("excalibur");
+			for(int i = 6; i < player2NewHand.Length; i++){
 				player2NewHand[i] = advDeck.drawCard();
 			}
+			result[0] = player1NewHand;
 			result[1] = player2NewHand;
 		}
 		else if(test == 8) {

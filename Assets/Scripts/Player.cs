@@ -38,14 +38,14 @@ public class Player {
 	
 	public void addCard(Card[] cardsToAdd, bool isInPlay = false) {
 		if(cardsToAdd == null){
-			Debug.Log("ERROR trying to add null cards");
+			DebugX.Log("ERROR trying to add null cards");
 			return;
 		}
 
 		if(isInPlay){
 
 			if(inPlay == null){
-				Debug.Log("inPlay is getting its first cards");
+				DebugX.Log("inPlay is getting its first cards");
 				inPlay = cardsToAdd;
 				return;
 			}		
@@ -97,7 +97,7 @@ public class Player {
 
 	public Card[] getHand(bool isInPlay = false){
 		if(isInPlay) {
-			Debug.Log("Returning inPlay");
+			DebugX.Log("Returning inPlay");
 			return inPlay;
 		}
 		else{
@@ -114,7 +114,7 @@ public class Player {
 		if(inPlay != null) {
 			for(int i = 0; i< inPlay.Length; i++) {
 				if(inPlay[i].getFreeBid(quest) != -1){
-					Debug.Log("free bid found");
+					DebugX.Log("free bid found");
 					freeBids = freeBids + inPlay[i].getFreeBid(quest);
 				}
 			}
@@ -160,7 +160,7 @@ public class Player {
 	}
 
 	public void discardCard(Card [] card){
-		if(card == null) {Debug.Log("Removing nothing"); return;}
+		if(card == null) {DebugX.Log("Removing nothing"); return;}
 
 		int j;
 
@@ -177,7 +177,7 @@ public class Player {
 				}
 			}
 			if(j == -1){
-				Debug.Log("Requested card to delete is not in hand");
+				DebugX.Log("Requested card to delete is not in hand");
 				return;
 			}
 
@@ -268,13 +268,13 @@ public class Player {
 
 	public int getNumOfTypeOfCard(string cardType){
 		int result = 0;
-		Debug.Log("hand size: " + hand.Length);
+		DebugX.Log("hand size: " + hand.Length);
 		if(hand == null){
 			return 0;
 		}
 		for(int i = 0; i < hand.Length; i++){
 			if(hand[i] != null){
-				Debug.Log("("+i+"): " + hand[i].getType()); 
+				DebugX.Log("("+i+"): " + hand[i].getType()); 
 
 				if(hand[i].getType().Equals(cardType)){
 					result ++;

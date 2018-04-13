@@ -14,23 +14,23 @@ public class Strategy1AI : AbstractAI{
 		player.assumingDirectControl (this);
 	}
 	public override bool doIParticipateInTournament(Player currPlayer, ActiveTourney tourney, Player[] players){
-		Debug.Log("AI is debating if it will enter the tourney");
+		DebugX.Log("AI is debating if it will enter the tourney");
 		tounamentReward = tourney.getAwardNum();
 		bool someoneWillEvolve = false;
 		for(int i = 0; i< players.Length; i++){
 			if(players[i] != player) {
 				if(hp.willPlayerEvolve(players[i], tounamentReward)){
-					Debug.Log("AI has noticed that " + players[i] + " will evolve");
+					DebugX.Log("AI has noticed that " + players[i] + " will evolve");
 					someoneWillEvolve = true;
 				}
 			}
 		}
 		if(currPlayer == player && someoneWillEvolve){
-			Debug.Log("Joining tournament");
+			DebugX.Log("Joining tournament as I announce and someone will evolve");
 			return true;
 		}
 		else {
-			Debug.Log("Not joining tournament");
+			DebugX.Log("Not joining tournament");
 			return false;
 		}
 	}
@@ -68,14 +68,14 @@ public class Strategy1AI : AbstractAI{
 			}
 			if(allyHand != null){
 				for(int i = 0; i < allyHand.Length; i++){
-					Debug.Log("Playing a " + allyHand[i].getName());
+					DebugX.Log("Playing a " + allyHand[i].getName());
 					submit = hp.addCard(submit, allyHand[i]);
 				}
 			}
 			if(weaponHand != null){
 				for(int i = 0; i < weaponHand.Length; i++){
 					if(!hp.checkIfArrayContainsCard(submit, weaponHand[i])){
-						Debug.Log("Playing a " + weaponHand[i].getName());
+						DebugX.Log("Playing a " + weaponHand[i].getName());
 						submit = hp.addCard(submit, weaponHand[i]);
 					}
 				}
@@ -96,7 +96,7 @@ public class Strategy1AI : AbstractAI{
 	}
 
 	public override bool doIParticipateInQuest (QuestCard quest){
-		Debug.Log("Asking AI to participate in quest");
+		DebugX.Log("Asking AI to participate in quest");
 		bool c1 = false;
 		bool c2 = false;
 		int lowestBP = 0;
@@ -118,11 +118,11 @@ public class Strategy1AI : AbstractAI{
 				totalIncrementsBy10++;
 			}
 		}
-		Debug.Log("totalIncrementsBy10: "+ totalIncrementsBy10);
-		Debug.Log("lastBP: "+ lastBP);
+		DebugX.Log("totalIncrementsBy10: "+ totalIncrementsBy10);
+		DebugX.Log("lastBP: "+ lastBP);
 		if(totalIncrementsBy10 >= quest.getStages()){
 			c1 = true;
-			Debug.Log("condition 1 is true");
+			DebugX.Log("condition 1 is true");
 		}
 		//Handle c2
 		count = 0;
@@ -132,15 +132,15 @@ public class Strategy1AI : AbstractAI{
 			}
 		}
 		if (count >= 2) {
-			Debug.Log("condition 2 is true");
+			DebugX.Log("condition 2 is true");
 			c2 = true;
 		}
 		if(c1 && c2){
-			Debug.Log("Conditions met, participating in quest");
+			DebugX.Log("Conditions met, participating in quest");
 			return true;
 		}
 		else {
-			Debug.Log("Conditions not met.");
+			DebugX.Log("Conditions not met.");
 			return false;
 		}
 	}
@@ -148,7 +148,7 @@ public class Strategy1AI : AbstractAI{
 	public override Card[] nextBid(ActiveQuest quest){
 		Card[] submit = null;
 		if (quest.getHighestBid () > hand.Length) {
-			Debug.Log("Cannot place bid");
+			DebugX.Log("Cannot place bid");
 			//quest.deletePlayer(player);
 			return submit;
 		}
@@ -158,7 +158,7 @@ public class Strategy1AI : AbstractAI{
 				submit = hp.addCard(submit, hand [i]);
 				if(submit.Length > quest.getHighestBid()) { return submit; }
 				else {
-					Debug.Log("Bid too low");
+					DebugX.Log("Bid too low");
 					//quest.deletePlayer(player);
 					return null;
 				}
@@ -223,12 +223,13 @@ public class Strategy1AI : AbstractAI{
 		}
 
 		for(int i = 0; i < submit.Length-1; i++){
-			Debug.Log(i + ": " + handFoesOnly[i] + " (" + handFoesOnly[i].getBP()+")");
+			DebugX.Log(i + ": " + handFoesOnly[i] + " (" + handFoesOnly[i].getBP()+")");
 			submit[i] = handFoesOnly[i];
 		}
 		int mainQuestStagesStart = 0;
 		int currentMainStageIndex = submit.Length-2;
 		if(test != null){
+			DebugX.Log("Quest will cointain a test as AI has one");
 			submit[submit.Length-2] = test;
 			mainQuestStagesStart = 3;
 		}
@@ -239,8 +240,10 @@ public class Strategy1AI : AbstractAI{
 			submit[i] = handFoesOnly[currentMainStageIndex];
 			currentMainStageIndex --;
 		}
-
-
+		DebugX.Log("AI is submitting");
+		for(int i = 0; i < submit.Length; i++){
+			DebugX.Log(submit[i].getName());
+		}
 		quest.setStages (submit);
 
 		if(submit[submit.Length-1].getBP() < 50){
@@ -255,6 +258,13 @@ public class Strategy1AI : AbstractAI{
 			}
 
 			quest.setStage (submit.Length-1);
+			
+			if(submitWeapons != null){
+				DebugX.Log("For stage weapons, AI is submitting");
+				for(int i = 0; i < submit.Length; i++){
+					DebugX.Log(submit[i].getName());
+				}
+			}
 			quest.setStageWeapons (submitWeapons);
 			player.discardCard(submitWeapons);
 			submitWeapons = null;

@@ -41,23 +41,6 @@ public class ActiveQuest : ActiveStory {
 		testPhase = 0;
 		hp = new HelperFunctions();
 	}
-/*
-	public override void addPlayer(Player newPlayer) {
-
-		int n = 0;
-		if(players != null){n = players.Length;}
-		Player[] temp = new Player[n+1];
-		for(int i = 0; i < n; i++)
-		{
-			temp[i] = players[i];
-		}
-		temp[n] = newPlayer;
-
-		players = temp;
-		currentPlayer = players[0];
-		addPlayerExtraBehaviour(n);
-	}
-	*/
 	
 	protected override void addPlayerExtraBehaviour(int n){
 		currentPlayer = players[0];
@@ -128,7 +111,7 @@ public class ActiveQuest : ActiveStory {
 
 
 	public override void nextPlayer() {
-		Debug.Log("testPhase: " + testPhase);
+		DebugX.Log("testPhase: " + testPhase);
 		int playerNum = 0;
 		if(players != null){
 			playerNum = players.Length;
@@ -141,7 +124,7 @@ public class ActiveQuest : ActiveStory {
 		int currentPlayerIndex = getPlayerInt(currentPlayer);
 		addPlayerToStageCompleteArray(currentPlayer);
 		if(players == null) {
-			Debug.Log("Players == null");
+			DebugX.Log("Players == null");
 			nextStage();
 			return;
 		}
@@ -173,12 +156,10 @@ public class ActiveQuest : ActiveStory {
 			if(temp < bids[i]) {
 				temp = bids[i];
 				highestBidder = players[i]; 
-				tempPlayer = highestBidder;
-				log.log("Highest bidder is " + highestBidder.getName());
-				Debug.Log("Highest bidder is " + highestBidder.getName());
+				DebugX.Log("Highest bidder is " + highestBidder.getName());
 			}
 		}
-		Debug.Log("Highest temp is " + temp);
+		DebugX.Log("Highest temp is " + temp);
 		highestBid = temp;
 
 
@@ -187,18 +168,19 @@ public class ActiveQuest : ActiveStory {
 
 
 	public void endBidding() {
-		Debug.Log("endBidding");
+		DebugX.Log("endBidding");
 		//if(Object.ReferenceEquals(stages[currentStage].GetType(), typeof(Test))) {
 		if(calculateHighestBidder() != null){
 
 			calculateHighestBidder().discardCard(tentativeBet[getPlayerInt(calculateHighestBidder())]);
 			Player winningPlayer = calculateHighestBidder();
-			Debug.Log(winningPlayer.getName());
+			DebugX.Log(winningPlayer.getName());
 			int winningBid = bids[getPlayerInt(winningPlayer)];
 			players = new Player[] {winningPlayer};
 			bids = new int[] {winningBid};
 			currentPlayer = players[0];
-			log.log("highest bidder is " + calculateHighestBidder().getName());
+			DebugX.Log("highest bidder is " + calculateHighestBidder().getName());
+			DebugX.Log("discarded " + tentativeBet[getPlayerInt(calculateHighestBidder())].Length + " cards from " + calculateHighestBidder().getName());
 		}
 		else{
 			resetQuest();
@@ -207,7 +189,7 @@ public class ActiveQuest : ActiveStory {
 		//}
 	}
 	public void nextStage() {
-		Debug.Log("nextStage");
+		DebugX.Log("nextStage");
 		if(currentStage + 1 == stages.Length){
 			quest = null;
 			//finishQuest();
@@ -246,7 +228,6 @@ public class ActiveQuest : ActiveStory {
 		return;
 	}
 	public void setStageWeapons(Card[] newStageWeapons){
-		Debug.Log(newStageWeapons.Length);
 		stageWeapons[currentStage] = newStageWeapons;
 		if(newStageWeapons != null){
 			totalCardsUsed = totalCardsUsed + newStageWeapons.Length;
@@ -279,7 +260,7 @@ public class ActiveQuest : ActiveStory {
 		tentativeBet[getPlayerInt(currentPlayer)] = bid;
 		bids[getPlayerInt(currentPlayer)] = totalBet;
 		for(int i = 0; i< bids.Length; i++){
-			Debug.Log(bids[i]);
+			DebugX.Log(bids[i]);
 		}
 		highestBid = totalBet;
 		return true;
@@ -359,8 +340,6 @@ public class ActiveQuest : ActiveStory {
 	}
 	public bool isStageDone() {
 		if(getPlayerInt(currentPlayer) == players.Length-1 && testPhase == 1) {
-			Debug.Log(getPlayerInt(currentPlayer));
-			Debug.Log(players.Length-1);
 			return true;
 		}
 		else {

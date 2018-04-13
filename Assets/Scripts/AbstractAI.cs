@@ -45,15 +45,15 @@ public abstract class AbstractAI{
 				break;
 			}
 			if (hand[i].getType().Equals("foe") && hand[i].getBP()>lowestBP) {
-				totalFoes++;
+				totalFoes ++;
 				lowestBP = hand [i].getBP ();
 			}
 		}
-		if (quest.getStages() < totalFoes + hasTest) {
-			Debug.Log("As " + quest.getStages() + " < " + totalFoes + " + " + hasTest + ", AI has accepted sponsorship");
+		if (quest.getStages() <= totalFoes + hasTest) {
+			Debug.Log("As " + quest.getStages() + " <= " + totalFoes + " + " + hasTest + ", AI has accepted sponsorship");
 			return true;
 		}
-		Debug.Log("As " + quest.getStages() + " > " + totalFoes + " + " + hasTest + ", AI has declined sponsorship");
+		Debug.Log("As " + quest.getStages() + " >= " + totalFoes + " + " + hasTest + ", AI has declined sponsorship");
 		return false;
 	}	
 	abstract public bool doIParticipateInQuest (QuestCard quest);

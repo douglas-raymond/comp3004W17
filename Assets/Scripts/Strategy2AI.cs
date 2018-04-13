@@ -15,11 +15,11 @@ public class Strategy2AI : AbstractAI{
 	}
 	public override bool doIParticipateInTournament(Player currPlayer, ActiveTourney tourney, Player[] players){
 		if(currPlayer == player){
-			Debug.Log("Joining tournament");
+			DebugX.Log("I announce, so joining tournament");
 			return true;
 		}
 		else {
-			Debug.Log("Not joining tournament");
+			DebugX.Log("I do not annouce so not joining tournament");
 			return false;
 		}
 	}
@@ -78,15 +78,15 @@ public class Strategy2AI : AbstractAI{
 			}
 		}
 		if (count >= 2) {
-			Debug.Log("condition 2 is true");
+			DebugX.Log("condition 2 is true");
 			c2 = true;
 		}
 		if(c1 && c2){
-			Debug.Log("Conditions met, participating in quest");
+			DebugX.Log("Conditions met, participating in quest");
 			return true;
 		}
 		else {
-			Debug.Log("Conditions not met.");
+			DebugX.Log("Conditions not met.");
 			return false;
 		}
 		return false;
@@ -163,13 +163,18 @@ public class Strategy2AI : AbstractAI{
 			}
 		}
 		for(int i = 0; i < submit.Length-1; i++){
-			Debug.Log(i + ": " + handFoesOnly[i] + " (" + handFoesOnly[i].getBP()+")");
+			DebugX.Log(i + ": " + handFoesOnly[i] + " (" + handFoesOnly[i].getBP()+")");
 			submit[i] = handFoesOnly[i];
 		}
 		if(test != null){
 			submit[submit.Length-2] = test;
 		}
-
+		DebugX.Log("AI is submitting");
+		for(int i = 0; i < submit.Length; i++){
+			DebugX.Log(submit[i].getName());
+		}
+		DebugX.Log("AI submits no stage weapons");
+		quest.setStages (submit);
 		quest.setStages (submit);
 		for(int i = 0; i < quest.getStageNum(); i ++){
 			quest.setStage (i);

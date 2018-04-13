@@ -13,7 +13,6 @@ public class EventCard : StoryCard {
 	{
 		name = _name;
 		type = _type;
-		log.log ("creating card " + name);
 		sprite = _sprite;
 		hp = new HelperFunctions();
 	}
@@ -35,6 +34,7 @@ public class EventCard : StoryCard {
 		switch (name) {
 		case "chivdeed":
 			//player(s) in last receive 3 shields
+			DebugX.Log("Playing chivdeed. Current Player is: " + playerList[activePlayer].getName());
 			for (int i = 0; i < playerCount; i++) {
 				if (playerList [i].getRank () < lowestRank) {
 					lowestRank = playerList [i].getRank ();
@@ -48,11 +48,12 @@ public class EventCard : StoryCard {
 					playerList[j].addShields(3);
 				}
 			}
+			gm.drawQuestCard();
 			break;
 
 		case "courtcalled":
 			//all players discard all allies
-			Debug.Log("Playing courtcalled. Current Player is: " + playerList[activePlayer].getName());
+			DebugX.Log("Playing courtcalled. Current Player is: " + playerList[activePlayer].getName());
 			for (int i = 0; i < playerCount; i++) {
 				playerList [i].setInPlayHand (null);
 				playerList [i].getLogger ().log ("Discarding all cards in play.");
@@ -61,9 +62,9 @@ public class EventCard : StoryCard {
 			break;
 
 		case "kingscall":
-			Debug.Log("Playing kingscall. Current Player is: " + playerList[activePlayer].getName());
+			DebugX.Log("Playing kingscall. Current Player is: " + playerList[activePlayer].getName());
 			for (int i = 0; i < playerList.Length; i++) {
-				Debug.Log(i);
+				DebugX.Log(i);
 				if(playerList[i].getShields() == highestShields){
 					playersAffected = hp.addPlayer(playersAffected, playerList[i]);
 				}
@@ -74,16 +75,16 @@ public class EventCard : StoryCard {
 			break;
 
 		case "recognition":
-			Debug.Log("Playing recognition. Current Player is: " + playerList[activePlayer].getName());
+			DebugX.Log("Playing recognition. Current Player is: " + playerList[activePlayer].getName());
 			gm.recognition();
 			//next player(s) to complete a quest get 2 extra shields
 			break;
 
 		case "plague":
 			//active player loses 2 shields if possible
-			Debug.Log("Playing plague. Current Player is: " + playerList[activePlayer].getName());
+			DebugX.Log("Playing plague. Current Player is: " + playerList[activePlayer].getName());
 			if(playerList[activePlayer].getShields() > 1){
-				Debug.Log("Removing 2 shields from " + playerList[activePlayer].getName());
+				DebugX.Log("Removing 2 shields from " + playerList[activePlayer].getName());
 				playerList[activePlayer].removeShields (2);
 			}
 			gm.drawQuestCard();
@@ -91,10 +92,10 @@ public class EventCard : StoryCard {
 
 		case "pox":
 			//all players but active players lose 1 shield if possible
-			Debug.Log("Playing pox. Current Player is: " + playerList[activePlayer].getName());
+			DebugX.Log("Playing pox. Current Player is: " + playerList[activePlayer].getName());
 			for(int i=0; i<playerCount; i++){
 				if(i !=activePlayer && playerList[i].getShields() > 0) {
-					Debug.Log("Removing a shield from " + playerList[i].getName());
+					DebugX.Log("Removing a shield from " + playerList[i].getName());
 					playerList[i].removeShields(1);
 				}
 			}
@@ -102,6 +103,7 @@ public class EventCard : StoryCard {
 			break;
 
 		case "prosperity":
+			DebugX.Log("Playing prosperity. Current Player is: " + playerList[activePlayer].getName());
 			//all players draw 2 adventure cards
 			for(int i=0; i<playerCount; i++){
 				log.log("prosperity through the kingdom called");
@@ -111,7 +113,7 @@ public class EventCard : StoryCard {
 			break;
 
 		case "queensfavor":
-			Debug.Log("Playing queensfavor. Current Player is: " + playerList[activePlayer].getName());
+			DebugX.Log("Playing queensfavor. Current Player is: " + playerList[activePlayer].getName());
 			//player(s) in last draw 2 adventure cards
 			for (int i = 0; i < playerCount; i++) {
 				if (playerList [i].getShields () < lowestShields) {
